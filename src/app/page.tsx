@@ -49,7 +49,7 @@ export default function HomePage() {
           
           {/* Row 1 */}
           <MiningCard onCoinsClaimed={handleCoinsUpdate} level={level} />
-          <LeaderboardCard leaderboardData={leaderboard} currentUserName={CURRENT_USER_NAME} />
+          <AdsCard onAdWatched={handleCoinsUpdate} level={level}/>
 
           {/* Row 2 - Spanning both columns */}
           <div className="md:col-span-2">
@@ -58,7 +58,7 @@ export default function HomePage() {
           
           {/* Row 3 - Spanning both columns */}
           <div className="md:col-span-2">
-            <AdsCard onAdWatched={handleCoinsUpdate} level={level}/>
+            <LeaderboardCard leaderboardData={leaderboard} currentUserName={CURRENT_USER_NAME} />
           </div>
         </div>
 

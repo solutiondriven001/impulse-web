@@ -43,20 +43,24 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched, level }) => {
       onAdWatched(adReward);
       setIsWatchingAd(false);
       setCooldownTime(AD_COOLDOWN_MS);
+      toast({
+        title: "Ad Watched!",
+        description: `You earned ${adReward} coins!`,
+      });
     }, AD_WATCH_DURATION_MS);
   };
 
   const canWatchAd = !isWatchingAd && cooldownTime === 0;
 
   return (
-    <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300">
+    <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300 h-full flex flex-col">
       <CardHeader>
         <CardTitle className="flex items-center text-2xl font-headline">
           <PlaySquare className="mr-3 h-7 w-7 text-primary" />
           Rewarded Video Ad
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4 text-center">
+      <CardContent className="space-y-4 text-center flex-grow">
         <Gift className="mx-auto h-16 w-16 text-yellow-400 animate-bounce" />
         <p className="text-lg">
           Watch a short ad to earn <span className="font-bold text-yellow-400">{adReward}</span> coins!
