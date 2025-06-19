@@ -5,7 +5,7 @@ import type { FC } from 'react';
 import { useState, useEffect, useCallback } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Zap, ServerCog, CircleDollarSign } from 'lucide-react';
+import { ServerCog, CircleDollarSign, Zap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
 interface MiningCardProps {
@@ -69,7 +69,6 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center text-2xl font-headline">
-            <Zap className="mr-3 h-7 w-7 text-primary" />
             Coin Generation
           </CardTitle>
           <div className="flex items-center text-sm text-muted-foreground">
