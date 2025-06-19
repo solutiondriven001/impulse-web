@@ -14,7 +14,7 @@ interface MiningCardProps {
   level: number;
 }
 
-const MINING_DURATION_SECONDS = 30;
+const MINING_DURATION_SECONDS = 12 * 60 * 60; // 12 hours in seconds
 const BASE_COINS_PER_CYCLE = 10;
 
 const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
@@ -107,7 +107,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
             </>
           ) : (
             <>
-              <Zap className="mr-2 h-5 w-5 animate-pulse text-primary" /> Generating...
+              <Zap className="mr-2 h-5 w-5 animate-pulse text-yellow-400" /> Generating...
             </>
           )}
         </Button>
