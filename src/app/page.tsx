@@ -42,7 +42,7 @@ export default function HomePage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen text-foreground selection:bg-accent selection:text-accent-foreground bg-gradient-to-br from-white to-purple-300 dark:from-purple-900 dark:to-fuchsia-700">
+    <div className="flex flex-col min-h-screen text-foreground selection:bg-accent selection:text-accent-foreground bg-background">
       <Header currentCoins={currentCoins} />
       <main className="flex-grow container mx-auto p-4 md:p-6 lg:p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -96,4 +96,3 @@ export default function HomePage() {
     </div>
   );
 }
-

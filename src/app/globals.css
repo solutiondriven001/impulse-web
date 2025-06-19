@@ -8,98 +8,53 @@ body {
 
 @layer base {
   :root {
-    /* Light Theme (Derived for contrast) */
-    --background: 0 0% 100%; /* White */
-    --foreground: 220 20% 10%; /* Dark cool gray text */
+    /* Single Dark Theme based on image */
+    --background: 260 10% 12%; /* Very dark deep blue/purple for page bg */
+    --foreground: 0 0% 95%; /* Off-white text */
 
-    --card: 220 15% 97%; /* Very light cool gray */
-    --card-foreground: 220 20% 10%;
+    /* --card is technically defined but overridden by gradient in card.tsx */
+    /* It can serve as a fallback or for non-gradient card contexts if any arise */
+    --card: 285 25% 18%; 
+    --card-foreground: 0 0% 95%;
 
-    --popover: 220 15% 97%;
-    --popover-foreground: 220 20% 10%;
+    --popover: 280 20% 15%;
+    --popover-foreground: 0 0% 95%;
 
-    --primary: 275 60% 48%; /* Purple (adjusted for light mode) */
-    --primary-foreground: 0 0% 98%; /* White text on primary */
+    --primary: 315 65% 55%; /* Vibrant magenta/fuchsia */
+    --primary-foreground: 0 0% 100%; 
 
-    --secondary: 315 55% 55%; /* Pinkish-magenta (adjusted) */
-    --secondary-foreground: 0 0% 98%; /* White text on secondary */
+    --secondary: 290 50% 40%; /* Another shade of purple */
+    --secondary-foreground: 0 0% 100%;
 
-    --muted: 220 15% 94%; /* Light cool gray for muted backgrounds */
-    --muted-foreground: 220 10% 45%; /* Medium cool gray text on muted */
+    --muted: 260 10% 25%;
+    --muted-foreground: 260 10% 60%;
 
-    --accent: 35 75% 55%; /* Orange/Yellow (adjusted from logo) */
-    --accent-foreground: 0 0% 98%; /* White text on accent */
+    --accent: 330 70% 60%; /* A pinkish accent */
+    --accent-foreground: 0 0% 100%;
 
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 220 15% 88%; /* Light cool gray border */
-    --input: 220 15% 95%; /* Very light cool gray input background */
-    --ring: 275 60% 55%; /* Lighter shade of primary for rings */
+    --border: 280 15% 25%; /* Subtle border */
+    --input: 280 15% 18%; /* Dark input fields */
+    --ring: 315 65% 60%; /* Ring color based on primary */
     
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-
-    /* Sidebar variables for light mode */
-    --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 220 20% 10%;
-    --sidebar-primary: 275 60% 50%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 35 75% 60%;
-    --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 220 15% 85%;
-    --sidebar-ring: 35 75% 60%;
-  }
-
-  .dark {
-    /* Dark Theme (Inspired by the image) */
-    --background: 220 5% 8%; /* Very Dark, slightly blueish black */
-    --foreground: 0 0% 95%; /* Off-white text */
-
-    --card: 225 4% 11%; /* Dark gray for input fields, cards */
-    --card-foreground: 0 0% 85%; /* Light gray text on cards */
-
-    --popover: 225 4% 10%; /* Similar to card or slightly darker for popovers */
-    --popover-foreground: 0 0% 85%;
-
-    --primary: 275 70% 52%; /* Vibrant purple from login button */
-    --primary-foreground: 0 0% 98%; /* White text on primary */
-
-    --secondary: 315 60% 60%; /* Pinkish-magenta from logo for secondary elements */
-    --secondary-foreground: 0 0% 98%; /* White text on secondary */
-
-    --muted: 220 5% 20%; /* Medium dark gray for muted backgrounds */
-    --muted-foreground: 220 5% 55%; /* Lighter gray text on muted */
-
-    --accent: 35 85% 60%; /* Orange/Yellow from logo top for accent */
-    --accent-foreground: 0 0% 10%; /* Dark text on accent for contrast */
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 225 4% 15%; /* Slightly lighter gray for borders */
-    --input: 225 4% 11%; /* Same as card for input background */
-    --ring: 275 70% 60%; /* Lighter shade of primary for rings */
-
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    --radius: 0.5rem;
 
-    /* Sidebar variables for dark mode */
-    --sidebar-background: 220 5% 7%; /* Even darker for sidebar */
+    /* Sidebar variables for the dark theme */
+    --sidebar-background: 260 8% 10%;
     --sidebar-foreground: 0 0% 95%;
-    --sidebar-primary: 275 70% 55%;
-    --sidebar-primary-foreground: 0 0% 98%;
-    --sidebar-accent: 35 85% 65%;
-    --sidebar-accent-foreground: 0 0% 10%;
-    --sidebar-border: 225 4% 12%;
-    --sidebar-ring: 35 85% 65%;
+    --sidebar-primary: 315 65% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 330 70% 60%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 280 15% 20%;
+    --sidebar-ring: 315 65% 60%;
   }
 }
 
