@@ -1,7 +1,7 @@
 
 import type { FC } from 'react';
 import Image from 'next/image';
-import { CircleDollarSign } from 'lucide-react';
+import { Zap } from 'lucide-react'; // Changed from CircleDollarSign to Zap
 
 interface HeaderProps {
   currentCoins: number;
@@ -15,7 +15,7 @@ const Header: FC<HeaderProps> = ({ currentCoins }) => {
           <Image src="/logo.png" alt="App Logo" width={40} height={40} data-ai-hint="app logo" />
         </div>
         <div className="flex items-center space-x-2 bg-card text-card-foreground px-4 py-2 rounded-lg shadow-md">
-          <CircleDollarSign className="h-6 w-6 text-yellow-400" />
+          <Zap className="h-6 w-6 text-yellow-400" /> {/* Changed icon and class */}
           <span className="text-xl font-semibold">{currentCoins.toLocaleString()}</span>
         </div>
       </div>
