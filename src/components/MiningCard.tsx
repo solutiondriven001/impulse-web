@@ -1,0 +1,118 @@
+"use client";
+
+import type { FC } from 'react';
+import { useState, useEffect, useCallback } from 'react';
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
+import { Button } from '@/components/ui/button';
+import { Progress } from '@/components/ui/progress';
+import { Pickaxe, ServerCog, Coins, Zap } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
+
+interface MiningCardProps {
+  onCoinsClaimed: (amount: number) => void;
+  level: number;
+}
+
+const MINING_DURATION_SECONDS = 30; // Time to fill the progress bar
+const BASE_COINS_PER_CYCLE = 10;
+
+const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
+  const [miningProgress, setMiningProgress] = useState(0);
+  const [isMining, setIsMining] = useState(true); // Auto-start mining
+  const [isClaimable, setIsClaimable] = useState(false);
+  const { toast } = useToast();
+
+  const coinsPerCycle = BASE_COINS_PER_CYCLE + (level -1) * 5;
+
+  const startMiningCycle = useCallback(() => {
+    setIsMining(true);
+    setIsClaimable(false);
+    setMiningProgress(0);
+  }, []);
+
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (isMining && miningProgress < 100) {
+      interval = setInterval(() => {
+        setMiningProgress(prev => {
+          const nextProgress = prev + (100 / MINING_DURATION_SECONDS);
+          if (nextProgress >= 100) {
+            clearInterval(interval);
+            setIsMining(false);
+            setIsClaimable(true);
+            return 100;
+          }
+          return nextProgress;
+        });
+      }, 1000);
+    } else if (miningProgress >= 100) {
+        setIsMining(false);
+        setIsClaimable(true);
+    }
+    return () => clearInterval(interval);
+  }, [isMining, miningProgress]);
+
+  const handleClaimCoins = () => {
+    if (isClaimable) {
+      onCoinsClaimed(coinsPerCycle);
+      toast({
+        title: "Coins Claimed!",
+        description: `You've successfully claimed ${coinsPerCycle} coins.`,
+      });
+      startMiningCycle();
+    }
+  };
+
+  return (
+    <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300">
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <CardTitle className="flex items-center text-2xl font-headline">
+            <Pickaxe className="mr-3 h-7 w-7 text-primary" />
+            Coin Mining
+          </CardTitle>
+          <div className="flex items-center text-sm text-muted-foreground">
+            <ServerCog className="mr-1.5 h-5 w-5 text-green-500" />
+            <span>Connected</span>
+          </div>
+        </div>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <div>
+          <div className="flex justify-between mb-1">
+            <span className="text-sm font-medium text-card-foreground">Mining Progress</span>
+            <span className="text-sm font-medium text-primary">{Math.round(miningProgress)}%</span>
+          </div>
+          <Progress value={miningProgress} aria-label="Mining progress" className="w-full h-4 transition-all duration-1000 ease-linear"/>
+          {isClaimable && <p className="text-center mt-2 text-sm text-green-400 animate-pulse">Ready to Claim!</p>}
+        </div>
+        <div className="text-center">
+            <p className="text-lg">
+                Potential Yield: <span className="font-bold text-yellow-400">{coinsPerCycle}</span> <Coins className="inline h-5 w-5" />
+            </p>
+            <p className="text-xs text-muted-foreground">Yield increases with your level.</p>
+        </div>
+      </CardContent>
+      <CardFooter>
+        <Button
+          onClick={handleClaimCoins}
+          disabled={!isClaimable}
+          className="w-full bg-accent text-accent-foreground hover:bg-accent/90 text-lg py-6 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95"
+          aria-live="polite"
+        >
+          {isClaimable ? (
+            <>
+              <Coins className="mr-2 h-5 w-5" /> Claim {coinsPerCycle} Coins
+            </>
+          ) : (
+            <>
+              <Zap className="mr-2 h-5 w-5 animate-pulse" /> Mining...
+            </>
+          )}
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+};
+
+export default MiningCard;
