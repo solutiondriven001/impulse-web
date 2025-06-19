@@ -54,7 +54,7 @@ const TasksCard: FC<TasksCardProps> = ({ currentCoins, level, onTaskCompleted })
         fetchTasks();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [level]); // Fetch tasks when level changes or on initial load if tasks are empty
+  }, [level]); 
 
   const handleCompleteTask = (taskId: string) => {
     const taskIndex = tasks.findIndex(t => t.id === taskId);
@@ -69,14 +69,14 @@ const TasksCard: FC<TasksCardProps> = ({ currentCoins, level, onTaskCompleted })
   };
 
   return (
-    <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300 h-full flex flex-col">
+    <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300">
       <CardHeader>
         <CardTitle className="flex items-center text-2xl font-headline">
           <ListChecks className="mr-3 h-7 w-7 text-primary" />
           AI Suggested Tasks
         </CardTitle>
       </CardHeader>
-      <CardContent className="flex-grow space-y-4">
+      <CardContent className="space-y-4">
         {isLoading && (
           <div className="flex items-center justify-center py-6 h-full">
             <Loader2 className="h-8 w-8 animate-spin text-primary" />
