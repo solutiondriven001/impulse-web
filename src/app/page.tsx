@@ -45,21 +45,19 @@ export default function HomePage() {
     <div className="flex flex-col min-h-screen text-foreground selection:bg-accent selection:text-accent-foreground bg-background">
       <Header currentCoins={currentCoins} />
       <main className="flex-grow container mx-auto p-4 md:p-6 lg:p-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           
-          {/* Column 1: Coin Generation */}
-          <div className="md:col-span-1 lg:col-span-1 space-y-6">
-            <MiningCard onCoinsClaimed={handleCoinsUpdate} level={level} />
-          </div>
+          {/* Row 1 */}
+          <MiningCard onCoinsClaimed={handleCoinsUpdate} level={level} />
+          <LeaderboardCard leaderboardData={leaderboard} currentUserName={CURRENT_USER_NAME} />
 
-          {/* Column 2: AI Suggested Tasks */}
-          <div className="md:col-span-1 lg:col-span-1 space-y-6">
-             <TasksCard currentCoins={currentCoins} level={level} onTaskCompleted={handleCoinsUpdate} />
+          {/* Row 2 - Spanning both columns */}
+          <div className="md:col-span-2">
+            <TasksCard currentCoins={currentCoins} level={level} onTaskCompleted={handleCoinsUpdate} />
           </div>
           
-          {/* Column 3: Leaderboard & Ads */}
-          <div className="md:col-span-1 lg:col-span-1 space-y-6">
-            <LeaderboardCard leaderboardData={leaderboard} currentUserName={CURRENT_USER_NAME} />
+          {/* Row 3 - Spanning both columns */}
+          <div className="md:col-span-2">
             <AdsCard onAdWatched={handleCoinsUpdate} level={level}/>
           </div>
         </div>
