@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { FC } from 'react';
@@ -11,12 +12,12 @@ import { useToast } from '@/hooks/use-toast';
 import type { Task } from '@/types';
 
 interface TasksCardProps {
-  currentCoins: number;
+  currentPoints: number; // Changed currentCoins to currentPoints
   level: number;
   onTaskCompleted: (reward: number) => void;
 }
 
-const TasksCard: FC<TasksCardProps> = ({ currentCoins, level, onTaskCompleted }) => {
+const TasksCard: FC<TasksCardProps> = ({ currentPoints, level, onTaskCompleted }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -26,12 +27,12 @@ const TasksCard: FC<TasksCardProps> = ({ currentCoins, level, onTaskCompleted })
     setIsLoading(true);
     setError(null);
     try {
-      const input: SuggestTasksInput = { currentCoins, level };
+      const input: SuggestTasksInput = { currentPoints, level }; // Changed currentCoins to currentPoints
       const output: SuggestTasksOutput = await suggestTasks(input);
       const suggestedTasks = output.tasks.map((desc, index) => ({
         id: `task-${Date.now()}-${index}`,
         description: desc,
-        reward: 10 + level * 2 + Math.floor(Math.random() * 5), // Dynamic reward
+        reward: 10 + level * 2 + Math.floor(Math.random() * 5), 
         completed: false,
       }));
       setTasks(suggestedTasks);
@@ -49,12 +50,11 @@ const TasksCard: FC<TasksCardProps> = ({ currentCoins, level, onTaskCompleted })
   };
 
   useEffect(() => {
-    // Fetch initial tasks on component mount or when level changes significantly
     if (tasks.length === 0) {
         fetchTasks();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [level]); // Consider adding currentCoins if tasks should refresh often
+  }, [level]); 
 
   const handleCompleteTask = (taskId: string) => {
     const taskIndex = tasks.findIndex(t => t.id === taskId);
@@ -66,13 +66,7 @@ const TasksCard: FC<TasksCardProps> = ({ currentCoins, level, onTaskCompleted })
         t.id === taskId ? { ...t, completed: true } : t
       ));
 
-      toast({
-        title: "Task Completed!",
-        description: `You earned ${taskToComplete.reward} coins for completing: ${taskToComplete.description}`,
-      });
-
-      // Optional: Remove completed task or keep it marked
-      // setTasks(prevTasks => prevTasks.filter(t => t.id !== taskId));
+      // Toast for task completion removed as per guidelines
     }
   };
 
@@ -114,7 +108,7 @@ const TasksCard: FC<TasksCardProps> = ({ currentCoins, level, onTaskCompleted })
                     <p className={`text-sm ${task.completed ? 'line-through text-muted-foreground' : 'text-card-foreground'}`}>
                       {task.description}
                     </p>
-                    <p className="text-xs text-primary font-medium">Reward: {task.reward} coins</p>
+                    <p className="text-xs text-primary font-medium">Reward: {task.reward} points</p> {/* Changed coins to points */}
                   </div>
                   {!task.completed && (
                     <Button

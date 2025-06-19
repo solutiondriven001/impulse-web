@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { FC } from 'react';
@@ -13,8 +14,8 @@ interface AdsCardProps {
 }
 
 const AD_REWARD_BASE = 25;
-const AD_WATCH_DURATION_MS = 5000; // 5 seconds
-const AD_COOLDOWN_MS = 60000; // 60 seconds
+const AD_WATCH_DURATION_MS = 5000; 
+const AD_COOLDOWN_MS = 60000; 
 
 const AdsCard: FC<AdsCardProps> = ({ onAdWatched, level }) => {
   const [isWatchingAd, setIsWatchingAd] = useState(false);
@@ -37,19 +38,13 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched, level }) => {
     if (isWatchingAd || cooldownTime > 0) return;
 
     setIsWatchingAd(true);
-    toast({
-      title: "Watching Ad...",
-      description: "You'll receive your reward shortly.",
-    });
+    // Toast for watching ad is removed as per guidelines (only for errors)
 
     setTimeout(() => {
       onAdWatched(adReward);
       setIsWatchingAd(false);
       setCooldownTime(AD_COOLDOWN_MS);
-      toast({
-        title: "Ad Watched!",
-        description: `You earned ${adReward} coins!`,
-      });
+      // Toast for ad watched reward is removed as per guidelines
     }, AD_WATCH_DURATION_MS);
   };
 
@@ -66,7 +61,7 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched, level }) => {
       <CardContent className="space-y-4 text-center">
         <Gift className="mx-auto h-16 w-16 text-yellow-400 animate-bounce" />
         <p className="text-lg">
-          Watch a short ad to earn <span className="font-bold text-yellow-400">{adReward}</span> coins!
+          Watch a short ad to earn <span className="font-bold text-yellow-400">{adReward}</span> points! {/* Changed coins to points */}
         </p>
         {!canWatchAd && cooldownTime > 0 && (
           <p className="text-sm text-muted-foreground">

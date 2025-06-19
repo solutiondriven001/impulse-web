@@ -3,8 +3,8 @@ import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 
 export const metadata: Metadata = {
-  title: 'CoinQuest',
-  description: 'Mine, Claim, Conquer!',
+  title: 'Impulse',
+  description: 'Fuel your drive, achieve your goals!',
 };
 
 export default function RootLayout({
