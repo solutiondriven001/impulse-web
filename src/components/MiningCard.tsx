@@ -51,7 +51,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
         setIsClaimable(true);
     }
     return () => clearInterval(interval);
-  }, [isMining, miningProgress]);
+  }, [isMining, miningProgress, MINING_DURATION_SECONDS]);
 
   const handleClaimCoins = () => {
     if (isClaimable) {
@@ -65,7 +65,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
   };
 
   return (
-    <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300">
+    <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300 h-full flex flex-col">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center text-2xl font-headline">
@@ -77,7 +77,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4 text-center">
+      <CardContent className="space-y-4 text-center flex-grow">
         <div>
             <p className="text-lg">
                 Potential Yield: <span className="font-bold text-yellow-400">{coinsPerCycle}</span> <CircleDollarSign className="inline h-5 w-5" />
