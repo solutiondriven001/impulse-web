@@ -84,7 +84,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
             <span className="text-sm font-medium text-card-foreground">Progress</span>
             <span className="text-sm font-medium text-primary">{Math.round(miningProgress)}%</span>
           </div>
-          <Progress value={miningProgress} aria-label="Coin generation progress" className="w-full h-4 transition-all duration-1000 ease-linear"/>
+          <Progress value={miningProgress} aria-label="Coin generation progress" className="w-full h-4 transition-all duration-1000 ease-linear [&>div]:bg-yellow-400"/>
           {isClaimable && <p className="text-center mt-2 text-sm text-green-400 animate-pulse">Ready to Claim!</p>}
         </div>
         <div className="text-center">
