@@ -9,7 +9,7 @@ body {
 @layer base {
   :root {
     /* Single Dark Theme based on image */
-    --background: 260 10% 12%; /* Very dark deep blue/purple for page bg */
+    --background: 0 0% 100%; /* White page bg */
     --foreground: 0 0% 95%; /* Off-white text */
 
     /* --card is technically defined but overridden by gradient in card.tsx */
