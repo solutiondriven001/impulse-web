@@ -1,3 +1,4 @@
+
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
@@ -9,7 +10,7 @@ const Card = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "rounded-lg border text-card-foreground shadow-lg bg-gradient-to-br from-[hsl(295_38%_28%)] to-[hsl(325_55%_42%)]", // Applied gradient here
+      "rounded-lg border text-card-foreground shadow-lg bg-gradient-to-br from-[hsl(15_38%_36%)] to-[hsl(300_100%_17%)]", // Updated gradient here
       className
     )}
     {...props}
