@@ -5,7 +5,6 @@ import type { FC } from 'react';
 import { useState, useEffect, useCallback } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Progress } from '@/components/ui/progress';
 import { Zap, ServerCog, CircleDollarSign } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -24,6 +23,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
   const { toast } = useToast();
 
   const coinsPerCycle = BASE_COINS_PER_CYCLE + (level -1) * 5;
+  const currentlyGeneratingCoins = Math.floor((miningProgress / 100) * coinsPerCycle);
 
   const startMiningCycle = useCallback(() => {
     setIsMining(true);
@@ -79,37 +79,39 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        <div>
-          <div className="flex justify-between mb-1">
-            <span className="text-sm font-medium text-card-foreground">Progress</span>
-            <span className="text-sm font-medium text-primary">{Math.round(miningProgress)}%</span>
-          </div>
-          <Progress value={miningProgress} aria-label="Coin generation progress" className="w-full h-4 transition-all duration-1000 ease-linear [&>div]:bg-yellow-400"/>
-          {isClaimable && <p className="text-center mt-2 text-sm text-green-400 animate-pulse">Ready to Claim!</p>}
-        </div>
         <div className="text-center">
             <p className="text-lg">
                 Potential Yield: <span className="font-bold text-yellow-400">{coinsPerCycle}</span> <CircleDollarSign className="inline h-5 w-5" />
             </p>
             <p className="text-xs text-muted-foreground">Yield increases with your level.</p>
         </div>
+        {isClaimable && <p className="text-center mt-2 text-sm text-green-400 animate-pulse">Ready to Claim!</p>}
       </CardContent>
       <CardFooter>
         <Button
           onClick={handleClaimCoins}
-          disabled={!isClaimable}
-          className="w-full bg-white text-black hover:bg-gray-100 text-lg py-6 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95"
+          disabled={!isClaimable && isMining}
+          className="w-full bg-white text-black hover:bg-gray-100 text-lg py-6 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95 relative overflow-hidden"
           aria-live="polite"
         >
-          {isClaimable ? (
-            <>
-              <CircleDollarSign className="mr-2 h-5 w-5 text-primary" /> Claim {coinsPerCycle} Coins
-            </>
-          ) : (
-            <>
-              <Zap className="mr-2 h-5 w-5 animate-pulse text-yellow-400" /> Generating...
-            </>
+          {!isClaimable && isMining && (
+            <div
+              className="absolute left-0 top-0 h-full bg-yellow-400 transition-all duration-1000 ease-linear"
+              style={{ width: `${miningProgress}%` }}
+              aria-hidden="true"
+            />
           )}
+          <span className="relative z-10 flex items-center justify-center w-full">
+            {isClaimable ? (
+              <>
+                <CircleDollarSign className="mr-2 h-5 w-5 text-primary" /> Claim {coinsPerCycle} Coins
+              </>
+            ) : (
+              <>
+                <Zap className="mr-2 h-5 w-5 animate-pulse text-yellow-400" /> Generating... ({currentlyGeneratingCoins} / {coinsPerCycle} Coins)
+              </>
+            )}
+          </span>
         </Button>
       </CardFooter>
     </Card>
