@@ -8,7 +8,7 @@ import TasksCard from '@/components/TasksCard';
 import AdsCard from '@/components/AdsCard';
 import LeaderboardCard from '@/components/LeaderboardCard';
 import type { LeaderboardEntry } from '@/types';
-import { Award, Brain, Gift, Trophy, CircleDollarSign, Zap } from 'lucide-react'; // Added Zap
+import { Award, Brain, Gift, Trophy, Zap } from 'lucide-react';
 
 const CURRENT_USER_NAME = "Player1"; // Example current user
 
@@ -52,15 +52,15 @@ export default function HomePage() {
             <MiningCard onCoinsClaimed={handleCoinsUpdate} level={level} />
           </div>
 
-          {/* Column 2: Leaderboard (Moved from Tasks) */}
+          {/* Column 2: Leaderboard */}
           <div className="md:col-span-1 lg:col-span-1 space-y-6">
              <LeaderboardCard leaderboardData={leaderboard} currentUserName={CURRENT_USER_NAME} />
           </div>
           
-          {/* Column 3: Tasks & Ads (Tasks moved from Leaderboard's previous spot) */}
-          <div className="md:col-span-2 lg:col-span-1 space-y-6">
-            <TasksCard currentCoins={currentCoins} level={level} onTaskCompleted={handleCoinsUpdate} />
+          {/* Column 3: Ads & Tasks */}
+          <div className="md:col-span-1 lg:col-span-1 space-y-6"> {/* md:col-span-2 removed as it was for 2 columns, now it's single column with 2 items */}
             <AdsCard onAdWatched={handleCoinsUpdate} level={level}/>
+            <TasksCard currentCoins={currentCoins} level={level} onTaskCompleted={handleCoinsUpdate} />
           </div>
         </div>
 
