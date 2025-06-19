@@ -8,7 +8,7 @@ import TasksCard from '@/components/TasksCard';
 import AdsCard from '@/components/AdsCard';
 import LeaderboardCard from '@/components/LeaderboardCard';
 import type { LeaderboardEntry } from '@/types';
-import { Award, BarChartBig, Brain, Gift, Trophy, CircleDollarSign } from 'lucide-react';
+import { Award, Brain, Gift, Trophy, CircleDollarSign, Zap } from 'lucide-react'; // Added Zap
 
 const CURRENT_USER_NAME = "Player1"; // Example current user
 
@@ -47,19 +47,19 @@ export default function HomePage() {
       <main className="flex-grow container mx-auto p-4 md:p-6 lg:p-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           
-          {/* Column 1: Coin Generation & Ads */}
+          {/* Column 1: Coin Generation */}
           <div className="md:col-span-1 lg:col-span-1 space-y-6">
             <MiningCard onCoinsClaimed={handleCoinsUpdate} level={level} />
           </div>
 
-          {/* Column 2: Tasks */}
+          {/* Column 2: Leaderboard (Moved from Tasks) */}
           <div className="md:col-span-1 lg:col-span-1 space-y-6">
-             <TasksCard currentCoins={currentCoins} level={level} onTaskCompleted={handleCoinsUpdate} />
+             <LeaderboardCard leaderboardData={leaderboard} currentUserName={CURRENT_USER_NAME} />
           </div>
           
-          {/* Column 3: Leaderboard & Ads */}
+          {/* Column 3: Tasks & Ads (Tasks moved from Leaderboard's previous spot) */}
           <div className="md:col-span-2 lg:col-span-1 space-y-6">
-            <LeaderboardCard leaderboardData={leaderboard} currentUserName={CURRENT_USER_NAME} />
+            <TasksCard currentCoins={currentCoins} level={level} onTaskCompleted={handleCoinsUpdate} />
             <AdsCard onAdWatched={handleCoinsUpdate} level={level}/>
           </div>
         </div>
@@ -72,7 +72,7 @@ export default function HomePage() {
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
             <div className="p-3 bg-card-foreground/5 rounded-lg">
-              <h3 className="font-semibold flex items-center mb-1"><CircleDollarSign className="w-5 h-5 mr-1.5 text-accent"/>Earn Coins</h3>
+              <h3 className="font-semibold flex items-center mb-1"><Zap className="w-5 h-5 mr-1.5 text-accent"/>Earn Coins</h3>
               <p className="text-card-foreground/80">Start generating coins and claim them when the cycle completes. Higher levels yield more coins!</p>
             </div>
             <div className="p-3 bg-card-foreground/5 rounded-lg">

@@ -93,7 +93,7 @@ const TasksCard: FC<TasksCardProps> = ({ currentCoins, level, onTaskCompleted })
           <p className="text-center text-muted-foreground py-6">No tasks available. Try fetching new ones!</p>
         )}
         {!isLoading && tasks.length > 0 && (
-          <ScrollArea className="h-[250px] pr-3"> {/* Consider making h-full if CardContent is truly flex-grow and this should fill */}
+          <ScrollArea className="h-[320px] pr-3">
             <ul className="space-y-3">
               {tasks.map((task) => (
                 <li
