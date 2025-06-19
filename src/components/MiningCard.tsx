@@ -14,12 +14,12 @@ interface MiningCardProps {
   level: number;
 }
 
-const MINING_DURATION_SECONDS = 30; 
+const MINING_DURATION_SECONDS = 30;
 const BASE_COINS_PER_CYCLE = 10;
 
 const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
   const [miningProgress, setMiningProgress] = useState(0);
-  const [isMining, setIsMining] = useState(true); 
+  const [isMining, setIsMining] = useState(true);
   const [isClaimable, setIsClaimable] = useState(false);
   const { toast } = useToast();
 
@@ -98,16 +98,16 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
         <Button
           onClick={handleClaimCoins}
           disabled={!isClaimable}
-          className="w-full bg-white text-primary hover:bg-gray-100 text-lg py-6 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95"
+          className="w-full bg-white text-black hover:bg-gray-100 text-lg py-6 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95"
           aria-live="polite"
         >
           {isClaimable ? (
             <>
-              <CircleDollarSign className="mr-2 h-5 w-5" /> Claim {coinsPerCycle} Coins
+              <CircleDollarSign className="mr-2 h-5 w-5 text-primary" /> Claim {coinsPerCycle} Coins
             </>
           ) : (
             <>
-              <Zap className="mr-2 h-5 w-5 animate-pulse" /> Generating...
+              <Zap className="mr-2 h-5 w-5 animate-pulse text-primary" /> Generating...
             </>
           )}
         </Button>

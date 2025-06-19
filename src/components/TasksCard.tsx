@@ -32,7 +32,7 @@ const TasksCard: FC<TasksCardProps> = ({ currentCoins, level, onTaskCompleted })
       const suggestedTasks = output.tasks.map((desc, index) => ({
         id: `task-${Date.now()}-${index}`,
         description: desc,
-        reward: 10 + level * 2 + Math.floor(Math.random() * 5), 
+        reward: 10 + level * 2 + Math.floor(Math.random() * 5),
         completed: false,
       }));
       setTasks(suggestedTasks);
@@ -54,15 +54,15 @@ const TasksCard: FC<TasksCardProps> = ({ currentCoins, level, onTaskCompleted })
         fetchTasks();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [level]); 
+  }, [level]);
 
   const handleCompleteTask = (taskId: string) => {
     const taskIndex = tasks.findIndex(t => t.id === taskId);
     if (taskIndex !== -1 && !tasks[taskIndex].completed) {
       const taskToComplete = tasks[taskIndex];
       onTaskCompleted(taskToComplete.reward);
-      
-      setTasks(prevTasks => prevTasks.map(t => 
+
+      setTasks(prevTasks => prevTasks.map(t =>
         t.id === taskId ? { ...t, completed: true } : t
       ));
     }
@@ -132,12 +132,12 @@ const TasksCard: FC<TasksCardProps> = ({ currentCoins, level, onTaskCompleted })
         <Button
           onClick={fetchTasks}
           disabled={isLoading}
-          className="w-full bg-white text-primary hover:bg-gray-100 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95"
+          className="w-full bg-white text-black hover:bg-gray-100 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95"
         >
           {isLoading ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <Loader2 className="mr-2 h-4 w-4 animate-spin text-primary" />
           ) : (
-            <Sparkles className="mr-2 h-4 w-4" />
+            <Sparkles className="mr-2 h-4 w-4 text-primary" />
           )}
           Get New Task Suggestions
         </Button>
