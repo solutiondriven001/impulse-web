@@ -52,15 +52,15 @@ export default function HomePage() {
             <MiningCard onCoinsClaimed={handleCoinsUpdate} level={level} />
           </div>
 
-          {/* Column 2: Leaderboard */}
+          {/* Column 2: AI Suggested Tasks */}
           <div className="md:col-span-1 lg:col-span-1 space-y-6">
-             <LeaderboardCard leaderboardData={leaderboard} currentUserName={CURRENT_USER_NAME} />
+             <TasksCard currentCoins={currentCoins} level={level} onTaskCompleted={handleCoinsUpdate} />
           </div>
           
-          {/* Column 3: Ads & Tasks */}
-          <div className="md:col-span-1 lg:col-span-1 space-y-6"> {/* md:col-span-2 removed as it was for 2 columns, now it's single column with 2 items */}
+          {/* Column 3: Leaderboard & Ads */}
+          <div className="md:col-span-1 lg:col-span-1 space-y-6">
+            <LeaderboardCard leaderboardData={leaderboard} currentUserName={CURRENT_USER_NAME} />
             <AdsCard onAdWatched={handleCoinsUpdate} level={level}/>
-            <TasksCard currentCoins={currentCoins} level={level} onTaskCompleted={handleCoinsUpdate} />
           </div>
         </div>
 
