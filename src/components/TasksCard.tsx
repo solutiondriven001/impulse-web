@@ -12,7 +12,7 @@ import { useToast } from '@/hooks/use-toast';
 import type { Task } from '@/types';
 
 interface TasksCardProps {
-  currentCoins: number; // Changed currentPoints to currentCoins
+  currentCoins: number;
   level: number;
   onTaskCompleted: (reward: number) => void;
 }
@@ -27,7 +27,7 @@ const TasksCard: FC<TasksCardProps> = ({ currentCoins, level, onTaskCompleted })
     setIsLoading(true);
     setError(null);
     try {
-      const input: SuggestTasksInput = { currentCoins, level }; // Changed currentPoints to currentCoins
+      const input: SuggestTasksInput = { currentCoins, level };
       const output: SuggestTasksOutput = await suggestTasks(input);
       const suggestedTasks = output.tasks.map((desc, index) => ({
         id: `task-${Date.now()}-${index}`,
@@ -65,8 +65,6 @@ const TasksCard: FC<TasksCardProps> = ({ currentCoins, level, onTaskCompleted })
       setTasks(prevTasks => prevTasks.map(t => 
         t.id === taskId ? { ...t, completed: true } : t
       ));
-
-      // Toast for task completion removed as per guidelines
     }
   };
 
@@ -108,7 +106,7 @@ const TasksCard: FC<TasksCardProps> = ({ currentCoins, level, onTaskCompleted })
                     <p className={`text-sm ${task.completed ? 'line-through text-muted-foreground' : 'text-card-foreground'}`}>
                       {task.description}
                     </p>
-                    <p className="text-xs text-primary font-medium">Reward: {task.reward} coins</p> {/* Changed points to coins */}
+                    <p className="text-xs text-primary font-medium">Reward: {task.reward} coins</p>
                   </div>
                   {!task.completed && (
                     <Button
@@ -134,7 +132,7 @@ const TasksCard: FC<TasksCardProps> = ({ currentCoins, level, onTaskCompleted })
         <Button
           onClick={fetchTasks}
           disabled={isLoading}
-          className="w-full bg-primary text-primary-foreground hover:bg-primary/90 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95"
+          className="w-full bg-white text-primary hover:bg-gray-100 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95"
         >
           {isLoading ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />

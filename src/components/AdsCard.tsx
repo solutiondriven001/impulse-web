@@ -38,13 +38,11 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched, level }) => {
     if (isWatchingAd || cooldownTime > 0) return;
 
     setIsWatchingAd(true);
-    // Toast for watching ad is removed as per guidelines (only for errors)
 
     setTimeout(() => {
       onAdWatched(adReward);
       setIsWatchingAd(false);
       setCooldownTime(AD_COOLDOWN_MS);
-      // Toast for ad watched reward is removed as per guidelines
     }, AD_WATCH_DURATION_MS);
   };
 
@@ -61,7 +59,7 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched, level }) => {
       <CardContent className="space-y-4 text-center">
         <Gift className="mx-auto h-16 w-16 text-yellow-400 animate-bounce" />
         <p className="text-lg">
-          Watch a short ad to earn <span className="font-bold text-yellow-400">{adReward}</span> coins! {/* Changed points to coins */}
+          Watch a short ad to earn <span className="font-bold text-yellow-400">{adReward}</span> coins!
         </p>
         {!canWatchAd && cooldownTime > 0 && (
           <p className="text-sm text-muted-foreground">
@@ -73,7 +71,7 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched, level }) => {
         <Button
           onClick={handleWatchAd}
           disabled={!canWatchAd}
-          className="w-full bg-accent text-accent-foreground hover:bg-accent/90 text-lg py-6 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95"
+          className="w-full bg-white text-primary hover:bg-gray-100 text-lg py-6 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95"
         >
           {isWatchingAd ? (
             <Loader2 className="mr-2 h-5 w-5 animate-spin" />
