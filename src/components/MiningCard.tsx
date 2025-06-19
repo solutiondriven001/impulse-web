@@ -78,14 +78,13 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-6">
-        <div className="text-center">
+      <CardContent className="space-y-4 text-center">
+        <div>
             <p className="text-lg">
                 Potential Yield: <span className="font-bold text-yellow-400">{coinsPerCycle}</span> <CircleDollarSign className="inline h-5 w-5" />
             </p>
-            <p className="text-xs text-muted-foreground">Yield increases with your level.</p>
         </div>
-        {isClaimable && <p className="text-center mt-2 text-sm text-green-400 animate-pulse">Ready to Claim!</p>}
+        {isClaimable && <p className="mt-2 text-sm text-green-400 animate-pulse">Ready to Claim!</p>}
       </CardContent>
       <CardFooter>
         <Button

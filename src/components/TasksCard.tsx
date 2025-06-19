@@ -106,7 +106,6 @@ const TasksCard: FC<TasksCardProps> = ({ currentCoins, level, onTaskCompleted })
                     <p className={`text-sm ${task.completed ? 'line-through text-muted-foreground' : 'text-card-foreground'}`}>
                       {task.description}
                     </p>
-                    <p className="text-xs text-primary font-medium">Reward: {task.reward} coins</p>
                   </div>
                   {!task.completed && (
                     <Button
