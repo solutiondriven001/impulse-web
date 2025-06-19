@@ -131,7 +131,7 @@ const TasksCard: FC<TasksCardProps> = ({ currentCoins, level, onTaskCompleted })
         <Button
           onClick={fetchTasks}
           disabled={isLoading}
-          className="w-full bg-white text-black hover:bg-gray-100 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95"
+          className="w-full bg-white text-black hover:bg-gray-100 text-lg py-6 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95"
         >
           {isLoading ? (
             <Loader2 className="mr-2 h-4 w-4 animate-spin text-primary" />
