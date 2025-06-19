@@ -13,7 +13,7 @@ interface MiningCardProps {
   level: number;
 }
 
-const MINING_DURATION_SECONDS = 12 * 60 * 60; // 12 hours in seconds
+const MINING_DURATION_SECONDS = 12 * 60 * 60; 
 const BASE_COINS_PER_CYCLE = 10;
 
 const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
@@ -51,7 +51,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
         setIsClaimable(true);
     }
     return () => clearInterval(interval);
-  }, [isMining, miningProgress]); // Removed MINING_DURATION_SECONDS from deps as it's constant
+  }, [isMining, miningProgress]); 
 
   const handleClaimCoins = () => {
     if (isClaimable) {
@@ -65,7 +65,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
   };
 
   return (
-    <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300">
+    <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300 h-full flex flex-col">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center text-2xl font-headline">
@@ -77,7 +77,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-2 text-center"> 
+      <CardContent className="space-y-2 text-center flex-grow"> 
         <div>
             <p className="text-lg">
                 Potential Yield: <span className="font-bold text-yellow-400">{coinsPerCycle}</span> <CircleDollarSign className="inline h-5 w-5" />
