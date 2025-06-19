@@ -12,12 +12,12 @@ import { useToast } from '@/hooks/use-toast';
 import type { Task } from '@/types';
 
 interface TasksCardProps {
-  currentPoints: number; // Changed currentCoins to currentPoints
+  currentCoins: number; // Changed currentPoints to currentCoins
   level: number;
   onTaskCompleted: (reward: number) => void;
 }
 
-const TasksCard: FC<TasksCardProps> = ({ currentPoints, level, onTaskCompleted }) => {
+const TasksCard: FC<TasksCardProps> = ({ currentCoins, level, onTaskCompleted }) => {
   const [tasks, setTasks] = useState<Task[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +27,7 @@ const TasksCard: FC<TasksCardProps> = ({ currentPoints, level, onTaskCompleted }
     setIsLoading(true);
     setError(null);
     try {
-      const input: SuggestTasksInput = { currentPoints, level }; // Changed currentCoins to currentPoints
+      const input: SuggestTasksInput = { currentCoins, level }; // Changed currentPoints to currentCoins
       const output: SuggestTasksOutput = await suggestTasks(input);
       const suggestedTasks = output.tasks.map((desc, index) => ({
         id: `task-${Date.now()}-${index}`,
@@ -108,7 +108,7 @@ const TasksCard: FC<TasksCardProps> = ({ currentPoints, level, onTaskCompleted }
                     <p className={`text-sm ${task.completed ? 'line-through text-muted-foreground' : 'text-card-foreground'}`}>
                       {task.description}
                     </p>
-                    <p className="text-xs text-primary font-medium">Reward: {task.reward} points</p> {/* Changed coins to points */}
+                    <p className="text-xs text-primary font-medium">Reward: {task.reward} coins</p> {/* Changed points to coins */}
                   </div>
                   {!task.completed && (
                     <Button

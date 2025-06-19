@@ -61,7 +61,7 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched, level }) => {
       <CardContent className="space-y-4 text-center">
         <Gift className="mx-auto h-16 w-16 text-yellow-400 animate-bounce" />
         <p className="text-lg">
-          Watch a short ad to earn <span className="font-bold text-yellow-400">{adReward}</span> points! {/* Changed coins to points */}
+          Watch a short ad to earn <span className="font-bold text-yellow-400">{adReward}</span> coins! {/* Changed points to coins */}
         </p>
         {!canWatchAd && cooldownTime > 0 && (
           <p className="text-sm text-muted-foreground">

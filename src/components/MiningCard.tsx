@@ -6,24 +6,24 @@ import { useState, useEffect, useCallback } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { Zap, ServerCog, Star } from 'lucide-react'; // Changed Pickaxe to Zap, Coins to Star
+import { Zap, ServerCog, CircleDollarSign } from 'lucide-react'; // Changed Star to CircleDollarSign
 import { useToast } from '@/hooks/use-toast';
 
 interface MiningCardProps {
-  onPointsClaimed: (amount: number) => void; // Changed onCoinsClaimed to onPointsClaimed
+  onCoinsClaimed: (amount: number) => void; // Changed onPointsClaimed to onCoinsClaimed
   level: number;
 }
 
 const MINING_DURATION_SECONDS = 30; 
-const BASE_POINTS_PER_CYCLE = 10; // Changed BASE_COINS_PER_CYCLE
+const BASE_COINS_PER_CYCLE = 10; // Changed BASE_POINTS_PER_CYCLE to BASE_COINS_PER_CYCLE
 
-const MiningCard: FC<MiningCardProps> = ({ onPointsClaimed, level }) => {
+const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
   const [miningProgress, setMiningProgress] = useState(0);
   const [isMining, setIsMining] = useState(true); 
   const [isClaimable, setIsClaimable] = useState(false);
   const { toast } = useToast();
 
-  const pointsPerCycle = BASE_POINTS_PER_CYCLE + (level -1) * 5; // Changed coinsPerCycle
+  const coinsPerCycle = BASE_COINS_PER_CYCLE + (level -1) * 5; // Changed pointsPerCycle to coinsPerCycle
 
   const startMiningCycle = useCallback(() => {
     setIsMining(true);
@@ -53,12 +53,12 @@ const MiningCard: FC<MiningCardProps> = ({ onPointsClaimed, level }) => {
     return () => clearInterval(interval);
   }, [isMining, miningProgress]);
 
-  const handleClaimPoints = () => { // Changed handleClaimCoins
+  const handleClaimCoins = () => { // Changed handleClaimPoints to handleClaimCoins
     if (isClaimable) {
-      onPointsClaimed(pointsPerCycle);
+      onCoinsClaimed(coinsPerCycle);
       toast({
-        title: "Points Claimed!", // Changed Coins to Points
-        description: `You've successfully claimed ${pointsPerCycle} points.`, // Changed coins to points
+        title: "Coins Claimed!", // Changed Points to Coins
+        description: `You've successfully claimed ${coinsPerCycle} coins.`, // Changed points to coins
       });
       startMiningCycle();
     }
@@ -69,8 +69,8 @@ const MiningCard: FC<MiningCardProps> = ({ onPointsClaimed, level }) => {
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center text-2xl font-headline">
-            <Zap className="mr-3 h-7 w-7 text-primary" /> {/* Changed Pickaxe to Zap */}
-            Point Generation {/* Changed Coin Mining */}
+            <Zap className="mr-3 h-7 w-7 text-primary" /> {/* Kept Zap icon for generation */}
+            Coin Generation {/* Changed Point Generation to Coin Generation */}
           </CardTitle>
           <div className="flex items-center text-sm text-muted-foreground">
             <ServerCog className="mr-1.5 h-5 w-5 text-green-500" />
@@ -84,26 +84,26 @@ const MiningCard: FC<MiningCardProps> = ({ onPointsClaimed, level }) => {
             <span className="text-sm font-medium text-card-foreground">Progress</span> {/* Changed Mining Progress */}
             <span className="text-sm font-medium text-primary">{Math.round(miningProgress)}%</span>
           </div>
-          <Progress value={miningProgress} aria-label="Point generation progress" className="w-full h-4 transition-all duration-1000 ease-linear"/>
+          <Progress value={miningProgress} aria-label="Coin generation progress" className="w-full h-4 transition-all duration-1000 ease-linear"/>
           {isClaimable && <p className="text-center mt-2 text-sm text-green-400 animate-pulse">Ready to Claim!</p>}
         </div>
         <div className="text-center">
             <p className="text-lg">
-                Potential Yield: <span className="font-bold text-yellow-400">{pointsPerCycle}</span> <Star className="inline h-5 w-5" /> {/* Changed Coins to Star */}
+                Potential Yield: <span className="font-bold text-yellow-400">{coinsPerCycle}</span> <CircleDollarSign className="inline h-5 w-5" /> {/* Changed Star to CircleDollarSign */}
             </p>
             <p className="text-xs text-muted-foreground">Yield increases with your level.</p>
         </div>
       </CardContent>
       <CardFooter>
         <Button
-          onClick={handleClaimPoints} // Changed handleClaimCoins
+          onClick={handleClaimCoins} // Changed handleClaimPoints to handleClaimCoins
           disabled={!isClaimable}
           className="w-full bg-accent text-accent-foreground hover:bg-accent/90 text-lg py-6 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95"
           aria-live="polite"
         >
           {isClaimable ? (
             <>
-              <Star className="mr-2 h-5 w-5" /> Claim {pointsPerCycle} Points {/* Changed Coins to Points & Icon */}
+              <CircleDollarSign className="mr-2 h-5 w-5" /> Claim {coinsPerCycle} Coins {/* Changed Points to Coins & Star Icon to CircleDollarSign */}
             </>
           ) : (
             <>

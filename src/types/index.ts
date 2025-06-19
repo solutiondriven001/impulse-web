@@ -1,7 +1,8 @@
+
 export interface LeaderboardEntry {
   id: string;
   name: string;
-  score: number; // Represents points
+  score: number; // Represents coins
   avatarSeed: string; 
   isCurrentUser?: boolean;
 }
@@ -9,6 +10,6 @@ export interface LeaderboardEntry {
 export interface Task {
   id: string;
   description: string;
-  reward: number; // Represents points
+  reward: number; // Represents coins
   completed: boolean;
 }
