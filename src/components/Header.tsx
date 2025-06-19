@@ -1,6 +1,7 @@
 
 import type { FC } from 'react';
-import { CircleDollarSign, Sparkles } from 'lucide-react';
+import Image from 'next/image';
+import { CircleDollarSign } from 'lucide-react';
 
 interface HeaderProps {
   currentCoins: number;
@@ -11,7 +12,7 @@ const Header: FC<HeaderProps> = ({ currentCoins }) => {
     <header className="bg-white backdrop-blur-md shadow-lg sticky top-0 z-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20">
         <div className="flex items-center space-x-2">
-          <Sparkles className="h-10 w-10 text-primary animate-pulse-lg" />
+          <Image src="/logo.png" alt="Impulse Logo" width={40} height={40} data-ai-hint="logo company" />
           <h1 className="text-3xl md:text-4xl font-headline font-bold text-primary">
             Impulse
           </h1>
