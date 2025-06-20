@@ -221,7 +221,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
               className={cn("absolute left-0 top-0 h-full animate-shimmer-wave")}
               style={{
                 width: `${miningProgress}%`,
-                backgroundImage: 'linear-gradient(90deg, transparent 20%, hsl(0 0% 100% / 0.3) 45%, hsl(0 0% 100% / 0.3) 55%, transparent 80%)',
+                backgroundImage: 'linear-gradient(90deg, transparent 20%, hsl(0 0% 100% / 1) 45%, hsl(0 0% 100% / 1) 55%, transparent 80%)',
                 backgroundSize: '250% 100%',
                 backgroundRepeat: 'no-repeat',
               }}
@@ -238,4 +238,3 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
 };
 
 export default MiningCard;
-
