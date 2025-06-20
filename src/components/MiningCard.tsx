@@ -13,7 +13,7 @@ interface MiningCardProps {
   level: number;
 }
 
-const MINING_DURATION_SECONDS = 12 * 60 * 60; // 12 hours for example
+const MINING_DURATION_SECONDS = 1 * 60 * 60; // 1 hour
 const BASE_COINS_PER_CYCLE = 10;
 
 const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
