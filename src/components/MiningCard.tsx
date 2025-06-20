@@ -15,36 +15,122 @@ interface MiningCardProps {
 
 const MINING_DURATION_SECONDS = 1 * 60 * 60; // 1 hour
 const BASE_COINS_PER_CYCLE = 10;
+const MINING_STATE_KEY = 'impulseAppMiningState_v1';
 
 const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
   const [miningProgress, setMiningProgress] = useState(0);
   const [isMining, setIsMining] = useState(false);
   const [isClaimable, setIsClaimable] = useState(false);
+  const [miningStartTime, setMiningStartTime] = useState<number | null>(null);
   const { toast } = useToast();
 
   const coinsPerCycle = BASE_COINS_PER_CYCLE + (level -1) * 5;
 
+  // Effect to load state from localStorage on mount
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const savedStateJSON = localStorage.getItem(MINING_STATE_KEY);
+    if (savedStateJSON) {
+      try {
+        const savedState = JSON.parse(savedStateJSON);
+        const now = Date.now();
+
+        if (savedState.isClaimable && savedState.miningStartTime) {
+          setIsClaimable(true);
+          setMiningProgress(100);
+          setIsMining(false);
+          setMiningStartTime(Number(savedState.miningStartTime));
+        } else if (savedState.isMining && savedState.miningStartTime && savedState.coinsReadyAt) {
+          const startTime = Number(savedState.miningStartTime);
+          const endTime = Number(savedState.coinsReadyAt);
+
+          if (now >= endTime) { // Cycle finished while away
+            setIsClaimable(true);
+            setMiningProgress(100);
+            setIsMining(false);
+            setMiningStartTime(startTime);
+          } else { // Cycle still in progress
+            const totalDurationMs = MINING_DURATION_SECONDS * 1000;
+            const elapsedTimeMs = now - startTime;
+            const currentProgress = Math.min(100, (elapsedTimeMs / totalDurationMs) * 100);
+
+            setMiningStartTime(startTime);
+            setIsMining(true);
+            setMiningProgress(currentProgress);
+            setIsClaimable(false);
+          }
+        }
+      } catch (error) {
+        console.error("Failed to parse mining state from localStorage", error);
+        localStorage.removeItem(MINING_STATE_KEY); // Clear corrupted state
+      }
+    }
+  }, []); // Run once on mount
+
+  // Effect to save state to localStorage when it changes
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    if (isMining && miningStartTime) {
+      const coinsReadyAtTime = miningStartTime + MINING_DURATION_SECONDS * 1000;
+      localStorage.setItem(MINING_STATE_KEY, JSON.stringify({
+        isMining: true,
+        isClaimable: false,
+        miningStartTime,
+        coinsReadyAt: coinsReadyAtTime,
+      }));
+    } else if (isClaimable && miningStartTime) {
+      // When claimable, miningStartTime refers to the start of the cycle that just finished
+      const coinsReadyAtTime = miningStartTime + MINING_DURATION_SECONDS * 1000;
+      localStorage.setItem(MINING_STATE_KEY, JSON.stringify({
+        isMining: false,
+        isClaimable: true,
+        miningStartTime,
+        coinsReadyAt: coinsReadyAtTime, // Store when it was supposed to be ready
+      }));
+    } else if (!isMining && !isClaimable) { // Initial state or after claim reset
+      localStorage.removeItem(MINING_STATE_KEY);
+    }
+  }, [isMining, isClaimable, miningStartTime]);
+
+
+  // Effect for active mining progress
   useEffect(() => {
     let interval: NodeJS.Timeout;
-    if (isMining && miningProgress < 100) {
-      interval = setInterval(() => {
-        setMiningProgress(prev => {
-          const nextProgress = prev + (100 / MINING_DURATION_SECONDS);
-          if (nextProgress >= 100) {
-            clearInterval(interval);
-            setIsMining(false);
-            setIsClaimable(true);
-            return 100;
-          }
-          return nextProgress;
-        });
-      }, 1000);
-    } else if (miningProgress >= 100 && isMining) {
+    if (isMining && miningStartTime) {
+      const coinsReadyAtTime = miningStartTime + MINING_DURATION_SECONDS * 1000;
+
+      // Initial check in case it completed between state set and interval setup,
+      // or if loaded state was very close to completion.
+      const now = Date.now();
+      if (now >= coinsReadyAtTime) {
+        setMiningProgress(100);
         setIsMining(false);
         setIsClaimable(true);
+        // Save state will be triggered by isMining/isClaimable change
+        return;
+      }
+
+      interval = setInterval(() => {
+        const currentTime = Date.now();
+        if (currentTime >= coinsReadyAtTime) {
+          clearInterval(interval);
+          setMiningProgress(100);
+          setIsMining(false);
+          setIsClaimable(true);
+          // Save state will be triggered by isMining/isClaimable change
+        } else {
+          const totalDurationMs = MINING_DURATION_SECONDS * 1000;
+          const elapsedTimeMs = currentTime - miningStartTime;
+          const currentProgress = (elapsedTimeMs / totalDurationMs) * 100;
+          setMiningProgress(Math.min(100, currentProgress));
+        }
+      }, 1000);
     }
     return () => clearInterval(interval);
-  }, [isMining, miningProgress]);
+  }, [isMining, miningStartTime]);
+
 
   const handleGenerateOrClaim = () => {
     if (isClaimable) {
@@ -56,9 +142,14 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
       setIsMining(false);
       setIsClaimable(false);
       setMiningProgress(0);
+      setMiningStartTime(null); // This will trigger localStorage.removeItem via the save effect
     } else if (!isMining && !isClaimable) {
+      const startTime = Date.now();
+      setMiningStartTime(startTime); // Set start time
       setIsMining(true);
-      setMiningProgress(0);
+      setMiningProgress(0); // Progress will be calculated by the interval effect
+      setIsClaimable(false);
+      // isMining, miningStartTime change will trigger save effect
     }
   };
 
@@ -112,13 +203,13 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
       <CardFooter>
         <Button
           onClick={handleGenerateOrClaim}
-          disabled={isMining && !isClaimable} // Allow claiming even if isMining becomes false simultaneously
+          disabled={isMining && !isClaimable}
           className="w-full bg-white text-black hover:bg-gray-100 text-lg py-6 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95 relative overflow-hidden"
           aria-live="polite"
         >
           <div
             className="absolute left-0 top-0 h-full bg-yellow-400 transition-all duration-1000 ease-linear"
-            style={{ width: isMining ? `${miningProgress}%` : (isClaimable ? '100%' : '0%') }}
+            style={{ width: isMining || isClaimable ? `${miningProgress}%` : '0%' }}
             aria-hidden="true"
           />
           <span className="relative z-10 flex items-center justify-center w-full">
