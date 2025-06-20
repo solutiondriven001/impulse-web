@@ -206,7 +206,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           className={cn(
             baseButtonClasses,
             isClaimable
-              ? 'bg-yellow-700 text-yellow-100 hover:bg-yellow-800'
+              ? 'bg-yellow-600 text-yellow-100 hover:bg-yellow-700'
               : 'bg-white text-black hover:bg-gray-100'
           )}
           aria-live="polite"
@@ -254,3 +254,4 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
 };
 
 export default MiningCard;
+
