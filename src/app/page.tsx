@@ -10,7 +10,7 @@ import LeaderboardCard from '@/components/LeaderboardCard';
 import type { LeaderboardEntry } from '@/types';
 import { Award, Brain, Gift, Trophy, Zap } from 'lucide-react';
 
-const CURRENT_USER_NAME = "Player1"; // Example current user
+const CURRENT_USER_NAME = "Player1"; 
 const USER_COINS_KEY = 'impulseAppUserCoins_v1';
 
 // Mock initial leaderboard data
@@ -45,7 +45,7 @@ export default function HomePage() {
     // Update current user's score in leaderboard when coins change
     setLeaderboard(prevLeaderboard =>
       prevLeaderboard.map(user =>
-        user.name === CURRENT_USER_NAME ? { ...user, score: currentCoins } : user
+        user.name === CURRENT_USER_NAME ? { ...user, score: currentCoins, isCurrentUser: true } : { ...user, isCurrentUser: false }
       )
     );
   }, [currentCoins]);
@@ -57,48 +57,45 @@ export default function HomePage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen text-foreground selection:bg-accent selection:text-accent-foreground bg-background">
+    <div className="flex flex-col min-h-screen">
       <Header currentCoins={currentCoins} />
-      <main className="flex-grow container mx-auto p-4 md:p-6 lg:p-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <main className="flex-grow container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
           
-          {/* Row 1 */}
-          <MiningCard onCoinsClaimed={handleCoinsUpdate} level={level} />
-          <AdsCard onAdWatched={handleCoinsUpdate} level={level}/>
-
-          {/* Row 2 - Spanning both columns */}
-          <div className="md:col-span-2">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <MiningCard onCoinsClaimed={handleCoinsUpdate} level={level} />
+            <AdsCard onAdWatched={handleCoinsUpdate} level={level}/>
+          </div>
+          
+          <div className="w-full">
             <TasksCard currentCoins={currentCoins} level={level} onTaskCompleted={handleCoinsUpdate} />
           </div>
           
-          {/* Row 3 - Spanning both columns */}
-          <div className="md:col-span-2">
+          <div className="w-full">
             <LeaderboardCard leaderboardData={leaderboard} currentUserName={CURRENT_USER_NAME} />
           </div>
-        </div>
 
-        {/* Info Section */}
-        <section className="mt-12 p-6 bg-card text-card-foreground rounded-xl shadow-lg">
-          <h2 className="text-2xl font-headline font-semibold mb-4 flex items-center">
+        {/* Info Section - This was not in the original screenshot but we'll style it to match */}
+        <section className="p-6 bg-white border rounded-xl shadow-sm">
+          <h2 className="text-2xl font-headline font-semibold mb-4 flex items-center text-foreground">
             <Brain className="w-7 h-7 mr-2 text-primary" />
             How to Play Impulse
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
-            <div className="p-3 bg-card-foreground/5 rounded-lg">
-              <h3 className="font-semibold flex items-center mb-1"><Zap className="w-5 h-5 mr-1.5 text-accent"/>Earn Coins</h3>
-              <p className="text-card-foreground/80">Start generating coins and claim them when the cycle completes. Higher levels yield more coins!</p>
+            <div className="p-4 bg-background rounded-lg border">
+              <h3 className="font-semibold flex items-center mb-1 text-foreground"><Zap className="w-5 h-5 mr-1.5 text-accent"/>Earn Coins</h3>
+              <p className="text-foreground/80">Start generating coins and claim them when the cycle completes. Higher levels yield more coins!</p>
             </div>
-            <div className="p-3 bg-card-foreground/5 rounded-lg">
-              <h3 className="font-semibold flex items-center mb-1"><Award className="w-5 h-5 mr-1.5 text-accent"/>Complete Tasks</h3>
-              <p className="text-card-foreground/80">Use the AI Task Suggester to find new challenges. Completing tasks earns you bonus coins.</p>
+            <div className="p-4 bg-background rounded-lg border">
+              <h3 className="font-semibold flex items-center mb-1 text-foreground"><Award className="w-5 h-5 mr-1.5 text-accent"/>Complete Tasks</h3>
+              <p className="text-foreground/80">Use the AI Task Suggester to find new challenges. Completing tasks earns you bonus coins.</p>
             </div>
-            <div className="p-3 bg-card-foreground/5 rounded-lg">
-              <h3 className="font-semibold flex items-center mb-1"><Gift className="w-5 h-5 mr-1.5 text-accent"/>Watch Ads</h3>
-              <p className="text-card-foreground/80">Need a quick coin boost? Watch a short rewarded ad for an instant bonus.</p>
+            <div className="p-4 bg-background rounded-lg border">
+              <h3 className="font-semibold flex items-center mb-1 text-foreground"><Gift className="w-5 h-5 mr-1.5 text-accent"/>Watch Ads</h3>
+              <p className="text-foreground/80">Need a quick coin boost? Watch a short rewarded ad for an instant bonus.</p>
             </div>
-             <div className="p-3 bg-card-foreground/5 rounded-lg">
-              <h3 className="font-semibold flex items-center mb-1"><Trophy className="w-5 h-5 mr-1.5 text-accent"/>Climb Leaderboard</h3>
-              <p className="text-card-foreground/80">Compete with other players and show off your progress by reaching the top ranks!</p>
+             <div className="p-4 bg-background rounded-lg border">
+              <h3 className="font-semibold flex items-center mb-1 text-foreground"><Trophy className="w-5 h-5 mr-1.5 text-accent"/>Climb Leaderboard</h3>
+              <p className="text-foreground/80">Compete with other players and show off your progress by reaching the top ranks!</p>
             </div>
           </div>
         </section>

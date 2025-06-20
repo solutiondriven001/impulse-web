@@ -156,22 +156,18 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
     if (isMining) {
       return (
         <>
-          <Zap className="mr-2 h-5 w-5 animate-pulse-lg text-black" /> Generating... ({Math.round(miningProgress)}%)
+          <Zap className="mr-2 h-5 w-5 animate-pulse-lg text-yellow-400" /> Generating... ({Math.round(miningProgress)}%)
         </>
       );
     }
     return (
       <>
-        <Zap className="mr-2 h-5 w-5 text-yellow-400" /> Generate
+        <Zap className="mr-2 h-5 w-5" /> Generate
       </>
     );
   };
 
   const isConnected = isMining || isClaimable;
-
-  const progressBarBaseClasses = cn(
-    "absolute left-0 top-0 h-full transition-all duration-1000 ease-linear"
-  );
 
   const baseButtonClasses = "w-full text-lg py-6 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95 relative overflow-hidden";
 
@@ -185,19 +181,21 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           </CardTitle>
           <div className="flex items-center text-sm">
             <Power className={cn("mr-1.5 h-5 w-5", isConnected ? 'text-green-500 animate-pulse' : 'text-muted-foreground')} />
-            {isConnected && <span className={cn(isMining || isClaimable ? 'text-green-500' : 'text-muted-foreground')}>Connected</span>}
+            <span className={cn(isConnected ? 'text-green-500' : 'text-muted-foreground')}>
+              {isConnected ? 'Connected' : 'Offline'}
+            </span>
           </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-2 text-center flex-grow">
         <div>
-            <p className="text-lg">
-                Potential Yield: <Zap className="inline h-5 w-5 text-yellow-400 animate-pulse mr-1" /> <span className="font-bold text-yellow-400">{coinsPerCycle}</span>
+            <p className="text-lg text-card-foreground/80">
+                Potential Yield: <Zap className="inline h-5 w-5 text-yellow-400 -mt-1 mr-1" /> <span className="font-bold text-yellow-400">{coinsPerCycle}</span>
             </p>
         </div>
         {isClaimable && <p className="mt-2 text-sm text-green-400 animate-pulse">Ready to Claim!</p>}
-         {!isMining && !isClaimable && <p className="mt-2 text-sm text-muted-foreground">Click "Generate" to start a new cycle.</p>}
-         {isMining && <p className="mt-2 text-sm text-muted-foreground">Mining in progress...</p>}
+         {!isMining && !isClaimable && <p className="mt-2 text-sm text-card-foreground/60">Click "Generate" to start a new cycle.</p>}
+         {isMining && <p className="mt-2 text-sm text-card-foreground/60">Mining in progress...</p>}
       </CardContent>
       <CardFooter>
         <Button
@@ -206,44 +204,21 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           className={cn(
             baseButtonClasses,
             isClaimable
-              ? 'bg-yellow-600 text-black/80 hover:bg-yellow-700'
-              : 'bg-white text-black hover:bg-gray-100'
+              ? 'bg-gradient-to-r from-yellow-500 to-amber-500 text-black/80 hover:from-yellow-500 hover:to-amber-600'
+              : 'bg-white/10 text-white/90 hover:bg-white/20'
           )}
           aria-live="polite"
         >
           <div
             className={cn(
-                progressBarBaseClasses,
-                isClaimable ? 'bg-transparent' : 'bg-yellow-400' 
+                "absolute left-0 top-0 h-full transition-all duration-1000 ease-linear",
+                isClaimable ? 'bg-transparent' : 'bg-white/20' 
             )}
             style={{
               width: isMining || isClaimable ? `${miningProgress}%` : '0%',
             }}
             aria-hidden="true"
           />
-          {isMining && (
-            <div
-              className={cn("absolute left-0 top-0 h-full animate-shimmer-wave")}
-              style={{
-                width: `${miningProgress}%`,
-                backgroundImage: 'linear-gradient(90deg, transparent 20%, hsl(0 0% 100% / 1) 45%, hsl(0 0% 100% / 1) 55%, transparent 80%)',
-                backgroundSize: '250% 100%',
-                backgroundRepeat: 'no-repeat',
-              }}
-              aria-hidden="true"
-            />
-          )}
-          {isClaimable && (
-            <div
-              className="absolute inset-0 animate-shimmer-wave-ping-pong"
-              style={{
-                backgroundImage: 'linear-gradient(90deg, transparent 30%, hsl(0 0% 100% / 0.5) 45%, hsl(0 0% 100% / 0.5) 55%, transparent 70%)',
-                backgroundSize: '200% 100%',
-                backgroundRepeat: 'no-repeat',
-              }}
-              aria-hidden="true"
-            />
-          )}
           <span className="relative z-10 flex items-center justify-center w-full">
             {getButtonContent()}
           </span>

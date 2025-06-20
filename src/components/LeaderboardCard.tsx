@@ -5,7 +5,7 @@ import type { FC } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Trophy, Users, Star, TrendingUp } from 'lucide-react';
+import { Trophy, Star } from 'lucide-react';
 import type { LeaderboardEntry } from '@/types';
 
 interface LeaderboardCardProps {
@@ -24,7 +24,6 @@ const getInitials = (name: string) => {
 
 const LeaderboardCard: FC<LeaderboardCardProps> = ({ leaderboardData, currentUserName }) => {
   const sortedLeaderboard = [...leaderboardData].sort((a, b) => b.score - a.score);
-  const topTwoEntries = sortedLeaderboard.slice(0, 2);
 
   return (
     <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300 h-full flex flex-col">
@@ -35,46 +34,37 @@ const LeaderboardCard: FC<LeaderboardCardProps> = ({ leaderboardData, currentUse
         </CardTitle>
       </CardHeader>
       <CardContent className="flex-grow">
-        {topTwoEntries.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-muted-foreground py-4">
-            <Users className="h-12 w-12 mb-2" />
-            <p>Leaderboard is currently empty.</p>
-            <p>Start mining to get on the board!</p>
-          </div>
-        ) : (
-          <ScrollArea className="pr-3 h-full"> {/* Make ScrollArea take full height of CardContent */}
+        <ScrollArea className="h-[220px] pr-3">
             <ul className="space-y-3">
-              {topTwoEntries.map((user, index) => (
+              {sortedLeaderboard.map((user, index) => (
                 <li
                   key={user.id}
                   className={`flex items-center p-3 rounded-lg transition-all duration-200
-                    ${user.name === currentUserName ? 'bg-primary/20 ring-2 ring-primary' : 'bg-card-foreground/5 hover:bg-card-foreground/10'}`}
+                    ${user.isCurrentUser ? 'bg-black/40 ring-2 ring-primary' : 'bg-black/20 hover:bg-black/30'}`}
                 >
-                  <span className={`mr-3 font-bold w-6 text-center ${index === 0 ? 'text-yellow-400' : 'text-card-foreground/70'}`}>
+                  <span className={`mr-4 font-bold w-6 text-center text-lg ${index === 0 ? 'text-yellow-400' : 'text-card-foreground/70'}`}>
                     {index + 1}
-                    {index === 0 && <Star className="inline ml-0.5 h-3 w-3 mb-1" fill="currentColor"/>}
                   </span>
-                  <Avatar className="h-9 w-9 mr-3 border-2 border-primary/50">
+                  <Avatar className="h-10 w-10 mr-4 border-2 border-primary/50">
                     <AvatarImage src={`https://placehold.co/40x40/800080/FFFFFF/png?text=${getInitials(user.name)}&font=Inter`} alt={user.name} data-ai-hint="abstract avatar" />
                     <AvatarFallback className="bg-primary text-primary-foreground font-bold">
                       {getInitials(user.name)}
                     </AvatarFallback>
                   </Avatar>
                   <div className="flex-grow">
-                    <p className={`font-medium text-sm ${user.name === currentUserName ? 'text-primary' : 'text-card-foreground'}`}>
+                    <p className={`font-medium text-base ${user.isCurrentUser ? 'text-primary-foreground' : 'text-card-foreground'}`}>
                       {user.name}
-                      {user.name === currentUserName && " (You)"}
+                      {user.isCurrentUser && " (You)"}
                     </p>
                   </div>
-                  <div className="flex items-center font-semibold text-sm text-yellow-500">
-                    <TrendingUp className="h-4 w-4 mr-1 text-green-500"/>
+                  <div className="flex items-center font-semibold text-lg text-yellow-400">
                     {user.score.toLocaleString()}
+                    {index === 0 && <Star className="inline ml-1.5 h-4 w-4" fill="currentColor"/>}
                   </div>
                 </li>
               ))}
             </ul>
           </ScrollArea>
-        )}
       </CardContent>
     </Card>
   );

@@ -88,17 +88,17 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched, level }) => {
     <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300 h-full flex flex-col">
       <CardHeader>
         <CardTitle className="flex items-center text-2xl font-headline">
-          <PlaySquare className="mr-2 h-6 w-6 text-[hsl(var(--card))]" />
+          <PlaySquare className="mr-3 h-7 w-7 text-primary" />
           Rewarded Video Ad
         </CardTitle>
       </CardHeader>
-      <CardContent className="space-y-4 text-center flex-grow">
-        <Gift className="mx-auto h-16 w-16 text-yellow-400 animate-bounce" />
-        <p className="text-lg">
+      <CardContent className="space-y-4 text-center flex-grow flex flex-col justify-center items-center">
+        <Gift className="h-16 w-16 text-yellow-400" />
+        <p className="text-lg text-card-foreground/80">
           Watch a short ad to earn <span className="font-bold text-yellow-400">{adReward}</span> coins!
         </p>
         {!canWatchAd && cooldownTime > 0 && (
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-card-foreground/60">
             Next ad available in {Math.ceil(cooldownTime / 1000)}s
           </p>
         )}
@@ -107,7 +107,7 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched, level }) => {
         <Button
           onClick={handleWatchAd}
           disabled={!canWatchAd}
-          className="w-full bg-white text-black hover:bg-gray-100 text-lg py-6 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95"
+          className="w-full bg-white text-black hover:bg-gray-200 text-lg py-6 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95"
         >
           {isWatchingAd ? (
             <Loader2 className="mr-2 h-5 w-5 animate-spin" />
