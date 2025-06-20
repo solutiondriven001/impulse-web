@@ -2,12 +2,23 @@
 "use client";
 
 import type { FC } from 'react';
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Power, Zap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 interface MiningCardProps {
   onCoinsClaimed: (amount: number) => void;
@@ -154,6 +165,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
       toast({
         title: "Mining Disconnected",
         description: "You have stopped the current mining cycle.",
+        variant: "destructive",
       });
     }
   };
@@ -192,19 +204,36 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           <CardTitle className="flex items-center text-2xl font-headline">
             Coin Generation
           </CardTitle>
-          <button
-            onClick={handleStopMining}
-            disabled={!isConnected}
-            className="flex items-center text-sm disabled:cursor-not-allowed disabled:opacity-50"
-            aria-label="Toggle mining connection"
-          >
-            <Power className={cn("h-5 w-5", isConnected ? 'text-green-500 animate-pulse mr-1.5' : 'text-muted-foreground')} />
-            {isConnected && (
-                <span className="text-green-500">
-                    Connected
-                </span>
-            )}
-          </button>
+          <AlertDialog>
+            <AlertDialogTrigger asChild>
+              <button
+                disabled={!isConnected}
+                className="flex items-center text-sm disabled:cursor-not-allowed disabled:opacity-50"
+                aria-label="Toggle mining connection"
+              >
+                <Power className={cn("h-5 w-5", isConnected ? 'text-green-500 animate-pulse mr-1.5' : 'text-muted-foreground')} />
+                {isConnected && (
+                    <span className="text-green-500">
+                        Connected
+                    </span>
+                )}
+              </button>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+              <AlertDialogHeader>
+                <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                <AlertDialogDescription>
+                  This action will stop the current mining cycle. You will lose any progress and potential coins from this cycle.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter>
+                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                <AlertDialogAction onClick={handleStopMining} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">
+                  Stop Mining
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         </div>
       </CardHeader>
       <CardContent className="space-y-2 text-center flex-grow">
