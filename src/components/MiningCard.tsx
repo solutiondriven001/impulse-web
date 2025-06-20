@@ -80,7 +80,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
         coinsReadyAt: coinsReadyAtTime,
       }));
     } else if (isClaimable && miningStartTime) {
-      const coinsReadyAtTime = miningStartTime + MINING_DURATION_SECONDS * 1000; 
+      const coinsReadyAtTime = miningStartTime + MINING_DURATION_SECONDS * 1000;
       localStorage.setItem(MINING_STATE_KEY, JSON.stringify({
         isMining: false,
         isClaimable: true,
@@ -182,8 +182,8 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
             Coin Generation
           </CardTitle>
           <div className="flex items-center text-sm">
-            <Power className={`mr-1.5 h-5 w-5 ${isConnected ? 'text-green-500 animate-pulse' : 'text-muted-foreground'}`} />
-            {isConnected && <span className="text-green-500 animate-pulse">Connected</span>}
+            <Power className={cn("mr-1.5 h-5 w-5", isConnected ? 'text-green-500 animate-pulse' : 'text-muted-foreground')} />
+            {isConnected && <span className="text-foreground">Connected</span>}
           </div>
         </div>
       </CardHeader>
@@ -226,3 +226,4 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
 };
 
 export default MiningCard;
+
