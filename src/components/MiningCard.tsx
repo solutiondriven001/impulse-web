@@ -173,6 +173,8 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
     "absolute left-0 top-0 h-full transition-all duration-1000 ease-linear"
   );
 
+  const baseButtonClasses = "w-full text-lg py-6 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95 relative overflow-hidden";
+
 
   return (
     <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300 h-full flex flex-col">
@@ -201,7 +203,12 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
         <Button
           onClick={handleGenerateOrClaim}
           disabled={isMining && !isClaimable}
-          className="w-full bg-white text-black hover:bg-gray-100 text-lg py-6 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95 relative overflow-hidden"
+          className={cn(
+            baseButtonClasses,
+            isClaimable
+              ? 'bg-yellow-400 text-black hover:bg-yellow-500'
+              : 'bg-white text-black hover:bg-gray-100'
+          )}
           aria-live="polite"
         >
           <div
@@ -233,3 +240,4 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
 };
 
 export default MiningCard;
+
