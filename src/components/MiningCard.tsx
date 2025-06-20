@@ -145,6 +145,19 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
     }
   };
 
+  const handleStopMining = () => {
+    if (isMining || isClaimable) {
+      setIsMining(false);
+      setIsClaimable(false);
+      setMiningProgress(0);
+      setMiningStartTime(null);
+      toast({
+        title: "Mining Disconnected",
+        description: "You have stopped the current mining cycle.",
+      });
+    }
+  };
+
   const getButtonContent = () => {
     if (isClaimable) {
       return (
@@ -179,12 +192,17 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           <CardTitle className="flex items-center text-2xl font-headline">
             Coin Generation
           </CardTitle>
-          <div className="flex items-center text-sm">
+          <button
+            onClick={handleStopMining}
+            disabled={!isConnected}
+            className="flex items-center text-sm disabled:cursor-not-allowed disabled:opacity-50"
+            aria-label="Toggle mining connection"
+          >
             <Power className={cn("mr-1.5 h-5 w-5", isConnected ? 'text-green-500 animate-pulse' : 'text-muted-foreground')} />
             <span className={cn(isConnected ? 'text-green-500' : 'text-muted-foreground')}>
               {isConnected ? 'Connected' : 'Offline'}
             </span>
-          </div>
+          </button>
         </div>
       </CardHeader>
       <CardContent className="space-y-2 text-center flex-grow">
@@ -209,6 +227,13 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           )}
           aria-live="polite"
         >
+          {isClaimable && (
+             <span
+              className="absolute inset-0 block animate-shimmer-wave bg-gradient-to-r from-transparent via-white/30 to-transparent bg-no-repeat"
+              style={{ backgroundSize: '200% 100%' }}
+              aria-hidden="true"
+            />
+          )}
           <div
             className={cn(
                 "absolute left-0 top-0 h-full transition-all duration-1000 ease-linear",

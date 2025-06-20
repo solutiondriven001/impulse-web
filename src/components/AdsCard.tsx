@@ -93,7 +93,7 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched, level }) => {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4 text-center flex-grow flex flex-col justify-center items-center">
-        <Gift className="h-16 w-16 text-yellow-400" />
+        <Gift className="h-16 w-16 text-yellow-400 animate-bobble" />
         <p className="text-lg text-card-foreground/80">
           Watch a short ad to earn <span className="font-bold text-yellow-400">{adReward}</span> coins!
         </p>

@@ -5,7 +5,7 @@ import type { FC } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Trophy, Star } from 'lucide-react';
+import { Trophy, Star, Zap } from 'lucide-react';
 import type { LeaderboardEntry } from '@/types';
 
 interface LeaderboardCardProps {
@@ -58,6 +58,7 @@ const LeaderboardCard: FC<LeaderboardCardProps> = ({ leaderboardData, currentUse
                     </p>
                   </div>
                   <div className="flex items-center font-semibold text-lg text-yellow-400">
+                    <Zap className="inline-block h-4 w-4 mr-1" />
                     {user.score.toLocaleString()}
                     {index === 0 && <Star className="inline ml-1.5 h-4 w-4" fill="currentColor"/>}
                   </div>

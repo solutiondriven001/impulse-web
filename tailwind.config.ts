@@ -106,14 +106,19 @@ export default {
           '50%': { backgroundPosition: '-200% center' },
           '100%': { backgroundPosition: '200% center' },
         },
+        'bobble': {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-10%)' },
+        }
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'pulse-lg': 'pulseLg 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'reveal-down': 'reveal-down 0.5s ease-out',
-        'shimmer-wave': 'shimmer-wave 3s linear infinite',
+        'shimmer-wave': 'shimmer-wave 2s linear infinite',
         'shimmer-wave-ping-pong': 'shimmer-wave-ping-pong 3s linear infinite',
+        'bobble': 'bobble 2s ease-in-out infinite',
       },
     },
   },
