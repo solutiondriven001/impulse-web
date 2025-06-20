@@ -5,7 +5,7 @@ import type { FC } from 'react';
 import { useState, useEffect, useCallback } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Power, CircleDollarSign, Zap } from 'lucide-react';
+import { Power, Zap } from 'lucide-react'; // Changed CircleDollarSign to Zap
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
@@ -129,8 +129,8 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
     if (isClaimable) {
       onCoinsClaimed(coinsPerCycle);
       toast({
-        title: "Coins Claimed!",
-        description: `You've successfully claimed ${coinsPerCycle} coins.`,
+        title: "Impulse Claimed!", // Updated toast title
+        description: `You've successfully claimed ${coinsPerCycle} Impulse.`, // Updated toast description
       });
       setIsMining(false);
       setIsClaimable(false);
@@ -149,7 +149,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
     if (isClaimable) {
       return (
         <>
-          <CircleDollarSign className="mr-2 h-5 w-5 text-yellow-100" /> Claim {coinsPerCycle} Coins
+          <Zap className="mr-2 h-5 w-5 text-yellow-100" /> Claim {coinsPerCycle} Impulse {/* Changed text and icon */}
         </>
       );
     }
@@ -162,7 +162,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
     }
     return (
       <>
-        <Zap className="mr-2 h-5 w-5 text-yellow-400" /> Mining
+        <Zap className="mr-2 h-5 w-5 text-yellow-400" /> Generate {/* Changed initial button text */}
       </>
     );
   };
@@ -196,8 +196,8 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
             </p>
         </div>
         {isClaimable && <p className="mt-2 text-sm text-green-400 animate-pulse">Ready to Claim!</p>}
-         {!isMining && !isClaimable && <p className="mt-2 text-sm text-muted-foreground">Click "Mining" to start a new cycle.</p>}
-         {isMining && <p className="mt-2 text-sm text-muted-foreground">Mining in progress...</p>}
+         {!isMining && !isClaimable && <p className="mt-2 text-sm text-muted-foreground">Click "Generate" to start a new cycle.</p>}
+         {isMining && <p className="mt-2 text-sm text-muted-foreground">Generating in progress...</p>}
       </CardContent>
       <CardFooter>
         <Button
@@ -206,7 +206,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           className={cn(
             baseButtonClasses,
             isClaimable
-              ? 'bg-yellow-700 text-yellow-100 hover:bg-yellow-800'
+              ? 'bg-yellow-700 text-yellow-100 hover:bg-yellow-800' // Darker gold for claimable button
               : 'bg-white text-black hover:bg-gray-100'
           )}
           aria-live="polite"
@@ -214,7 +214,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           <div
             className={cn(
                 progressBarBaseClasses,
-                isClaimable ? 'bg-transparent' : 'bg-yellow-400'
+                isClaimable ? 'bg-transparent' : 'bg-yellow-400' 
             )}
             style={{
               width: isMining || isClaimable ? `${miningProgress}%` : '0%',
@@ -243,3 +243,4 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
 };
 
 export default MiningCard;
+
