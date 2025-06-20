@@ -101,6 +101,11 @@ export default {
           '0%': { backgroundPosition: '200% center' },
           '100%': { backgroundPosition: '-200% center' },
         },
+        'shimmer-wave-ping-pong': {
+          '0%': { backgroundPosition: '200% center' },
+          '50%': { backgroundPosition: '-200% center' },
+          '100%': { backgroundPosition: '200% center' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -108,6 +113,7 @@ export default {
         'pulse-lg': 'pulseLg 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'reveal-down': 'reveal-down 0.5s ease-out',
         'shimmer-wave': 'shimmer-wave 3s linear infinite',
+        'shimmer-wave-ping-pong': 'shimmer-wave-ping-pong 3s linear infinite',
       },
     },
   },

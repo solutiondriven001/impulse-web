@@ -5,7 +5,7 @@ import type { FC } from 'react';
 import { useState, useEffect, useCallback } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Power, Zap } from 'lucide-react'; // Changed CircleDollarSign to Zap
+import { Power, Zap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
@@ -129,8 +129,8 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
     if (isClaimable) {
       onCoinsClaimed(coinsPerCycle);
       toast({
-        title: "Impulse Claimed!", // Updated toast title
-        description: `You've successfully claimed ${coinsPerCycle} Impulse.`, // Updated toast description
+        title: "Impulse Claimed!",
+        description: `You've successfully claimed ${coinsPerCycle} Impulse.`,
       });
       setIsMining(false);
       setIsClaimable(false);
@@ -149,7 +149,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
     if (isClaimable) {
       return (
         <>
-          <Zap className="mr-2 h-5 w-5 text-yellow-100" /> Claim {coinsPerCycle} Impulse {/* Changed text and icon */}
+          <Zap className="mr-2 h-5 w-5 text-yellow-100" /> Claim {coinsPerCycle} Impulse
         </>
       );
     }
@@ -162,7 +162,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
     }
     return (
       <>
-        <Zap className="mr-2 h-5 w-5 text-yellow-400" /> Generate {/* Changed initial button text */}
+        <Zap className="mr-2 h-5 w-5 text-yellow-400" /> Generate
       </>
     );
   };
@@ -206,7 +206,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           className={cn(
             baseButtonClasses,
             isClaimable
-              ? 'bg-yellow-700 text-yellow-100 hover:bg-yellow-800' // Darker gold for claimable button
+              ? 'bg-yellow-700 text-yellow-100 hover:bg-yellow-800'
               : 'bg-white text-black hover:bg-gray-100'
           )}
           aria-live="polite"
@@ -233,6 +233,17 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
               aria-hidden="true"
             />
           )}
+          {isClaimable && (
+            <div
+              className="absolute inset-0 animate-shimmer-wave-ping-pong"
+              style={{
+                backgroundImage: 'linear-gradient(90deg, transparent 30%, hsl(0 0% 100% / 0.5) 45%, hsl(0 0% 100% / 0.5) 55%, transparent 70%)',
+                backgroundSize: '200% 100%',
+                backgroundRepeat: 'no-repeat',
+              }}
+              aria-hidden="true"
+            />
+          )}
           <span className="relative z-10 flex items-center justify-center w-full">
             {getButtonContent()}
           </span>
@@ -243,4 +254,3 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
 };
 
 export default MiningCard;
-
