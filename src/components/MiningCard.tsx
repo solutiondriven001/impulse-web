@@ -227,20 +227,15 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           )}
           aria-live="polite"
         >
-          {isClaimable && (
-             <span
-              className="absolute inset-0 block animate-shimmer-wave bg-gradient-to-r from-transparent via-white/30 to-transparent bg-no-repeat"
-              style={{ backgroundSize: '200% 100%' }}
-              aria-hidden="true"
-            />
-          )}
           <div
             className={cn(
-                "absolute left-0 top-0 h-full transition-all duration-1000 ease-linear",
-                isClaimable ? 'bg-transparent' : 'bg-white/20' 
+              "absolute left-0 top-0 h-full transition-all duration-1000 ease-linear",
+              isClaimable ? 'bg-transparent' : 'bg-white/20',
+              (isMining || isClaimable) && 'animate-shimmer-wave bg-gradient-to-r from-transparent via-white/30 to-transparent bg-no-repeat'
             )}
             style={{
               width: isMining || isClaimable ? `${miningProgress}%` : '0%',
+              ...((isMining || isClaimable) && { backgroundSize: '200% 100%' })
             }}
             aria-hidden="true"
           />
