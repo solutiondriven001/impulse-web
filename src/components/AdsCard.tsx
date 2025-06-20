@@ -16,19 +16,45 @@ interface AdsCardProps {
 const AD_REWARD_BASE = 25;
 const AD_WATCH_DURATION_MS = 5000;
 const AD_COOLDOWN_MS = 60000;
+const AD_STATE_KEY = 'impulseAppAdState_v1';
 
 const AdsCard: FC<AdsCardProps> = ({ onAdWatched, level }) => {
   const [isWatchingAd, setIsWatchingAd] = useState(false);
-  const [cooldownTime, setCooldownTime] = useState(0);
+  const [cooldownTime, setCooldownTime] = useState(0); // Time in ms remaining for cooldown
   const { toast } = useToast();
 
   const adReward = AD_REWARD_BASE + (level -1) * 10;
 
   useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const savedStateJSON = localStorage.getItem(AD_STATE_KEY);
+    if (savedStateJSON) {
+      try {
+        const savedState = JSON.parse(savedStateJSON);
+        if (savedState.cooldownEndTime) {
+          const now = Date.now();
+          const remainingCooldown = Math.max(0, savedState.cooldownEndTime - now);
+          setCooldownTime(remainingCooldown);
+        }
+      } catch (error) {
+        console.error("Failed to parse ad state from localStorage", error);
+        localStorage.removeItem(AD_STATE_KEY);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
     let timer: NodeJS.Timeout;
     if (cooldownTime > 0) {
       timer = setInterval(() => {
-        setCooldownTime(prev => Math.max(0, prev - 1000));
+        setCooldownTime(prev => {
+          const newTime = Math.max(0, prev - 1000);
+          if (newTime === 0 && typeof window !== 'undefined') {
+            localStorage.removeItem(AD_STATE_KEY);
+          }
+          return newTime;
+        });
       }, 1000);
     }
     return () => clearInterval(timer);
@@ -42,7 +68,13 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched, level }) => {
     setTimeout(() => {
       onAdWatched(adReward);
       setIsWatchingAd(false);
+      const newCooldownEndTime = Date.now() + AD_COOLDOWN_MS;
       setCooldownTime(AD_COOLDOWN_MS);
+
+      if (typeof window !== 'undefined') {
+        localStorage.setItem(AD_STATE_KEY, JSON.stringify({ cooldownEndTime: newCooldownEndTime }));
+      }
+
       toast({
         title: "Ad Watched!",
         description: `You earned ${adReward} coins!`,

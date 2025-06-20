@@ -11,6 +11,7 @@ import type { LeaderboardEntry } from '@/types';
 import { Award, Brain, Gift, Trophy, Zap } from 'lucide-react';
 
 const CURRENT_USER_NAME = "Player1"; // Example current user
+const USER_COINS_KEY = 'impulseAppUserCoins_v1';
 
 // Mock initial leaderboard data
 const initialLeaderboardData: LeaderboardEntry[] = [
@@ -26,16 +27,30 @@ export default function HomePage() {
   const [currentCoins, setCurrentCoins] = useState(0);
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>(initialLeaderboardData);
 
-  const level = useMemo(() => Math.floor(currentCoins / 100) + 1, [currentCoins]);
-
-  // Update current user's score in leaderboard when coins change
+  // Load coins from localStorage on initial mount
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedCoins = localStorage.getItem(USER_COINS_KEY);
+      if (savedCoins !== null) {
+        setCurrentCoins(parseInt(savedCoins, 10));
+      }
+    }
+  }, []);
+
+  // Save coins to localStorage whenever they change
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem(USER_COINS_KEY, currentCoins.toString());
+    }
+    // Update current user's score in leaderboard when coins change
     setLeaderboard(prevLeaderboard =>
       prevLeaderboard.map(user =>
         user.name === CURRENT_USER_NAME ? { ...user, score: currentCoins } : user
       )
     );
   }, [currentCoins]);
+
+  const level = useMemo(() => Math.floor(currentCoins / 100) + 1, [currentCoins]);
 
   const handleCoinsUpdate = (amount: number) => {
     setCurrentCoins(prevCoins => prevCoins + amount);
