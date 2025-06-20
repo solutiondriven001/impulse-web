@@ -95,7 +95,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           </CardTitle>
           <div className="flex items-center text-sm text-muted-foreground">
             <Power className={`mr-1.5 h-5 w-5 ${isConnected ? 'text-green-500' : 'text-red-500'}`} />
-            <span>{isConnected ? 'Connected' : 'Idle'}</span>
+            {isConnected && <span>Connected</span>}
           </div>
         </div>
       </CardHeader>
@@ -112,7 +112,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
       <CardFooter>
         <Button
           onClick={handleGenerateOrClaim}
-          disabled={isMining}
+          disabled={isMining && !isClaimable} // Allow claiming even if isMining becomes false simultaneously
           className="w-full bg-white text-black hover:bg-gray-100 text-lg py-6 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95 relative overflow-hidden"
           aria-live="polite"
         >
