@@ -10,18 +10,24 @@ body {
   :root {
     /* Single Dark Theme based on image */
     --background: 0 0% 100%; /* White page bg */
-    --foreground: 0 0% 95%; /* Off-white text */
+    --foreground: 0 0% 8%; /* Darker text for better contrast on light gradient */
 
-    /* --card is technically defined but overridden by gradient in card.tsx */
-    /* It can serve as a fallback or for non-gradient card contexts if any arise */
-    --card: 285 25% 18%; 
+    /* Card HSL components */
+    --card-h: 285;
+    --card-s: 25%;
+    --card-l: 18%;
+    --card: hsl(var(--card-h), var(--card-s), var(--card-l));
     --card-foreground: 0 0% 95%;
 
     --popover: 280 20% 15%;
     --popover-foreground: 0 0% 95%;
 
-    --primary: 315 65% 55%; /* Vibrant magenta/fuchsia */
-    --primary-foreground: 0 0% 100%; 
+    /* Primary HSL components */
+    --primary-h: 315;
+    --primary-s: 65%;
+    --primary-l: 55%;
+    --primary: hsl(var(--primary-h), var(--primary-s), var(--primary-l)); /* Vibrant magenta/fuchsia */
+    --primary-foreground: 0 0% 100%;
 
     --secondary: 290 50% 40%; /* Another shade of purple */
     --secondary-foreground: 0 0% 100%;
@@ -63,6 +69,10 @@ body {
     @apply border-border;
   }
   body {
-    @apply bg-background text-foreground;
+    background-image: radial-gradient(ellipse at 60% 70%, hsla(var(--card-h), var(--card-s), var(--card-l), 0.15) 0%, hsl(var(--background)) 60%);
+    background-color: hsl(var(--background)); /* Fallback */
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    @apply text-foreground min-h-screen;
   }
 }
