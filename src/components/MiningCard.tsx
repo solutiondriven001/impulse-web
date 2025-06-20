@@ -149,7 +149,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
     if (isClaimable) {
       return (
         <>
-          <Zap className="mr-2 h-5 w-5 text-yellow-100" /> Claim {coinsPerCycle} Impulse
+          <Zap className="mr-2 h-5 w-5 text-black" /> Claim {coinsPerCycle} Impulse
         </>
       );
     }
@@ -206,7 +206,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           className={cn(
             baseButtonClasses,
             isClaimable
-              ? 'bg-yellow-600 text-yellow-100 hover:bg-yellow-700'
+              ? 'bg-yellow-600 text-black hover:bg-yellow-700'
               : 'bg-white text-black hover:bg-gray-100'
           )}
           aria-live="polite"
@@ -254,4 +254,3 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
 };
 
 export default MiningCard;
-
