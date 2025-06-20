@@ -5,7 +5,7 @@ import type { FC } from 'react';
 import { useState, useEffect, useCallback } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Power, Zap } from 'lucide-react';
+import { CircleDollarSign, Power, Zap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
@@ -149,7 +149,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
     if (isClaimable) {
       return (
         <>
-          <Zap className="mr-2 h-5 w-5 text-black" /> Claim {coinsPerCycle} Impulse
+          <Zap className="mr-2 h-5 w-5" /> Claim {coinsPerCycle} Impulse
         </>
       );
     }
@@ -206,7 +206,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           className={cn(
             baseButtonClasses,
             isClaimable
-              ? 'bg-yellow-600 text-black hover:bg-yellow-700'
+              ? 'bg-yellow-600 text-black/80 hover:bg-yellow-700'
               : 'bg-white text-black hover:bg-gray-100'
           )}
           aria-live="polite"
@@ -254,3 +254,4 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
 };
 
 export default MiningCard;
+
