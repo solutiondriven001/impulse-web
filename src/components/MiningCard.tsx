@@ -80,7 +80,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
         coinsReadyAt: coinsReadyAtTime,
       }));
     } else if (isClaimable && miningStartTime) {
-      const coinsReadyAtTime = miningStartTime + MINING_DURATION_SECONDS * 1000; // Recalculate for consistency
+      const coinsReadyAtTime = miningStartTime + MINING_DURATION_SECONDS * 1000; 
       localStorage.setItem(MINING_STATE_KEY, JSON.stringify({
         isMining: false,
         isClaimable: true,
@@ -170,7 +170,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
   const isConnected = isMining || isClaimable;
 
   const progressBarClasses = cn(
-    "absolute left-0 top-0 h-full bg-yellow-400 transition-all duration-1000 ease-linear"
+    "absolute left-0 top-0 h-full transition-all duration-1000 ease-linear"
   );
 
 
@@ -205,10 +205,17 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           aria-live="polite"
         >
           <div
-            className={progressBarClasses}
+            className={cn(progressBarClasses, "bg-yellow-400")}
             style={{ width: isMining || isClaimable ? `${miningProgress}%` : '0%' }}
             aria-hidden="true"
           />
+          {isMining && (
+            <div
+              className="absolute left-0 top-0 h-full bg-yellow-200 opacity-0 animate-glitter-pulse transition-all duration-1000 ease-linear"
+              style={{ width: `${miningProgress}%` }}
+              aria-hidden="true"
+            />
+          )}
           <span className="relative z-10 flex items-center justify-center w-full">
             {getButtonContent()}
           </span>
