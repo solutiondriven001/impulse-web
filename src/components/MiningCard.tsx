@@ -13,7 +13,7 @@ interface MiningCardProps {
   level: number;
 }
 
-const MINING_DURATION_SECONDS = 12 * 60 * 60; 
+const MINING_DURATION_SECONDS = 12 * 60 * 60;
 const BASE_COINS_PER_CYCLE = 10;
 
 const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
@@ -23,7 +23,6 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
   const { toast } = useToast();
 
   const coinsPerCycle = BASE_COINS_PER_CYCLE + (level -1) * 5;
-  const currentlyGeneratingCoins = Math.floor((miningProgress / 100) * coinsPerCycle);
 
   const startMiningCycle = useCallback(() => {
     setIsMining(true);
@@ -51,7 +50,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
         setIsClaimable(true);
     }
     return () => clearInterval(interval);
-  }, [isMining, miningProgress]); 
+  }, [isMining, miningProgress]);
 
   const handleClaimCoins = () => {
     if (isClaimable) {
@@ -77,7 +76,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-2 text-center flex-grow"> 
+      <CardContent className="space-y-2 text-center flex-grow">
         <div>
             <p className="text-lg">
                 Potential Yield: <span className="font-bold text-yellow-400">{coinsPerCycle}</span> <CircleDollarSign className="inline h-5 w-5" />
@@ -106,7 +105,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
               </>
             ) : (
               <>
-                <Zap className="mr-2 h-5 w-5 animate-pulse text-yellow-400" /> Generating... ({currentlyGeneratingCoins} / {coinsPerCycle} Coins)
+                <Zap className="mr-2 h-5 w-5 animate-pulse text-yellow-400" /> Generating... ({Math.round(miningProgress)}%)
               </>
             )}
           </span>
