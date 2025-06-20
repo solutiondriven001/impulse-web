@@ -10,21 +10,35 @@ interface HeaderProps {
   currentCoins: number;
 }
 
-const ANIMATION_DURATION = 500; // ms
+const NUMBER_ANIMATION_DURATION = 500; // ms for number counting
+const POP_ANIMATION_DURATION = 300; // ms for the pop effect, should match tailwind.config.ts
 
 const Header: FC<HeaderProps> = ({ currentCoins }) => {
   const [displayedCoins, setDisplayedCoins] = useState(currentCoins);
+  const [isPopping, setIsPopping] = useState(false);
   const previousCoinsRef = useRef<number>(currentCoins);
   const animationFrameRef = useRef<number>();
+  const popTimeoutRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
     const startValue = previousCoinsRef.current;
     const endValue = currentCoins;
 
     if (startValue === endValue) {
-      setDisplayedCoins(endValue); // Ensure display is accurate if no change
+      // If values are same, ensure displayedCoins is correct, but don't re-animate
+      // This handles initial render or cases where prop updates but value is same
+      setDisplayedCoins(endValue);
       return;
     }
+
+    // Trigger pop animation if the value actually changed
+    setIsPopping(true);
+    if (popTimeoutRef.current) {
+      clearTimeout(popTimeoutRef.current);
+    }
+    popTimeoutRef.current = setTimeout(() => {
+      setIsPopping(false);
+    }, POP_ANIMATION_DURATION);
 
     let startTime: number | null = null;
 
@@ -33,7 +47,7 @@ const Header: FC<HeaderProps> = ({ currentCoins }) => {
         startTime = timestamp;
       }
 
-      const progress = Math.min((timestamp - startTime) / ANIMATION_DURATION, 1);
+      const progress = Math.min((timestamp - startTime) / NUMBER_ANIMATION_DURATION, 1);
       const currentValue = Math.floor(startValue + (endValue - startValue) * progress);
       
       setDisplayedCoins(currentValue);
@@ -42,7 +56,7 @@ const Header: FC<HeaderProps> = ({ currentCoins }) => {
         animationFrameRef.current = requestAnimationFrame(animateCoins);
       } else {
         setDisplayedCoins(endValue); // Ensure final value is exact
-        previousCoinsRef.current = endValue;
+        previousCoinsRef.current = endValue; // Update ref for next change after animation completes
       }
     };
 
@@ -51,31 +65,26 @@ const Header: FC<HeaderProps> = ({ currentCoins }) => {
     }
     animationFrameRef.current = requestAnimationFrame(animateCoins);
 
-    // Update ref immediately for next potential change during an ongoing animation
-    // Or at the end of animation for subsequent changes
-    // previousCoinsRef.current = endValue; // This was moved to the end of animation
+    // This is important: update previousCoinsRef immediately for the *next* potential
+    // useEffect run if currentCoins changes again *before* this animation cycle finishes.
+    // However, for the current animation cycle's `startValue`, we use the value captured at the beginning of this effect.
+    // The line `previousCoinsRef.current = endValue;` at the end of `animateCoins` is for when this cycle fully completes.
+    // If the prop changes mid-animation, this effect re-runs, `startValue` gets the *last completed* or *initial* ref value.
+    // This is generally okay. If very rapid updates are needed, `previousCoinsRef.current` could be set to `endValue` here too.
+    // For now, existing logic should be fine.
 
     return () => {
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
-      // On unmount or if currentCoins changes before animation finishes,
-      // set displayedCoins to the target to avoid intermediate state if re-rendered quickly.
-      // And update the ref.
-      setDisplayedCoins(endValue);
+      if (popTimeoutRef.current) {
+        clearTimeout(popTimeoutRef.current);
+      }
+      // On unmount or if currentCoins changes again before animation finishes,
+      // ensure displayedCoins is set to the current target and ref is updated.
+      setDisplayedCoins(endValue); 
       previousCoinsRef.current = endValue;
     };
-  }, [currentCoins]);
-
-  // Initialize displayedCoins and previousCoinsRef if currentCoins is 0 initially or changes to 0
-  useEffect(() => {
-    if (currentCoins === 0) {
-      setDisplayedCoins(0);
-      previousCoinsRef.current = 0;
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    }
   }, [currentCoins]);
 
 
@@ -87,7 +96,9 @@ const Header: FC<HeaderProps> = ({ currentCoins }) => {
         </div>
         <div className="flex items-center space-x-2 bg-card text-card-foreground px-4 py-2 rounded-lg shadow-md">
           <Zap className="h-6 w-6 text-yellow-400" />
-          <span className="text-xl font-semibold min-w-[3ch] text-right">
+          <span 
+            className={`text-xl font-semibold min-w-[3ch] text-right ${isPopping ? 'animate-pop-in-out' : ''}`}
+          >
             {displayedCoins.toLocaleString()}
           </span>
         </div>

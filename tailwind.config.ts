@@ -97,12 +97,17 @@ export default {
           '0%, 2%, 100%': { opacity: '0' },
           '1%': { opacity: '0.7' },
         },
+        'pop-in-out': {
+          '0%, 100%': { transform: 'scale(1)' },
+          '50%': { transform: 'scale(1.15)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'pulse-lg': 'pulseLg 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'glitter-pulse': 'glitterPulse 60s infinite ease-in-out',
+        'pop-in-out': 'pop-in-out 0.3s ease-out',
       },
     },
   },
