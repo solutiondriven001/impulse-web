@@ -1,3 +1,4 @@
+
 import type {Config} from 'tailwindcss';
 
 export default {
@@ -71,9 +72,6 @@ export default {
         md: 'calc(var(--radius) - 2px)',
         sm: 'calc(var(--radius) - 4px)',
       },
-      backgroundSize: {
-        '200%_100%': '200% 100%',
-      },
       keyframes: {
         'accordion-down': {
           from: {
@@ -95,16 +93,11 @@ export default {
           '0%, 100%': { transform: 'scale(1)', opacity: '1' },
           '50%': { transform: 'scale(1.05)', opacity: '0.9' },
         },
-        'background-pan': {
-          '0%': { backgroundPosition: '200% center' },
-          '100%': { backgroundPosition: '0% center' },
-        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'pulse-lg': 'pulseLg 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-        'background-pan': 'background-pan 3s linear infinite',
       },
     },
   },

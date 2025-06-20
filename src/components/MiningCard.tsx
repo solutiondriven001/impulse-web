@@ -45,12 +45,12 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           const startTime = Number(savedState.miningStartTime);
           const endTime = Number(savedState.coinsReadyAt);
 
-          if (now >= endTime) { 
+          if (now >= endTime) {
             setIsClaimable(true);
             setMiningProgress(100);
             setIsMining(false);
             setMiningStartTime(startTime);
-          } else { 
+          } else {
             const totalDurationMs = MINING_DURATION_SECONDS * 1000;
             const elapsedTimeMs = now - startTime;
             const currentProgress = Math.min(100, (elapsedTimeMs / totalDurationMs) * 100);
@@ -63,10 +63,10 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
         }
       } catch (error) {
         console.error("Failed to parse mining state from localStorage", error);
-        localStorage.removeItem(MINING_STATE_KEY); 
+        localStorage.removeItem(MINING_STATE_KEY);
       }
     }
-  }, []); 
+  }, []);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -80,14 +80,14 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
         coinsReadyAt: coinsReadyAtTime,
       }));
     } else if (isClaimable && miningStartTime) {
-      const coinsReadyAtTime = miningStartTime + MINING_DURATION_SECONDS * 1000;
+      const coinsReadyAtTime = miningStartTime + MINING_DURATION_SECONDS * 1000; // Recalculate for consistency
       localStorage.setItem(MINING_STATE_KEY, JSON.stringify({
         isMining: false,
         isClaimable: true,
         miningStartTime,
-        coinsReadyAt: coinsReadyAtTime, 
+        coinsReadyAt: coinsReadyAtTime,
       }));
-    } else if (!isMining && !isClaimable) { 
+    } else if (!isMining && !isClaimable) {
       localStorage.removeItem(MINING_STATE_KEY);
     }
   }, [isMining, isClaimable, miningStartTime]);
@@ -135,12 +135,12 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
       setIsMining(false);
       setIsClaimable(false);
       setMiningProgress(0);
-      setMiningStartTime(null); 
+      setMiningStartTime(null);
     } else if (!isMining && !isClaimable) {
       const startTime = Date.now();
-      setMiningStartTime(startTime); 
+      setMiningStartTime(startTime);
       setIsMining(true);
-      setMiningProgress(0); 
+      setMiningProgress(0);
       setIsClaimable(false);
     }
   };
@@ -170,10 +170,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
   const isConnected = isMining || isClaimable;
 
   const progressBarClasses = cn(
-    "absolute left-0 top-0 h-full transition-all duration-1000 ease-linear",
-    isMining && !isClaimable
-      ? "bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-300 bg-200%_100% animate-background-pan"
-      : "bg-yellow-400" 
+    "absolute left-0 top-0 h-full bg-yellow-400 transition-all duration-1000 ease-linear"
   );
 
 
