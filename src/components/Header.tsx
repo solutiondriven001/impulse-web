@@ -77,7 +77,7 @@ const Header: FC<HeaderProps> = ({ currentCoins }) => {
 
   return (
     <header className="bg-white backdrop-blur-md shadow-lg sticky top-0 z-50">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16 md:h-20">
         <div className="flex items-center space-x-2">
           <Image src="/logo.png" alt="App Logo" width={40} height={40} data-ai-hint="app logo" />
         </div>
