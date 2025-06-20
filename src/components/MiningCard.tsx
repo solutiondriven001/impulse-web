@@ -156,7 +156,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
     if (isMining) {
       return (
         <>
-          <Zap className="mr-2 h-5 w-5 animate-pulse-lg text-black" /> Generating... ({Math.round(miningProgress)}%)
+          <Zap className="mr-2 h-5 w-5 animate-pulse-lg text-black" /> Mining... ({Math.round(miningProgress)}%)
         </>
       );
     }
@@ -195,7 +195,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
         </div>
         {isClaimable && <p className="mt-2 text-sm text-green-400 animate-pulse">Ready to Claim!</p>}
          {!isMining && !isClaimable && <p className="mt-2 text-sm text-muted-foreground">Click "Generate" to start a new cycle.</p>}
-         {isMining && <p className="mt-2 text-sm text-muted-foreground">Generation in progress...</p>}
+         {isMining && <p className="mt-2 text-sm text-muted-foreground">Mining in progress...</p>}
       </CardContent>
       <CardFooter>
         <Button
@@ -226,4 +226,3 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
 };
 
 export default MiningCard;
-
