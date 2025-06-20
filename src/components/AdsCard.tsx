@@ -56,7 +56,7 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched, level }) => {
     <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300 h-full flex flex-col">
       <CardHeader>
         <CardTitle className="flex items-center text-2xl font-headline">
-          <PlaySquare className="mr-2 h-6 w-6 text-primary-foreground" />
+          <PlaySquare className="mr-2 h-6 w-6 text-black" />
           Rewarded Video Ad
         </CardTitle>
       </CardHeader>
