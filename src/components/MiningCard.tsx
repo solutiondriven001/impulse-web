@@ -213,13 +213,6 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           />
           {isMining && (
             <div
-              className="absolute left-0 top-0 h-full bg-yellow-200 opacity-0 animate-glitter-pulse transition-all duration-1000 ease-linear"
-              style={{ width: `${miningProgress}%` }}
-              aria-hidden="true"
-            />
-          )}
-          {isMining && (
-            <div
               className={cn("absolute left-0 top-0 h-full animate-shimmer-wave")}
               style={{
                 width: `${miningProgress}%`,
