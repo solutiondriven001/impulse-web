@@ -5,7 +5,7 @@ import type { FC } from 'react';
 import { useState, useEffect, useCallback } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CircleDollarSign, Power, Zap } from 'lucide-react';
+import { Power, Zap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 
@@ -149,7 +149,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
     if (isClaimable) {
       return (
         <>
-          <Zap className="mr-2 h-5 w-5" /> Claim {coinsPerCycle} Impulse
+          <Zap className="mr-2 h-5 w-5" /> Claim Impulse
         </>
       );
     }
@@ -197,7 +197,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
         </div>
         {isClaimable && <p className="mt-2 text-sm text-green-400 animate-pulse">Ready to Claim!</p>}
          {!isMining && !isClaimable && <p className="mt-2 text-sm text-muted-foreground">Click "Generate" to start a new cycle.</p>}
-         {isMining && <p className="mt-2 text-sm text-muted-foreground">Generating in progress...</p>}
+         {isMining && <p className="mt-2 text-sm text-muted-foreground">Mining in progress...</p>}
       </CardContent>
       <CardFooter>
         <Button
@@ -254,4 +254,3 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
 };
 
 export default MiningCard;
-
