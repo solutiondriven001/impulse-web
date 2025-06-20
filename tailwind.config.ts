@@ -105,6 +105,10 @@ export default {
           '0%': { backgroundPosition: '200% center' },
           '100%': { backgroundPosition: '-200% center' },
         },
+        'animated-stripes': {
+          '0%': { backgroundPosition: '0 0' },
+          '100%': { backgroundPosition: '40px 0' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -113,6 +117,7 @@ export default {
         'glitter-pulse': 'glitterPulse 60s infinite ease-in-out',
         'reveal-down': 'reveal-down 0.5s ease-out',
         'shimmer-wave': 'shimmer-wave 3s linear infinite',
+        'animated-stripes': 'animated-stripes 1s linear infinite',
       },
     },
   },
