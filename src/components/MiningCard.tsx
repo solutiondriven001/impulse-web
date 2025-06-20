@@ -13,7 +13,7 @@ interface MiningCardProps {
   level: number;
 }
 
-const MINING_DURATION_SECONDS = 12 * 60 * 60;
+const MINING_DURATION_SECONDS = 12 * 60 * 60; // 12 hours for example
 const BASE_COINS_PER_CYCLE = 10;
 
 const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
@@ -39,7 +39,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           return nextProgress;
         });
       }, 1000);
-    } else if (miningProgress >= 100 && isMining) { // Ensure to transition state if progress hits 100 while isMining was true
+    } else if (miningProgress >= 100 && isMining) {
         setIsMining(false);
         setIsClaimable(true);
     }
@@ -58,7 +58,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
       setMiningProgress(0);
     } else if (!isMining && !isClaimable) {
       setIsMining(true);
-      setMiningProgress(0); // Ensure progress starts from 0
+      setMiningProgress(0);
     }
   };
 
@@ -84,6 +84,8 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
     );
   };
 
+  const isConnected = isMining || isClaimable;
+
   return (
     <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300 h-full flex flex-col">
       <CardHeader>
@@ -92,8 +94,8 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
             Coin Generation
           </CardTitle>
           <div className="flex items-center text-sm text-muted-foreground">
-            <Power className="mr-1.5 h-5 w-5 text-green-500" />
-            <span>Connected</span>
+            <Power className={`mr-1.5 h-5 w-5 ${isConnected ? 'text-green-500' : 'text-red-500'}`} />
+            <span>{isConnected ? 'Connected' : 'Idle'}</span>
           </div>
         </div>
       </CardHeader>
