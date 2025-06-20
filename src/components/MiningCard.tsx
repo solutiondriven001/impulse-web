@@ -183,7 +183,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           </CardTitle>
           <div className="flex items-center text-sm">
             <Power className={cn("mr-1.5 h-5 w-5", isConnected ? 'text-green-500 animate-pulse' : 'text-muted-foreground')} />
-            {isConnected && <span className={cn(isMining ? 'text-green-500' : 'text-green-500')}>Connected</span>}
+            {isConnected && <span className={cn(isMining || isClaimable ? 'text-green-500' : 'text-muted-foreground')}>Connected</span>}
           </div>
         </div>
       </CardHeader>
@@ -238,3 +238,4 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
 };
 
 export default MiningCard;
+
