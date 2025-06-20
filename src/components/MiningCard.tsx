@@ -149,7 +149,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
     if (isClaimable) {
       return (
         <>
-          <CircleDollarSign className="mr-2 h-5 w-5 text-primary" /> Claim {coinsPerCycle} Coins
+          <CircleDollarSign className="mr-2 h-5 w-5 text-yellow-700" /> Claim {coinsPerCycle} Coins
         </>
       );
     }
