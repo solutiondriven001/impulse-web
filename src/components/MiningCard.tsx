@@ -156,7 +156,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
     if (isMining) {
       return (
         <>
-          <Zap className="mr-2 h-5 w-5 animate-pulse text-yellow-400" /> Generating... ({Math.round(miningProgress)}%)
+          <Zap className="mr-2 h-5 w-5 animate-pulse-lg text-yellow-400" /> Generating... ({Math.round(miningProgress)}%)
         </>
       );
     }
