@@ -212,7 +212,10 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           aria-live="polite"
         >
           <div
-            className={cn(progressBarBaseClasses, "bg-yellow-400")} 
+            className={cn(
+                progressBarBaseClasses,
+                isClaimable ? 'bg-transparent' : 'bg-yellow-400'
+            )}
             style={{
               width: isMining || isClaimable ? `${miningProgress}%` : '0%',
             }}
