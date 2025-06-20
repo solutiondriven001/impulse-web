@@ -198,10 +198,12 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
             className="flex items-center text-sm disabled:cursor-not-allowed disabled:opacity-50"
             aria-label="Toggle mining connection"
           >
-            <Power className={cn("mr-1.5 h-5 w-5", isConnected ? 'text-green-500 animate-pulse' : 'text-muted-foreground')} />
-            <span className={cn(isConnected ? 'text-green-500' : 'text-muted-foreground')}>
-              {isConnected ? 'Connected' : 'Offline'}
-            </span>
+            <Power className={cn("h-5 w-5", isConnected ? 'text-green-500 animate-pulse mr-1.5' : 'text-muted-foreground')} />
+            {isConnected && (
+                <span className="text-green-500">
+                    Connected
+                </span>
+            )}
           </button>
         </div>
       </CardHeader>
