@@ -162,7 +162,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
     }
     return (
       <>
-        <Zap className="mr-2 h-5 w-5 text-yellow-400" /> Generate
+        <Zap className="mr-2 h-5 w-5 text-yellow-400" /> Mining
       </>
     );
   };
@@ -183,18 +183,18 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           </CardTitle>
           <div className="flex items-center text-sm">
             <Power className={cn("mr-1.5 h-5 w-5", isConnected ? 'text-green-500 animate-pulse' : 'text-muted-foreground')} />
-            {isConnected && <span className="text-green-500">Connected</span>}
+            {isConnected && <span className={cn(isMining ? 'text-green-500' : 'text-green-500')}>Connected</span>}
           </div>
         </div>
       </CardHeader>
       <CardContent className="space-y-2 text-center flex-grow">
         <div>
             <p className="text-lg">
-                Potential Yield: <span className="font-bold text-yellow-400">{coinsPerCycle}</span> <Zap className="inline h-5 w-5 text-yellow-400 animate-pulse" />
+                Potential Yield: <Zap className="inline h-5 w-5 text-yellow-400 animate-pulse mr-1" /> <span className="font-bold text-yellow-400">{coinsPerCycle}</span>
             </p>
         </div>
         {isClaimable && <p className="mt-2 text-sm text-green-400 animate-pulse">Ready to Claim!</p>}
-         {!isMining && !isClaimable && <p className="mt-2 text-sm text-muted-foreground">Click "Generate" to start a new cycle.</p>}
+         {!isMining && !isClaimable && <p className="mt-2 text-sm text-muted-foreground">Click "Mining" to start a new cycle.</p>}
          {isMining && <p className="mt-2 text-sm text-muted-foreground">Mining in progress...</p>}
       </CardContent>
       <CardFooter>
@@ -213,6 +213,18 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
             <div
               className="absolute left-0 top-0 h-full bg-yellow-200 opacity-0 animate-glitter-pulse transition-all duration-1000 ease-linear"
               style={{ width: `${miningProgress}%` }}
+              aria-hidden="true"
+            />
+          )}
+          {isMining && (
+            <div
+              className={cn("absolute left-0 top-0 h-full animate-shimmer-wave")}
+              style={{
+                width: `${miningProgress}%`,
+                backgroundImage: 'linear-gradient(90deg, transparent 20%, hsl(0 0% 80% / 0.4) 45%, hsl(0 0% 80% / 0.4) 55%, transparent 80%)',
+                backgroundSize: '250% 100%',
+                backgroundRepeat: 'no-repeat',
+              }}
               aria-hidden="true"
             />
           )}

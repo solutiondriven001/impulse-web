@@ -101,6 +101,10 @@ export default {
           '0%': { opacity: '0', transform: 'translateY(-25%)' },
           '100%': { opacity: '1', transform: 'translateY(0)' },
         },
+        'shimmer-wave': {
+          '0%': { backgroundPosition: '200% center' },
+          '100%': { backgroundPosition: '-200% center' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -108,6 +112,7 @@ export default {
         'pulse-lg': 'pulseLg 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
         'glitter-pulse': 'glitterPulse 60s infinite ease-in-out',
         'reveal-down': 'reveal-down 0.5s ease-out',
+        'shimmer-wave': 'shimmer-wave 3s linear infinite',
       },
     },
   },
