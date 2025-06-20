@@ -149,7 +149,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
     if (isClaimable) {
       return (
         <>
-          <CircleDollarSign className="mr-2 h-5 w-5 text-yellow-700" /> Claim {coinsPerCycle} Coins
+          <CircleDollarSign className="mr-2 h-5 w-5 text-yellow-100" /> Claim {coinsPerCycle} Coins
         </>
       );
     }
@@ -206,7 +206,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           className={cn(
             baseButtonClasses,
             isClaimable
-              ? 'bg-yellow-400 text-black hover:bg-yellow-500'
+              ? 'bg-yellow-700 text-yellow-100 hover:bg-yellow-800'
               : 'bg-white text-black hover:bg-gray-100'
           )}
           aria-live="polite"
