@@ -14,8 +14,8 @@ interface AdsCardProps {
 }
 
 const AD_REWARD_BASE = 25;
-const AD_WATCH_DURATION_MS = 5000; 
-const AD_COOLDOWN_MS = 60000; 
+const AD_WATCH_DURATION_MS = 5000;
+const AD_COOLDOWN_MS = 60000;
 
 const AdsCard: FC<AdsCardProps> = ({ onAdWatched, level }) => {
   const [isWatchingAd, setIsWatchingAd] = useState(false);
@@ -75,7 +75,7 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched, level }) => {
         <Button
           onClick={handleWatchAd}
           disabled={!canWatchAd}
-          className="w-full bg-white text-primary hover:bg-gray-100 text-lg py-6 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95"
+          className="w-full bg-white text-black hover:bg-gray-100 text-lg py-6 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95"
         >
           {isWatchingAd ? (
             <Loader2 className="mr-2 h-5 w-5 animate-spin" />
