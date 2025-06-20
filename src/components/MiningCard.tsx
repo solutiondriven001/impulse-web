@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
 import { Button } from '@/components/ui/button';
 import { Power, CircleDollarSign, Zap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 interface MiningCardProps {
   onCoinsClaimed: (amount: number) => void;
@@ -26,7 +27,6 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
 
   const coinsPerCycle = BASE_COINS_PER_CYCLE + (level -1) * 5;
 
-  // Effect to load state from localStorage on mount
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -45,12 +45,12 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           const startTime = Number(savedState.miningStartTime);
           const endTime = Number(savedState.coinsReadyAt);
 
-          if (now >= endTime) { // Cycle finished while away
+          if (now >= endTime) { 
             setIsClaimable(true);
             setMiningProgress(100);
             setIsMining(false);
             setMiningStartTime(startTime);
-          } else { // Cycle still in progress
+          } else { 
             const totalDurationMs = MINING_DURATION_SECONDS * 1000;
             const elapsedTimeMs = now - startTime;
             const currentProgress = Math.min(100, (elapsedTimeMs / totalDurationMs) * 100);
@@ -63,12 +63,11 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
         }
       } catch (error) {
         console.error("Failed to parse mining state from localStorage", error);
-        localStorage.removeItem(MINING_STATE_KEY); // Clear corrupted state
+        localStorage.removeItem(MINING_STATE_KEY); 
       }
     }
-  }, []); // Run once on mount
+  }, []); 
 
-  // Effect to save state to localStorage when it changes
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -81,34 +80,29 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
         coinsReadyAt: coinsReadyAtTime,
       }));
     } else if (isClaimable && miningStartTime) {
-      // When claimable, miningStartTime refers to the start of the cycle that just finished
       const coinsReadyAtTime = miningStartTime + MINING_DURATION_SECONDS * 1000;
       localStorage.setItem(MINING_STATE_KEY, JSON.stringify({
         isMining: false,
         isClaimable: true,
         miningStartTime,
-        coinsReadyAt: coinsReadyAtTime, // Store when it was supposed to be ready
+        coinsReadyAt: coinsReadyAtTime, 
       }));
-    } else if (!isMining && !isClaimable) { // Initial state or after claim reset
+    } else if (!isMining && !isClaimable) { 
       localStorage.removeItem(MINING_STATE_KEY);
     }
   }, [isMining, isClaimable, miningStartTime]);
 
 
-  // Effect for active mining progress
   useEffect(() => {
     let interval: NodeJS.Timeout;
     if (isMining && miningStartTime) {
       const coinsReadyAtTime = miningStartTime + MINING_DURATION_SECONDS * 1000;
 
-      // Initial check in case it completed between state set and interval setup,
-      // or if loaded state was very close to completion.
       const now = Date.now();
       if (now >= coinsReadyAtTime) {
         setMiningProgress(100);
         setIsMining(false);
         setIsClaimable(true);
-        // Save state will be triggered by isMining/isClaimable change
         return;
       }
 
@@ -119,7 +113,6 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           setMiningProgress(100);
           setIsMining(false);
           setIsClaimable(true);
-          // Save state will be triggered by isMining/isClaimable change
         } else {
           const totalDurationMs = MINING_DURATION_SECONDS * 1000;
           const elapsedTimeMs = currentTime - miningStartTime;
@@ -142,14 +135,13 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
       setIsMining(false);
       setIsClaimable(false);
       setMiningProgress(0);
-      setMiningStartTime(null); // This will trigger localStorage.removeItem via the save effect
+      setMiningStartTime(null); 
     } else if (!isMining && !isClaimable) {
       const startTime = Date.now();
-      setMiningStartTime(startTime); // Set start time
+      setMiningStartTime(startTime); 
       setIsMining(true);
-      setMiningProgress(0); // Progress will be calculated by the interval effect
+      setMiningProgress(0); 
       setIsClaimable(false);
-      // isMining, miningStartTime change will trigger save effect
     }
   };
 
@@ -176,6 +168,14 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
   };
 
   const isConnected = isMining || isClaimable;
+
+  const progressBarClasses = cn(
+    "absolute left-0 top-0 h-full transition-all duration-1000 ease-linear",
+    isMining && !isClaimable
+      ? "bg-gradient-to-r from-yellow-300 via-yellow-500 to-yellow-300 bg-200%_100% animate-background-pan"
+      : "bg-yellow-400" 
+  );
+
 
   return (
     <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300 h-full flex flex-col">
@@ -208,7 +208,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           aria-live="polite"
         >
           <div
-            className="absolute left-0 top-0 h-full bg-yellow-400 transition-all duration-1000 ease-linear"
+            className={progressBarClasses}
             style={{ width: isMining || isClaimable ? `${miningProgress}%` : '0%' }}
             aria-hidden="true"
           />
@@ -222,4 +222,3 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
 };
 
 export default MiningCard;
-
