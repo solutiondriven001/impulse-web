@@ -169,7 +169,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
 
   const isConnected = isMining || isClaimable;
 
-  const progressBarClasses = cn(
+  const progressBarBaseClasses = cn(
     "absolute left-0 top-0 h-full transition-all duration-1000 ease-linear"
   );
 
@@ -205,11 +205,9 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           aria-live="polite"
         >
           <div
-            className={cn(progressBarClasses, "animate-animated-stripes")}
+            className={cn(progressBarBaseClasses, "bg-yellow-400")} 
             style={{
               width: isMining || isClaimable ? `${miningProgress}%` : '0%',
-              backgroundImage: 'repeating-linear-gradient(45deg, #facc15, #facc15 10px, #eab308 10px, #eab308 20px)', // Tailwind yellow-400 and yellow-500
-              backgroundSize: '40px 40px', // Adjust size for desired stripe thickness and repetition
             }}
             aria-hidden="true"
           />
