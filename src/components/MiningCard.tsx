@@ -5,7 +5,7 @@ import type { FC } from 'react';
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Power, Zap } from 'lucide-react';
+import { Power, Zap, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import {
@@ -26,6 +26,7 @@ interface MiningCardProps {
 }
 
 const MINING_DURATION_SECONDS = 1 * 60 * 60; // 1 hour
+const CLAIM_WINDOW_SECONDS = 10 * 60; // 10 minutes
 const BASE_COINS_PER_CYCLE = 10;
 const MINING_STATE_KEY = 'impulseAppMiningState_v1';
 
@@ -34,9 +35,28 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
   const [isMining, setIsMining] = useState(false);
   const [isClaimable, setIsClaimable] = useState(false);
   const [miningStartTime, setMiningStartTime] = useState<number | null>(null);
+  const [claimDeadline, setClaimDeadline] = useState<number | null>(null);
+  const [timeUntilBurn, setTimeUntilBurn] = useState<string | null>(null);
   const { toast } = useToast();
 
   const coinsPerCycle = BASE_COINS_PER_CYCLE + (level -1) * 5;
+
+  const handleBurn = () => {
+    setIsMining(false);
+    setIsClaimable(false);
+    setMiningProgress(0);
+    setMiningStartTime(null);
+    setClaimDeadline(null);
+    setTimeUntilBurn(null);
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem(MINING_STATE_KEY);
+    }
+    toast({
+      title: "Impulse Burned!",
+      description: "You didn't claim your coins in time. Be faster next cycle!",
+      variant: "destructive",
+    });
+  };
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -47,20 +67,32 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
         const savedState = JSON.parse(savedStateJSON);
         const now = Date.now();
 
-        if (savedState.isClaimable && savedState.miningStartTime) {
-          setIsClaimable(true);
-          setMiningProgress(100);
-          setIsMining(false);
-          setMiningStartTime(Number(savedState.miningStartTime));
+        if (savedState.isClaimable && savedState.coinsReadyAt) {
+          const deadline = Number(savedState.coinsReadyAt) + CLAIM_WINDOW_SECONDS * 1000;
+          if (now >= deadline) {
+            localStorage.removeItem(MINING_STATE_KEY);
+          } else {
+            setIsClaimable(true);
+            setMiningProgress(100);
+            setIsMining(false);
+            setMiningStartTime(Number(savedState.miningStartTime));
+            setClaimDeadline(deadline);
+          }
         } else if (savedState.isMining && savedState.miningStartTime && savedState.coinsReadyAt) {
           const startTime = Number(savedState.miningStartTime);
           const endTime = Number(savedState.coinsReadyAt);
 
           if (now >= endTime) {
-            setIsClaimable(true);
-            setMiningProgress(100);
-            setIsMining(false);
-            setMiningStartTime(startTime);
+            const deadline = endTime + CLAIM_WINDOW_SECONDS * 1000;
+            if (now >= deadline) {
+                localStorage.removeItem(MINING_STATE_KEY);
+            } else {
+                setIsClaimable(true);
+                setMiningProgress(100);
+                setIsMining(false);
+                setMiningStartTime(startTime);
+                setClaimDeadline(deadline);
+            }
           } else {
             const totalDurationMs = MINING_DURATION_SECONDS * 1000;
             const elapsedTimeMs = now - startTime;
@@ -77,6 +109,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
         localStorage.removeItem(MINING_STATE_KEY);
       }
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -109,14 +142,6 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
     if (isMining && miningStartTime) {
       const coinsReadyAtTime = miningStartTime + MINING_DURATION_SECONDS * 1000;
 
-      const now = Date.now();
-      if (now >= coinsReadyAtTime) {
-        setMiningProgress(100);
-        setIsMining(false);
-        setIsClaimable(true);
-        return;
-      }
-
       interval = setInterval(() => {
         const currentTime = Date.now();
         if (currentTime >= coinsReadyAtTime) {
@@ -124,6 +149,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           setMiningProgress(100);
           setIsMining(false);
           setIsClaimable(true);
+          setClaimDeadline(Date.now() + CLAIM_WINDOW_SECONDS * 1000);
         } else {
           const totalDurationMs = MINING_DURATION_SECONDS * 1000;
           const elapsedTimeMs = currentTime - miningStartTime;
@@ -134,6 +160,35 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
     }
     return () => clearInterval(interval);
   }, [isMining, miningStartTime]);
+
+  useEffect(() => {
+    if (!isClaimable || !claimDeadline) {
+        setTimeUntilBurn(null);
+        return;
+    }
+    
+    const formatTime = (ms: number) => {
+        const totalSeconds = Math.floor(ms / 1000);
+        const minutes = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+        const seconds = (totalSeconds % 60).toString().padStart(2, '0');
+        return `${minutes}:${seconds}`;
+    };
+
+    const interval = setInterval(() => {
+        const remaining = claimDeadline - Date.now();
+        if (remaining <= 0) {
+            clearInterval(interval);
+            handleBurn();
+        } else {
+            setTimeUntilBurn(formatTime(remaining));
+        }
+    }, 1000);
+
+    setTimeUntilBurn(formatTime(claimDeadline - Date.now()));
+
+    return () => clearInterval(interval);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isClaimable, claimDeadline]);
 
 
   const handleGenerateOrClaim = () => {
@@ -147,6 +202,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
       setIsClaimable(false);
       setMiningProgress(0);
       setMiningStartTime(null);
+      setClaimDeadline(null);
     } else if (!isMining && !isClaimable) {
       const startTime = Date.now();
       setMiningStartTime(startTime);
@@ -162,6 +218,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
       setIsClaimable(false);
       setMiningProgress(0);
       setMiningStartTime(null);
+      setClaimDeadline(null);
       toast({
         title: "Mining Disconnected",
         description: "You have stopped the current mining cycle.",
@@ -242,7 +299,12 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
                 Potential Yield: <Zap className={cn("inline h-5 w-5 text-yellow-400 -mt-1 mr-1", isConnected && 'animate-pulse')} /> <span className="font-bold text-yellow-400">{coinsPerCycle}</span>
             </p>
         </div>
-        {isClaimable && <p className="mt-2 text-sm text-green-400 animate-pulse">Ready to Claim!</p>}
+        {isClaimable && timeUntilBurn && (
+            <div className="mt-2 text-sm text-yellow-400 animate-pulse flex items-center justify-center">
+                <AlertTriangle className="h-4 w-4 mr-1.5" />
+                Coins burn in: {timeUntilBurn}
+            </div>
+        )}
          {!isMining && !isClaimable && <p className="mt-2 text-sm text-card-foreground/60">Click "Generate" to start a new cycle.</p>}
          {isMining && <p className="mt-2 text-sm text-card-foreground/60">Mining in progress...</p>}
       </CardContent>
@@ -265,7 +327,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
               (isMining || isClaimable) && 'animate-shimmer-wave bg-gradient-to-r from-transparent via-white/30 to-transparent bg-no-repeat'
             )}
             style={{
-              width: isMining || isClaimable ? `${miningProgress}%` : '0%',
+              width: isMining ? `${miningProgress}%` : isClaimable ? '100%' : '0%',
               ...((isMining || isClaimable) && { backgroundSize: '200% 100%' })
             }}
             aria-hidden="true"
