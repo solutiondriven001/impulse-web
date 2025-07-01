@@ -166,7 +166,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
         <CardHeader>
           <CardTitle className="flex items-center text-2xl font-headline">
             <ListChecks className="mr-3 h-7 w-7 text-primary" />
-            Register with TegasFX Broker
+            Suggested Task
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
