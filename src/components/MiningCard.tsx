@@ -27,7 +27,6 @@ interface MiningCardProps {
 
 const MINING_DURATION_SECONDS = 1 * 60 * 60; // 1 hour
 const CLAIM_WINDOW_SECONDS = 10 * 60; // 10 minutes
-const BASE_COINS_PER_CYCLE = 10;
 const MINING_STATE_KEY = 'impulseAppMiningState_v1';
 
 const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
@@ -37,9 +36,10 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
   const [miningStartTime, setMiningStartTime] = useState<number | null>(null);
   const [claimDeadline, setClaimDeadline] = useState<number | null>(null);
   const [timeUntilBurn, setTimeUntilBurn] = useState<string | null>(null);
+  const [liveCoins, setLiveCoins] = useState(0);
   const { toast } = useToast();
 
-  const coinsPerCycle = BASE_COINS_PER_CYCLE + (level -1) * 5;
+  const coinsPerCycle = level;
 
   const handleBurn = () => {
     setIsMining(false);
@@ -48,6 +48,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
     setMiningStartTime(null);
     setClaimDeadline(null);
     setTimeUntilBurn(null);
+    setLiveCoins(0);
     if (typeof window !== 'undefined') {
       localStorage.removeItem(MINING_STATE_KEY);
     }
@@ -66,9 +67,10 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
       try {
         const savedState = JSON.parse(savedStateJSON);
         const now = Date.now();
+        const coinsReadyAtTime = Number(savedState.coinsReadyAt);
 
-        if (savedState.isClaimable && savedState.coinsReadyAt) {
-          const deadline = Number(savedState.coinsReadyAt) + CLAIM_WINDOW_SECONDS * 1000;
+        if (savedState.isClaimable && coinsReadyAtTime) {
+          const deadline = coinsReadyAtTime + CLAIM_WINDOW_SECONDS * 1000;
           if (now >= deadline) {
             localStorage.removeItem(MINING_STATE_KEY);
           } else {
@@ -78,12 +80,11 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
             setMiningStartTime(Number(savedState.miningStartTime));
             setClaimDeadline(deadline);
           }
-        } else if (savedState.isMining && savedState.miningStartTime && savedState.coinsReadyAt) {
+        } else if (savedState.isMining && savedState.miningStartTime && coinsReadyAtTime) {
           const startTime = Number(savedState.miningStartTime);
-          const endTime = Number(savedState.coinsReadyAt);
 
-          if (now >= endTime) {
-            const deadline = endTime + CLAIM_WINDOW_SECONDS * 1000;
+          if (now >= coinsReadyAtTime) {
+            const deadline = coinsReadyAtTime + CLAIM_WINDOW_SECONDS * 1000;
             if (now >= deadline) {
                 localStorage.removeItem(MINING_STATE_KEY);
             } else {
@@ -97,6 +98,9 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
             const totalDurationMs = MINING_DURATION_SECONDS * 1000;
             const elapsedTimeMs = now - startTime;
             const currentProgress = Math.min(100, (elapsedTimeMs / totalDurationMs) * 100);
+            
+            const currentLiveCoins = (currentProgress / 100) * coinsPerCycle;
+            setLiveCoins(currentLiveCoins);
 
             setMiningStartTime(startTime);
             setIsMining(true);
@@ -155,11 +159,20 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
           const elapsedTimeMs = currentTime - miningStartTime;
           const currentProgress = (elapsedTimeMs / totalDurationMs) * 100;
           setMiningProgress(Math.min(100, currentProgress));
+
+          const currentLiveCoins = (currentProgress / 100) * coinsPerCycle;
+          setLiveCoins(currentLiveCoins);
         }
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [isMining, miningStartTime]);
+  }, [isMining, miningStartTime, coinsPerCycle]);
+
+  useEffect(() => {
+    if (isClaimable) {
+      setLiveCoins(coinsPerCycle);
+    }
+  }, [isClaimable, coinsPerCycle]);
 
   useEffect(() => {
     if (!isClaimable || !claimDeadline) {
@@ -203,12 +216,14 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
       setMiningProgress(0);
       setMiningStartTime(null);
       setClaimDeadline(null);
+      setLiveCoins(0);
     } else if (!isMining && !isClaimable) {
       const startTime = Date.now();
       setMiningStartTime(startTime);
       setIsMining(true);
       setMiningProgress(0);
       setIsClaimable(false);
+      setLiveCoins(0);
     }
   };
 
@@ -219,6 +234,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
       setMiningProgress(0);
       setMiningStartTime(null);
       setClaimDeadline(null);
+      setLiveCoins(0);
       toast({
         title: "Mining Disconnected",
         description: "You have stopped the current mining cycle.",
@@ -231,7 +247,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
     if (isClaimable) {
       return (
         <>
-          <Zap className="mr-2 h-5 w-5" /> Claim Impulse
+          <Zap className="mr-2 h-5 w-5" /> Claim {coinsPerCycle} Impulse
         </>
       );
     }
@@ -296,7 +312,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
       <CardContent className="space-y-2 text-center flex-grow">
         <div>
             <p className="text-lg text-card-foreground/80">
-                Potential Yield: <Zap className={cn("inline h-5 w-5 text-yellow-400 -mt-1 mr-1", isConnected && 'animate-pulse')} /> <span className="font-bold text-yellow-400">{coinsPerCycle}</span>
+                Potential Yield: <Zap className={cn("inline h-5 w-5 text-yellow-400 -mt-1 mr-1", isConnected && 'animate-pulse')} /> <span className="font-bold text-yellow-400 tabular-nums">{isMining ? liveCoins.toFixed(5) : coinsPerCycle}</span>
             </p>
         </div>
         {isClaimable && timeUntilBurn && (
