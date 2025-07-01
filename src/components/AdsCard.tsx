@@ -15,7 +15,7 @@ interface AdsCardProps {
 const AD_WATCH_DURATION_MS = 5000;
 // Cooldown now increases with each ad watched
 const BASE_AD_COOLDOWN_MS = 60000; // 1 minute
-const COOLDOWN_INCREMENT_MS = 30000; // 30 seconds per ad watched
+const COOLDOWN_INCREMENT_MS = 60000; // 60 seconds per ad watched
 // Using separate keys for different concerns and versioning them.
 const AD_COOLDOWN_STATE_KEY = 'impulseAppAdCooldown_v1';
 const AD_REWARD_STATE_KEY = 'impulseAppAdReward_v1';
