@@ -67,7 +67,7 @@ export default function HomePage() {
           </div>
           
           <div className="w-full">
-            <TasksCard currentCoins={currentCoins} level={level} onTaskCompleted={handleCoinsUpdate} />
+            <TasksCard onTaskCompleted={handleCoinsUpdate} />
           </div>
           
           <div className="w-full">

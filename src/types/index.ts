@@ -12,4 +12,14 @@ export interface Task {
   description: string;
   reward: number; // Represents coins
   completed: boolean;
+  link?: string;
+}
+
+export interface ParentTask {
+    id: string;
+    title: string;
+    description: string;
+    bonusReward: number;
+    tasks: Task[];
+    completed: boolean;
 }

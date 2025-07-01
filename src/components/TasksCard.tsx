@@ -3,150 +3,182 @@
 
 import type { FC } from 'react';
 import { useState, useEffect } from 'react';
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
+import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { CheckCircle2, ListChecks, Sparkles, Loader2, AlertTriangle } from 'lucide-react';
-import { suggestTasks, type SuggestTasksInput, type SuggestTasksOutput } from '@/ai/flows/suggest-tasks';
+import { CheckCircle2, ListChecks, ExternalLink } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import type { Task } from '@/types';
+import type { ParentTask } from '@/types';
+import { Separator } from '@/components/ui/separator';
 
 interface TasksCardProps {
-  currentCoins: number;
-  level: number;
   onTaskCompleted: (reward: number) => void;
 }
 
-const TasksCard: FC<TasksCardProps> = ({ currentCoins, level, onTaskCompleted }) => {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+const TASKS_STATE_KEY = 'impulseAppParentTasksState_v1';
+
+const initialParentTask: ParentTask = {
+    id: 'parent-tegasfx-1',
+    title: 'Partner Onboarding Challenge',
+    description: 'Complete all sub-tasks to earn a massive bonus!',
+    bonusReward: 100,
+    completed: false,
+    tasks: [
+        {
+            id: 'subtask-1-register',
+            description: 'Click this link and register your account',
+            reward: 10,
+            completed: false,
+            link: 'https://secure.tegasfx.com/links/go/9924',
+        },
+        {
+            id: 'subtask-2-kyc',
+            description: 'Verify your account after KYC',
+            reward: 15,
+            completed: false,
+        },
+        {
+            id: 'subtask-3-copytrade',
+            description: 'Follow my copytrading',
+            reward: 5,
+            completed: false,
+        },
+    ],
+};
+
+
+const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
+  const [parentTask, setParentTask] = useState<ParentTask>(initialParentTask);
   const { toast } = useToast();
 
-  const fetchTasks = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      const input: SuggestTasksInput = { currentCoins, level };
-      const output: SuggestTasksOutput = await suggestTasks(input);
-      const suggestedTasks = output.tasks.map((desc, index) => ({
-        id: `task-${Date.now()}-${index}`,
-        description: desc.replace(/^\d+\.\s*/, ''), // Remove numbering from AI
-        reward: 10 + level * 2 + Math.floor(Math.random() * 5),
-        completed: false,
-      }));
-      setTasks(suggestedTasks);
-    } catch (e) {
-      console.error("Failed to suggest tasks:", e);
-      setError("Could not fetch new tasks. Please try again.");
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to load tasks from AI.",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+  // Load state from localStorage on mount
   useEffect(() => {
-    if (tasks.length === 0) {
-        fetchTasks();
+    if (typeof window !== 'undefined') {
+        const savedState = localStorage.getItem(TASKS_STATE_KEY);
+        if (savedState) {
+            try {
+                setParentTask(JSON.parse(savedState));
+            } catch (e) {
+                console.error("Failed to parse tasks state from localStorage", e);
+                localStorage.removeItem(TASKS_STATE_KEY);
+            }
+        }
+    }
+  }, []);
+
+  // Save state to localStorage whenever it changes
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+        localStorage.setItem(TASKS_STATE_KEY, JSON.stringify(parentTask));
+    }
+  }, [parentTask]);
+
+  // Check for all sub-tasks completion to award bonus
+  useEffect(() => {
+    if (!parentTask.completed) {
+      const allSubTasksCompleted = parentTask.tasks.every(t => t.completed);
+      if (allSubTasksCompleted) {
+        onTaskCompleted(parentTask.bonusReward);
+        
+        setParentTask(prev => ({ ...prev, completed: true }));
+
+        toast({
+          title: "Challenge Complete!",
+          description: `You earned a bonus of ${parentTask.bonusReward} coins!`,
+        });
+      }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); 
+  }, [parentTask]);
 
   const handleCompleteTask = (taskId: string) => {
-    const taskIndex = tasks.findIndex(t => t.id === taskId);
-    if (taskIndex !== -1 && !tasks[taskIndex].completed) {
-      const taskToComplete = tasks[taskIndex];
+    const taskIndex = parentTask.tasks.findIndex(t => t.id === taskId);
+    if (taskIndex !== -1 && !parentTask.tasks[taskIndex].completed) {
+      const taskToComplete = parentTask.tasks[taskIndex];
       onTaskCompleted(taskToComplete.reward);
 
       toast({
         title: "Task Completed!",
         description: `You earned ${taskToComplete.reward} coins.`,
       });
-
-      setTasks(prevTasks => prevTasks.map(t =>
-        t.id === taskId ? { ...t, completed: true } : t
-      ));
+      
+      setParentTask(prev => {
+        const newTasks = [...prev.tasks];
+        newTasks[taskIndex] = { ...newTasks[taskIndex], completed: true };
+        return { ...prev, tasks: newTasks };
+      });
     }
   };
+
+  const allTasksDone = parentTask.tasks.every(t => t.completed);
 
   return (
     <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300">
       <CardHeader>
         <CardTitle className="flex items-center text-2xl font-headline">
           <ListChecks className="mr-3 h-7 w-7 text-primary" />
-          AI Suggested Tasks
+          {parentTask.title}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
-        {isLoading && (
-          <div className="flex items-center justify-center py-6 h-full">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <p className="ml-2 text-card-foreground/80">Loading tasks...</p>
-          </div>
-        )}
-        {error && (
-            <div className="flex items-center text-destructive p-3 bg-destructive/10 rounded-md">
-                <AlertTriangle className="h-5 w-5 mr-2" />
-                <p>{error}</p>
+        <p className="text-card-foreground/80">{parentTask.description}</p>
+        <ul className="space-y-3">
+          {parentTask.tasks.map((task) => (
+            <li
+              key={task.id}
+              className={`flex items-center justify-between p-3 rounded-lg transition-all duration-300 ${
+                task.completed ? 'bg-black/20 opacity-60' : 'bg-black/20 hover:bg-black/30'
+              }`}
+            >
+              <div className="flex-1 space-y-1">
+                <p className={`text-sm ${task.completed ? 'line-through text-card-foreground/50' : 'text-card-foreground/90'}`}>
+                  {task.description}
+                </p>
+                {task.link && !task.completed && (
+                  <a
+                    href={task.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center text-xs text-primary/80 hover:text-primary hover:underline"
+                    onClick={(e) => e.stopPropagation()}
+                  >
+                    Go to link <ExternalLink className="ml-1.5 h-3 w-3" />
+                  </a>
+                )}
+              </div>
+              <div className="flex items-center pl-4 space-x-2">
+                 <span className="font-bold text-yellow-400">+{task.reward}</span>
+                {!task.completed ? (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleCompleteTask(task.id)}
+                    className="text-green-400 hover:text-green-300 hover:bg-green-500/10"
+                    aria-label={`Complete task: ${task.description}`}
+                  >
+                    <CheckCircle2 className="h-5 w-5" />
+                  </Button>
+                ) : (
+                   <CheckCircle2 className="h-5 w-5 text-green-500" />
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+        <Separator className="my-4 bg-white/10" />
+        <div className={`flex items-center justify-between p-3 rounded-lg transition-all duration-300 ${
+            allTasksDone ? 'bg-green-500/20' : 'bg-black/20'
+        }`}>
+            <p className="font-bold text-base text-card-foreground">
+                Bonus for completing all tasks
+            </p>
+            <div className="flex items-center space-x-2">
+                <span className={`font-bold text-lg ${allTasksDone ? 'text-green-400' : 'text-yellow-400'}`}>
+                    +{parentTask.bonusReward} Impulse
+                </span>
+                {allTasksDone && <CheckCircle2 className="h-6 w-6 text-green-400" />}
             </div>
-        )}
-        {!isLoading && !error && tasks.length === 0 && (
-          <p className="text-center text-card-foreground/60 py-6">No tasks available. Try fetching new ones!</p>
-        )}
-        {!isLoading && tasks.length > 0 && (
-          <ScrollArea className="h-[220px] pr-3">
-            <ul className="space-y-3">
-              {tasks.map((task) => (
-                <li
-                  key={task.id}
-                  className={`flex items-center justify-between p-3 rounded-lg transition-all duration-300 ${
-                    task.completed ? 'bg-black/20 opacity-60' : 'bg-black/20 hover:bg-black/30'
-                  }`}
-                >
-                  <div className="flex-1">
-                    <p className={`text-sm ${task.completed ? 'line-through text-card-foreground/50' : 'text-card-foreground/90'}`}>
-                      {task.description}
-                    </p>
-                  </div>
-                  <div className="flex items-center pl-2">
-                    {!task.completed ? (
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleCompleteTask(task.id)}
-                        className="text-green-400 hover:text-green-300 hover:bg-green-500/10"
-                        aria-label={`Complete task: ${task.description}`}
-                      >
-                        <CheckCircle2 className="h-5 w-5" />
-                      </Button>
-                    ) : (
-                       <CheckCircle2 className="h-5 w-5 text-green-500" />
-                    )}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </ScrollArea>
-        )}
+        </div>
       </CardContent>
-      <CardFooter>
-        <Button
-          onClick={fetchTasks}
-          disabled={isLoading}
-          className="w-full bg-white text-black hover:bg-gray-200 text-lg py-6 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95"
-        >
-          {isLoading ? (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          ) : (
-            <Sparkles className="mr-2 h-4 w-4 text-primary" />
-          )}
-          Get New Task Suggestions
-        </Button>
-      </CardFooter>
     </Card>
   );
 };
