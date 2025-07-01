@@ -145,7 +145,7 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched }) => {
           Watch a short ad to earn <span className="font-bold text-yellow-400">{nextReward}</span> Impulse!
         </p>
          <p className="text-sm text-card-foreground/70">
-          Reward increases with each ad you watch today.
+          Increases your earnings with each ad you watch.
         </p>
         {!canWatchAd && cooldownTime > 0 && (
           <p className="text-sm text-card-foreground/60">

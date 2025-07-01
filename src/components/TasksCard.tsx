@@ -18,7 +18,7 @@ const TASKS_STATE_KEY = 'impulseAppParentTasksState_v1';
 
 const initialParentTask: ParentTask = {
     id: 'parent-tegasfx-1',
-    title: 'Partner Onboarding Challenge',
+    title: 'Suggested Task',
     description: 'Complete all sub-tasks to earn a massive bonus!',
     bonusReward: 100,
     completed: false,
