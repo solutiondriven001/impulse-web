@@ -261,7 +261,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                           'font-bold text-lg',
                            selectedTask.completed 
                            ? 'text-green-400' 
-                           : !selectedTask.completed && selectedTask.bonusReward === 10 
+                           : !selectedTask.completed && (selectedTask.bonusReward === 10 || selectedTask.bonusReward === 100)
                              ? 'bg-gradient-to-r from-yellow-400 via-white/90 to-yellow-400 bg-clip-text text-transparent animate-shimmer-wave bg-[length:200%_auto]'
                              : 'text-yellow-400'
                         )}>
