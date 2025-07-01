@@ -27,6 +27,18 @@ const TASKS_STATE_KEY = 'impulseAppParentTasksState_v2';
 
 const initialParentTasks: ParentTask[] = [
   {
+    id: 'parent-tegasfx-1',
+    title: 'Register with TegasFX Broker',
+    description: 'Complete all sub-tasks to earn a massive bonus!',
+    bonusReward: 100,
+    completed: false,
+    tasks: [
+        { id: 'subtask-1-register', description: 'Click this link and register your account', reward: 10, completed: false, link: 'https://secure.tegasfx.com/links/go/9924' },
+        { id: 'subtask-2-kyc', description: 'Verify your account after KYC', reward: 15, completed: false },
+        { id: 'subtask-3-copytrade', description: 'Follow my copytrading', reward: 5, completed: false },
+    ],
+  },
+  {
     id: 'parent-socials-1',
     title: 'Connect Your Socials',
     description: 'Follow us on social media and get rewarded!',
@@ -40,18 +52,6 @@ const initialParentTasks: ParentTask[] = [
         { id: 'social-5-facebook', description: 'Like our Facebook page', reward: 1, completed: false, link: 'https://facebook.com' },
         { id: 'social-6-whatsapp', description: 'Join our WhatsApp community', reward: 1, completed: false, link: 'https://whatsapp.com' },
     ],
-  },
-  {
-    id: 'parent-tegasfx-1',
-    title: 'Register with TegasFX Broker',
-    description: 'Complete all sub-tasks to earn a massive bonus!',
-    bonusReward: 100,
-    completed: false,
-    tasks: [
-        { id: 'subtask-1-register', description: 'Click this link and register your account', reward: 10, completed: false, link: 'https://secure.tegasfx.com/links/go/9924' },
-        { id: 'subtask-2-kyc', description: 'Verify your account after KYC', reward: 15, completed: false },
-        { id: 'subtask-3-copytrade', description: 'Follow my copytrading', reward: 5, completed: false },
-    ],
   }
 ];
 
@@ -60,6 +60,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
   const [parentTasks, setParentTasks] = useState<ParentTask[]>(initialParentTasks);
   const [selectedTask, setSelectedTask] = useState<ParentTask | null>(null);
   const [verifyingTaskId, setVerifyingTaskId] = useState<string | null>(null);
+  const [clickedLinks, setClickedLinks] = useState<Set<string>>(new Set());
   const { toast } = useToast();
 
   // Load state from localStorage on mount
@@ -106,6 +107,10 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
     }
   }, [parentTasks, onTaskCompleted, toast]);
 
+  const handleLinkClick = (taskId: string) => {
+    setClickedLinks(prev => new Set(prev).add(taskId));
+  };
+
   const handleCompleteTask = (parentTaskId: string, taskId: string) => {
     if (verifyingTaskId) return;
 
@@ -145,6 +150,15 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
     const totalCount = task.tasks.length;
     return { count: completedCount, total: totalCount };
   }
+  
+  const handleDialogChange = (isOpen: boolean) => {
+    if (!isOpen) {
+      setSelectedTask(null);
+      // Reset clicked links when dialog closes to re-enforce clicking the link each time
+      setClickedLinks(new Set()); 
+    }
+  }
+
 
   return (
     <>
@@ -188,7 +202,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
         </CardContent>
       </Card>
 
-      <Dialog open={!!selectedTask} onOpenChange={(isOpen) => !isOpen && setSelectedTask(null)}>
+      <Dialog open={!!selectedTask} onOpenChange={handleDialogChange}>
         <DialogContent className="sm:max-w-[480px] bg-gradient-to-br from-[hsl(285,35%,22%)] to-[hsl(300,40%,18%)] border-border text-card-foreground">
           {selectedTask && (
             <>
@@ -200,11 +214,12 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
               <ul className="space-y-3 py-4">
                 {selectedTask.tasks.map((task) => {
                   const isVerifying = verifyingTaskId === task.id;
+                  const canVerify = !task.link || clickedLinks.has(task.id);
                   return (
                     <li
                       key={task.id}
                       className={`flex items-center justify-between p-3 rounded-lg transition-all duration-300 ${
-                        task.completed ? 'bg-black/20 opacity-60' : 'bg-black/20 hover:bg-black/30'
+                        task.completed ? 'bg-black/20 opacity-60' : 'bg-black/20'
                       }`}
                     >
                       <div className="flex-1 space-y-1">
@@ -217,7 +232,10 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center text-xs text-primary/80 hover:text-primary hover:underline"
-                            onClick={(e) => e.stopPropagation()}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleLinkClick(task.id);
+                            }}
                           >
                             Go to link <ExternalLink className="ml-1.5 h-3 w-3" />
                           </a>
@@ -232,16 +250,21 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                                 <Loader2 className="h-5 w-5 animate-spin text-primary" />
                             </Button>
                         ) : (
-                          <Button
-                            variant="ghost"
-                            size="sm"
-                            onClick={() => handleCompleteTask(selectedTask.id, task.id)}
-                            className="border border-primary/50 hover:bg-primary/20 text-primary-foreground w-[80px] h-auto py-1 px-2 text-xs"
-                            aria-label={`Verify task: ${task.description}`}
-                            disabled={!!verifyingTaskId}
-                          >
-                            Verify
-                          </Button>
+                          canVerify && (
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => handleCompleteTask(selectedTask.id, task.id)}
+                              className="border border-primary/50 hover:bg-primary/20 text-primary-foreground w-[80px] h-auto py-1 px-2 text-xs"
+                              aria-label={`Verify task: ${task.description}`}
+                              disabled={!!verifyingTaskId}
+                            >
+                              Verify
+                            </Button>
+                          )
+                        )}
+                        {!task.completed && !isVerifying && !canVerify && (
+                           <div className="w-[80px]" /> 
                         )}
                       </div>
                     </li>
