@@ -23,7 +23,7 @@ interface TasksCardProps {
   onTaskCompleted: (reward: number) => void;
 }
 
-const TASKS_STATE_KEY = 'impulseAppParentTasksState_v2';
+const TASKS_STATE_KEY = 'impulseAppParentTasksState_v3';
 
 const initialParentTasks: ParentTask[] = [
   {
