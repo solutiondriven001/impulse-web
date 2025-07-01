@@ -249,21 +249,18 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                            <Button variant="ghost" size="sm" disabled className="w-[80px]">
                                 <Loader2 className="h-5 w-5 animate-spin text-primary" />
                             </Button>
+                        ) : canVerify ? (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleCompleteTask(selectedTask.id, task.id)}
+                            className="border border-primary/50 hover:bg-primary/20 text-primary-foreground w-[80px] h-auto py-1 px-2 text-xs"
+                            aria-label={`Verify task: ${task.description}`}
+                            disabled={!!verifyingTaskId}
+                          >
+                            Verify
+                          </Button>
                         ) : (
-                          canVerify && (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleCompleteTask(selectedTask.id, task.id)}
-                              className="border border-primary/50 hover:bg-primary/20 text-primary-foreground w-[80px] h-auto py-1 px-2 text-xs"
-                              aria-label={`Verify task: ${task.description}`}
-                              disabled={!!verifyingTaskId}
-                            >
-                              Verify
-                            </Button>
-                          )
-                        )}
-                        {!task.completed && !isVerifying && !canVerify && (
                            <div className="w-[80px]" /> 
                         )}
                       </div>
