@@ -326,34 +326,33 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                           </div>
                         )}
                       </div>
-                      <div className="flex items-center pl-4 space-x-2 w-[130px] justify-end">
-                          <span className={cn(
-                            "font-bold text-yellow-400 transition-all duration-300",
-                             canVerify && !task.completed && !isVerifying ? 'mr-0' : 'mr-[88px]'
-                          )}>+{task.reward}</span>
-                          <div className="absolute right-7 text-right">
-                          {task.completed ? (
-                            <CheckCircle2 className="h-5 w-5 text-green-500 inline-flex" />
-                          ) : isVerifying ? (
-                            <Button variant="ghost" size="sm" disabled className="w-[80px]">
+                      <div className="flex items-center justify-end pl-4 space-x-2 min-w-[130px]">
+                        <span className="font-bold text-yellow-400">
+                          +{task.reward}
+                        </span>
+                        {(task.completed || isVerifying || canVerify) && (
+                          <div className="flex items-center justify-center w-[80px] h-9">
+                            {task.completed ? (
+                              <CheckCircle2 className="h-5 w-5 text-green-500" />
+                            ) : isVerifying ? (
+                              <Button variant="ghost" size="sm" disabled className="w-[80px]">
                                 <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                            </Button>
-                          ) : canVerify ? (
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleCompleteTask(selectedTask.id, task.id)}
-                              className="border border-primary/50 hover:bg-primary/20 text-primary-foreground w-[80px] h-auto py-1 px-2 text-xs"
-                              aria-label={`Verify task: ${task.description}`}
-                              disabled={!!verifyingTaskId}
-                            >
-                              Verify
-                            </Button>
-                          ) : (
-                             <div className="w-[80px] h-auto py-1 px-2"></div>
-                          )}
+                              </Button>
+                            ) : canVerify ? (
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                onClick={() => handleCompleteTask(selectedTask.id, task.id)}
+                                className="border border-primary/50 hover:bg-primary/20 text-white w-[80px] h-auto py-1 px-2 text-xs"
+                                aria-label={`Verify task: ${task.description}`}
+                                disabled={!!verifyingTaskId}
+                              >
+                                Verify
+                              </Button>
+                            ) : null}
                           </div>
-                        </div>
+                        )}
+                      </div>
                     </li>
                   )
                 })}
