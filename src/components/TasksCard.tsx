@@ -234,7 +234,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                             variant="ghost"
                             size="sm"
                             onClick={() => handleCompleteTask(selectedTask.id, task.id)}
-                            className="text-green-400 hover:text-green-300 hover:bg-green-500/10"
+                            className="text-card-foreground/70 hover:text-card-foreground hover:bg-white/10"
                             aria-label={`Complete task: ${task.description}`}
                             disabled={!!verifyingTaskId}
                           >
