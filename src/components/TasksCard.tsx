@@ -152,7 +152,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
         <CardHeader>
           <CardTitle className="flex items-center text-2xl font-headline">
             <ListChecks className="mr-3 h-7 w-7 text-primary" />
-            Suggested task
+            Suggested Task
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -233,10 +233,10 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                             </Button>
                         ) : (
                           <Button
-                            variant="outline"
+                            variant="ghost"
                             size="sm"
                             onClick={() => handleCompleteTask(selectedTask.id, task.id)}
-                            className="border-primary/50 hover:bg-primary/20 text-primary-foreground/80 hover:text-primary-foreground w-[80px] h-auto py-1 px-2 text-xs"
+                            className="border border-primary/50 hover:bg-primary/20 text-primary-foreground w-[80px] h-auto py-1 px-2 text-xs"
                             aria-label={`Verify task: ${task.description}`}
                             disabled={!!verifyingTaskId}
                           >
