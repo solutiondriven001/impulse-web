@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { FC } from 'react';
@@ -256,7 +257,14 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                       Bonus
                   </p>
                   <div className="flex items-center space-x-2">
-                      <span className={cn('font-bold text-lg', selectedTask.completed ? 'text-green-400' : 'text-yellow-400')}>
+                      <span className={cn(
+                          'font-bold text-lg',
+                           selectedTask.completed 
+                           ? 'text-green-400' 
+                           : !selectedTask.completed && selectedTask.bonusReward === 10 
+                             ? 'bg-gradient-to-r from-yellow-400 via-white/90 to-yellow-400 bg-clip-text text-transparent animate-shimmer-wave bg-[length:200%_auto]'
+                             : 'text-yellow-400'
+                        )}>
                           +{selectedTask.bonusReward}
                       </span>
                       <Zap className={cn("h-5 w-5", selectedTask.completed ? 'text-green-400' : 'text-yellow-400')} />
