@@ -14,6 +14,7 @@ export interface Task {
   completed: boolean;
   link?: string;
   requiresUpload?: boolean;
+  requiresTextInput?: boolean;
 }
 
 export interface ParentTask {

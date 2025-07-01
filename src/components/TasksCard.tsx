@@ -24,7 +24,7 @@ interface TasksCardProps {
   onTaskCompleted: (reward: number) => void;
 }
 
-const TASKS_STATE_KEY = 'impulseAppParentTasks_v5';
+const TASKS_STATE_KEY = 'impulseAppParentTasks_v7';
 
 const initialParentTasks: ParentTask[] = [
   {
@@ -49,6 +49,7 @@ const initialParentTasks: ParentTask[] = [
     bonusReward: 100,
     completed: false,
     tasks: [
+        { id: 'subtask-0-name', description: 'Enter your government name', reward: 0, completed: false, requiresTextInput: true },
         { id: 'subtask-1-register', description: 'Click this link and register your account', reward: 10, completed: false, link: 'https://secure.tegasfx.com/links/go/9924' },
         { id: 'subtask-2-kyc', description: 'Verify your account after KYC', reward: 15, completed: false, requiresUpload: true },
         { id: 'subtask-3-copytrade', description: 'Follow my copytrading', reward: 5, completed: false, requiresUpload: true },
@@ -63,6 +64,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
   const [verifyingTaskId, setVerifyingTaskId] = useState<string | null>(null);
   const [clickedLinks, setClickedLinks] = useState<Set<string>>(new Set());
   const [selectedFiles, setSelectedFiles] = useState<Record<string, File | null>>({});
+  const [textInputValues, setTextInputValues] = useState<Record<string, string>>({});
   const { toast } = useToast();
 
   // Load state from localStorage on mount
@@ -125,6 +127,9 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
     }
   };
 
+  const handleTextInputChange = (e: React.ChangeEvent<HTMLInputElement>, taskId: string) => {
+    setTextInputValues(prev => ({ ...prev, [taskId]: e.target.value }));
+  };
 
   const handleCompleteTask = (parentTaskId: string, taskId: string) => {
     if (verifyingTaskId) return;
@@ -156,11 +161,19 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
       });
       setParentTasks(newParentTasks);
       setVerifyingTaskId(null);
+
       if (selectedFiles[taskId]) {
         setSelectedFiles(prev => {
             const newFiles = {...prev};
             delete newFiles[taskId];
             return newFiles;
+        });
+      }
+      if (textInputValues[taskId]) {
+        setTextInputValues(prev => {
+            const newValues = {...prev};
+            delete newValues[taskId];
+            return newValues;
         });
       }
     }, 1500);
@@ -179,6 +192,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
       // Reset states when dialog closes
       setClickedLinks(new Set()); 
       setSelectedFiles({});
+      setTextInputValues({});
     }
   }
 
@@ -243,6 +257,8 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                       canVerify = false;
                   } else if (task.requiresUpload) {
                       canVerify = !!selectedFiles[task.id];
+                  } else if (task.requiresTextInput) {
+                      canVerify = !!textInputValues[task.id]?.trim();
                   } else if (task.link) {
                       canVerify = clickedLinks.has(task.id);
                   } else {
@@ -297,10 +313,25 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                             )}
                           </div>
                         )}
+                         {task.requiresTextInput && !task.completed && (
+                          <div className="pt-2">
+                            <Input
+                              type="text"
+                              id={`text-input-${task.id}`}
+                              className="bg-black/30 border-input/50 text-card-foreground placeholder:text-card-foreground/50 text-sm h-9"
+                              placeholder="Enter text here..."
+                              value={textInputValues[task.id] || ''}
+                              onChange={(e) => handleTextInputChange(e, task.id)}
+                            />
+                          </div>
+                        )}
                       </div>
-                      <div className="flex items-center pl-4 space-x-2">
-                          <span className="font-bold text-yellow-400">+{task.reward}</span>
-                          <div className="w-[80px] text-right">
+                      <div className="flex items-center pl-4 space-x-2 w-[130px] justify-end">
+                          <span className={cn(
+                            "font-bold text-yellow-400 transition-all duration-300",
+                             canVerify && !task.completed && !isVerifying ? 'mr-0' : 'mr-[88px]'
+                          )}>+{task.reward}</span>
+                          <div className="absolute right-7 text-right">
                           {task.completed ? (
                             <CheckCircle2 className="h-5 w-5 text-green-500 inline-flex" />
                           ) : isVerifying ? (
@@ -318,7 +349,9 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                             >
                               Verify
                             </Button>
-                          ) : null}
+                          ) : (
+                             <div className="w-[80px] h-auto py-1 px-2"></div>
+                          )}
                           </div>
                         </div>
                     </li>
