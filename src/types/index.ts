@@ -13,6 +13,7 @@ export interface Task {
   reward: number; // Represents coins
   completed: boolean;
   link?: string;
+  requiresUpload?: boolean;
 }
 
 export interface ParentTask {

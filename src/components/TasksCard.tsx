@@ -5,7 +5,7 @@ import type { FC } from 'react';
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, ListChecks, ExternalLink, ChevronRight, Award, Loader2, Zap } from 'lucide-react';
+import { CheckCircle2, ListChecks, ExternalLink, ChevronRight, Award, Loader2, Zap, Upload } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { ParentTask } from '@/types';
 import { Separator } from '@/components/ui/separator';
@@ -18,12 +18,13 @@ import {
 } from "@/components/ui/dialog";
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
+import { Input } from '@/components/ui/input';
 
 interface TasksCardProps {
   onTaskCompleted: (reward: number) => void;
 }
 
-const TASKS_STATE_KEY = 'impulseAppParentTasks_v4';
+const TASKS_STATE_KEY = 'impulseAppParentTasks_v5';
 
 const initialParentTasks: ParentTask[] = [
   {
@@ -49,8 +50,8 @@ const initialParentTasks: ParentTask[] = [
     completed: false,
     tasks: [
         { id: 'subtask-1-register', description: 'Click this link and register your account', reward: 10, completed: false, link: 'https://secure.tegasfx.com/links/go/9924' },
-        { id: 'subtask-2-kyc', description: 'Verify your account after KYC', reward: 15, completed: false },
-        { id: 'subtask-3-copytrade', description: 'Follow my copytrading', reward: 5, completed: false },
+        { id: 'subtask-2-kyc', description: 'Verify your account after KYC', reward: 15, completed: false, requiresUpload: true },
+        { id: 'subtask-3-copytrade', description: 'Follow my copytrading', reward: 5, completed: false, requiresUpload: true },
     ],
   }
 ];
@@ -61,6 +62,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
   const [selectedTask, setSelectedTask] = useState<ParentTask | null>(null);
   const [verifyingTaskId, setVerifyingTaskId] = useState<string | null>(null);
   const [clickedLinks, setClickedLinks] = useState<Set<string>>(new Set());
+  const [selectedFiles, setSelectedFiles] = useState<Record<string, File | null>>({});
   const { toast } = useToast();
 
   // Load state from localStorage on mount
@@ -69,7 +71,13 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
         const savedState = localStorage.getItem(TASKS_STATE_KEY);
         if (savedState) {
             try {
-                setParentTasks(JSON.parse(savedState));
+                const parsedState = JSON.parse(savedState);
+                // Simple validation to ensure the loaded state has the expected structure
+                if (Array.isArray(parsedState) && parsedState.every(p => p.hasOwnProperty('tasks'))) {
+                    setParentTasks(parsedState);
+                } else {
+                    localStorage.setItem(TASKS_STATE_KEY, JSON.stringify(initialParentTasks));
+                }
             } catch (e) {
                 console.error("Failed to parse tasks state from localStorage", e);
                 localStorage.setItem(TASKS_STATE_KEY, JSON.stringify(initialParentTasks));
@@ -110,6 +118,13 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
   const handleLinkClick = (taskId: string) => {
     setClickedLinks(prev => new Set(prev).add(taskId));
   };
+  
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>, taskId: string) => {
+    if (e.target.files && e.target.files.length > 0) {
+        setSelectedFiles(prev => ({ ...prev, [taskId]: e.target.files![0] }));
+    }
+  };
+
 
   const handleCompleteTask = (parentTaskId: string, taskId: string) => {
     if (verifyingTaskId) return;
@@ -141,6 +156,13 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
       });
       setParentTasks(newParentTasks);
       setVerifyingTaskId(null);
+      if (selectedFiles[taskId]) {
+        setSelectedFiles(prev => {
+            const newFiles = {...prev};
+            delete newFiles[taskId];
+            return newFiles;
+        });
+      }
     }, 1500);
   };
 
@@ -154,8 +176,9 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
   const handleDialogChange = (isOpen: boolean) => {
     if (!isOpen) {
       setSelectedTask(null);
-      // Reset clicked links when dialog closes to re-enforce clicking the link each time
+      // Reset states when dialog closes
       setClickedLinks(new Set()); 
+      setSelectedFiles({});
     }
   }
 
@@ -214,7 +237,18 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
               <ul className="space-y-3 py-4">
                 {selectedTask.tasks.map((task) => {
                   const isVerifying = verifyingTaskId === task.id;
-                  const canVerify = !task.link || clickedLinks.has(task.id);
+                  
+                  let canVerify = false;
+                  if (task.completed || verifyingTaskId) {
+                      canVerify = false;
+                  } else if (task.requiresUpload) {
+                      canVerify = !!selectedFiles[task.id];
+                  } else if (task.link) {
+                      canVerify = clickedLinks.has(task.id);
+                  } else {
+                      canVerify = true; // For tasks with no pre-requisite
+                  }
+
                   return (
                     <li
                       key={task.id}
@@ -240,11 +274,35 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                             Go to link <ExternalLink className="ml-1.5 h-3 w-3" />
                           </a>
                         )}
+                        {task.requiresUpload && !task.completed && (
+                          <div className="pt-2">
+                            <Input
+                              type="file"
+                              id={`file-upload-${task.id}`}
+                              className="hidden"
+                              onChange={(e) => handleFileChange(e, task.id)}
+                              accept="image/png, image/jpeg, image/gif"
+                            />
+                            <label
+                              htmlFor={`file-upload-${task.id}`}
+                              className="inline-flex items-center text-xs text-primary/80 hover:text-primary hover:underline cursor-pointer"
+                            >
+                              <Upload className="mr-1.5 h-3 w-3" />
+                              {selectedFiles[task.id] ? 'Change file' : 'Upload screenshot'}
+                            </label>
+                            {selectedFiles[task.id] && (
+                              <p className="text-xs text-card-foreground/60 mt-1 truncate w-48">
+                                Selected: {selectedFiles[task.id]?.name}
+                              </p>
+                            )}
+                          </div>
+                        )}
                       </div>
-                      <div className="flex items-center pl-4 space-x-2 min-w-[120px] justify-end">
+                      <div className="flex items-center pl-4 space-x-2">
                           <span className="font-bold text-yellow-400">+{task.reward}</span>
+                          <div className="w-[80px] text-right">
                           {task.completed ? (
-                            <CheckCircle2 className="h-5 w-5 text-green-500" />
+                            <CheckCircle2 className="h-5 w-5 text-green-500 inline-flex" />
                           ) : isVerifying ? (
                             <Button variant="ghost" size="sm" disabled className="w-[80px]">
                                 <Loader2 className="h-5 w-5 animate-spin text-primary" />
@@ -261,6 +319,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                               Verify
                             </Button>
                           ) : null}
+                          </div>
                         </div>
                     </li>
                   )
