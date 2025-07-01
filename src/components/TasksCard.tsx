@@ -1,4 +1,3 @@
-
 "use client";
 
 import type { FC } from 'react';
@@ -224,7 +223,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                         )}
                       </div>
                       <div className="flex items-center pl-4 space-x-2 min-w-[120px] justify-end">
-                        <span className={cn("font-bold", "bg-gradient-to-r from-yellow-400 via-white/90 to-yellow-400 bg-clip-text text-transparent animate-shimmer-wave bg-[length:200%_auto]")}>+{task.reward}</span>
+                        <span className="font-bold text-yellow-400">+{task.reward}</span>
                         {task.completed ? (
                           <CheckCircle2 className="h-5 w-5 text-green-500" />
                         ) : isVerifying ? (
@@ -257,7 +256,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                       Bonus
                   </p>
                   <div className="flex items-center space-x-2">
-                      <span className={cn('font-bold text-lg', selectedTask.completed ? 'text-green-400' : 'bg-gradient-to-r from-yellow-400 via-white/90 to-yellow-400 bg-clip-text text-transparent animate-shimmer-wave bg-[length:200%_auto]')}>
+                      <span className={cn('font-bold text-lg', selectedTask.completed ? 'text-green-400' : 'text-yellow-400')}>
                           +{selectedTask.bonusReward}
                       </span>
                       <Zap className={cn("h-5 w-5", selectedTask.completed ? 'text-green-400' : 'text-yellow-400')} />

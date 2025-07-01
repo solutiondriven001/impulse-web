@@ -1,4 +1,3 @@
-
 "use client";
 
 import type { FC } from 'react';
@@ -60,7 +59,7 @@ const LeaderboardCard: FC<LeaderboardCardProps> = ({ leaderboardData, currentUse
                   </div>
                   <div className="flex items-center font-semibold text-lg text-yellow-400">
                     <Zap className="inline-block h-4 w-4 mr-1" />
-                     <span className="bg-gradient-to-r from-yellow-400 via-white/90 to-yellow-400 bg-clip-text text-transparent animate-shimmer-wave bg-[length:200%_auto]">
+                     <span>
                         {user.score.toLocaleString()}
                     </span>
                     {index === 0 && <Star className="inline ml-1.5 h-4 w-4" fill="currentColor"/>}
