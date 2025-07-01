@@ -21,8 +21,10 @@ const AD_REWARD_STATE_KEY = 'impulseAppAdReward_v1';
 const AdsCard: FC<AdsCardProps> = ({ onAdWatched }) => {
   const [isWatchingAd, setIsWatchingAd] = useState(false);
   const [cooldownTime, setCooldownTime] = useState(0); // Time in ms remaining for cooldown
-  const [nextReward, setNextReward] = useState(1);
+  const [adsWatchedToday, setAdsWatchedToday] = useState(0);
   const { toast } = useToast();
+
+  const nextReward = adsWatchedToday + 2; // Reward starts at 2 and increments
 
   // Effect to load and manage the daily-resetting reward state
   useEffect(() => {
@@ -31,20 +33,22 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched }) => {
     const savedRewardStateJSON = localStorage.getItem(AD_REWARD_STATE_KEY);
     const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
 
-    let currentAdsWatched = 0;
     if (savedRewardStateJSON) {
       try {
         const savedState = JSON.parse(savedRewardStateJSON);
-        // If the last watch was today, use the saved count. Otherwise, it's 0.
+        // If the last watch was today, use the saved count.
         if (savedState.date === today) {
-          currentAdsWatched = savedState.adsWatched;
+          setAdsWatchedToday(savedState.adsWatched || 0);
+        } else {
+          // It's a new day, so we reset.
+           localStorage.setItem(AD_REWARD_STATE_KEY, JSON.stringify({ adsWatched: 0, date: today }));
+           setAdsWatchedToday(0);
         }
       } catch (error) {
         console.error("Failed to parse ad reward state from localStorage", error);
         localStorage.removeItem(AD_REWARD_STATE_KEY);
       }
     }
-    setNextReward(currentAdsWatched + 1);
   }, []);
 
   // Effect to manage the ad cooldown timer
@@ -104,11 +108,9 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched }) => {
         
         // Update and save reward state
         const today = new Date().toISOString().split('T')[0];
-        const newAdsWatchedCount = rewardForThisAd; // Since reward is count + 1, the new count is the reward earned.
+        const newAdsWatchedCount = adsWatchedToday + 1;
+        setAdsWatchedToday(newAdsWatchedCount);
         localStorage.setItem(AD_REWARD_STATE_KEY, JSON.stringify({ adsWatched: newAdsWatchedCount, date: today }));
-        
-        // Update UI for the next reward
-        setNextReward(newAdsWatchedCount + 1);
       }
 
       toast({
