@@ -27,18 +27,6 @@ const TASKS_STATE_KEY = 'impulseAppParentTasksState_v2';
 
 const initialParentTasks: ParentTask[] = [
   {
-    id: 'parent-tegasfx-1',
-    title: 'Register with TegasFX Broker',
-    description: 'Complete all sub-tasks to earn a massive bonus!',
-    bonusReward: 100,
-    completed: false,
-    tasks: [
-        { id: 'subtask-1-register', description: 'Click this link and register your account', reward: 10, completed: false, link: 'https://secure.tegasfx.com/links/go/9924' },
-        { id: 'subtask-2-kyc', description: 'Verify your account after KYC', reward: 15, completed: false },
-        { id: 'subtask-3-copytrade', description: 'Follow my copytrading', reward: 5, completed: false },
-    ],
-  },
-  {
     id: 'parent-socials-1',
     title: 'Connect Your Socials',
     description: 'Follow us on social media and get rewarded!',
@@ -51,6 +39,18 @@ const initialParentTasks: ParentTask[] = [
         { id: 'social-4-instagram', description: 'Follow us on Instagram', reward: 2, completed: false, link: 'https://instagram.com' },
         { id: 'social-5-facebook', description: 'Like our Facebook page', reward: 1, completed: false, link: 'https://facebook.com' },
         { id: 'social-6-whatsapp', description: 'Join our WhatsApp community', reward: 1, completed: false, link: 'https://whatsapp.com' },
+    ],
+  },
+  {
+    id: 'parent-tegasfx-1',
+    title: 'Register with TegasFX Broker',
+    description: 'Complete all sub-tasks to earn a massive bonus!',
+    bonusReward: 100,
+    completed: false,
+    tasks: [
+        { id: 'subtask-1-register', description: 'Click this link and register your account', reward: 10, completed: false, link: 'https://secure.tegasfx.com/links/go/9924' },
+        { id: 'subtask-2-kyc', description: 'Verify your account after KYC', reward: 15, completed: false },
+        { id: 'subtask-3-copytrade', description: 'Follow my copytrading', reward: 5, completed: false },
     ],
   }
 ];
@@ -166,7 +166,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
         <CardHeader>
           <CardTitle className="flex items-center text-2xl font-headline">
             <ListChecks className="mr-3 h-7 w-7 text-primary" />
-            Suggested Task
+            Register with TegasFX Broker
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
