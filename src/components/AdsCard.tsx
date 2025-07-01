@@ -10,40 +10,64 @@ import { useToast } from '@/hooks/use-toast';
 
 interface AdsCardProps {
   onAdWatched: (reward: number) => void;
-  level: number;
 }
 
-const AD_REWARD_BASE = 25;
 const AD_WATCH_DURATION_MS = 5000;
 const AD_COOLDOWN_MS = 60000;
-const AD_STATE_KEY = 'impulseAppAdState_v1';
+// Using separate keys for different concerns and versioning them.
+const AD_COOLDOWN_STATE_KEY = 'impulseAppAdCooldown_v1';
+const AD_REWARD_STATE_KEY = 'impulseAppAdReward_v1';
 
-const AdsCard: FC<AdsCardProps> = ({ onAdWatched, level }) => {
+const AdsCard: FC<AdsCardProps> = ({ onAdWatched }) => {
   const [isWatchingAd, setIsWatchingAd] = useState(false);
   const [cooldownTime, setCooldownTime] = useState(0); // Time in ms remaining for cooldown
+  const [nextReward, setNextReward] = useState(1);
   const { toast } = useToast();
 
-  const adReward = AD_REWARD_BASE + (level -1) * 10;
-
+  // Effect to load and manage the daily-resetting reward state
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    const savedStateJSON = localStorage.getItem(AD_STATE_KEY);
-    if (savedStateJSON) {
+    const savedRewardStateJSON = localStorage.getItem(AD_REWARD_STATE_KEY);
+    const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
+
+    let currentAdsWatched = 0;
+    if (savedRewardStateJSON) {
       try {
-        const savedState = JSON.parse(savedStateJSON);
+        const savedState = JSON.parse(savedRewardStateJSON);
+        // If the last watch was today, use the saved count. Otherwise, it's 0.
+        if (savedState.date === today) {
+          currentAdsWatched = savedState.adsWatched;
+        }
+      } catch (error) {
+        console.error("Failed to parse ad reward state from localStorage", error);
+        localStorage.removeItem(AD_REWARD_STATE_KEY);
+      }
+    }
+    setNextReward(currentAdsWatched + 1);
+  }, []);
+
+  // Effect to manage the ad cooldown timer
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const savedCooldownStateJSON = localStorage.getItem(AD_COOLDOWN_STATE_KEY);
+    if (savedCooldownStateJSON) {
+      try {
+        const savedState = JSON.parse(savedCooldownStateJSON);
         if (savedState.cooldownEndTime) {
           const now = Date.now();
           const remainingCooldown = Math.max(0, savedState.cooldownEndTime - now);
           setCooldownTime(remainingCooldown);
         }
       } catch (error) {
-        console.error("Failed to parse ad state from localStorage", error);
-        localStorage.removeItem(AD_STATE_KEY);
+        console.error("Failed to parse ad cooldown state from localStorage", error);
+        localStorage.removeItem(AD_COOLDOWN_STATE_KEY);
       }
     }
   }, []);
 
+  // Countdown logic for the cooldown timer
   useEffect(() => {
     let timer: NodeJS.Timeout;
     if (cooldownTime > 0) {
@@ -51,7 +75,7 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched, level }) => {
         setCooldownTime(prev => {
           const newTime = Math.max(0, prev - 1000);
           if (newTime === 0 && typeof window !== 'undefined') {
-            localStorage.removeItem(AD_STATE_KEY);
+            localStorage.removeItem(AD_COOLDOWN_STATE_KEY);
           }
           return newTime;
         });
@@ -64,20 +88,32 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched, level }) => {
     if (isWatchingAd || cooldownTime > 0) return;
 
     setIsWatchingAd(true);
+    const rewardForThisAd = nextReward;
 
     setTimeout(() => {
-      onAdWatched(adReward);
+      onAdWatched(rewardForThisAd);
       setIsWatchingAd(false);
+      
+      // Set the cooldown for the next ad
       const newCooldownEndTime = Date.now() + AD_COOLDOWN_MS;
       setCooldownTime(AD_COOLDOWN_MS);
-
+      
       if (typeof window !== 'undefined') {
-        localStorage.setItem(AD_STATE_KEY, JSON.stringify({ cooldownEndTime: newCooldownEndTime }));
+        // Save cooldown state
+        localStorage.setItem(AD_COOLDOWN_STATE_KEY, JSON.stringify({ cooldownEndTime: newCooldownEndTime }));
+        
+        // Update and save reward state
+        const today = new Date().toISOString().split('T')[0];
+        const newAdsWatchedCount = rewardForThisAd; // Since reward is count + 1, the new count is the reward earned.
+        localStorage.setItem(AD_REWARD_STATE_KEY, JSON.stringify({ adsWatched: newAdsWatchedCount, date: today }));
+        
+        // Update UI for the next reward
+        setNextReward(newAdsWatchedCount + 1);
       }
 
       toast({
         title: "Ad Watched!",
-        description: `You earned ${adReward} coins!`,
+        description: `You earned ${rewardForThisAd} coins!`,
       });
     }, AD_WATCH_DURATION_MS);
   };
@@ -95,7 +131,10 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched, level }) => {
       <CardContent className="space-y-4 text-center flex-grow flex flex-col justify-center items-center">
         <Gift className="h-16 w-16 text-yellow-400 animate-bobble" />
         <p className="text-lg text-card-foreground/80">
-          Watch a short ad to earn <span className="font-bold text-yellow-400">{adReward}</span> coins!
+          Watch a short ad to earn <span className="font-bold text-yellow-400">{nextReward}</span> Impulse!
+        </p>
+         <p className="text-sm text-card-foreground/70">
+          Reward increases with each ad you watch today.
         </p>
         {!canWatchAd && cooldownTime > 0 && (
           <p className="text-sm text-card-foreground/60">
