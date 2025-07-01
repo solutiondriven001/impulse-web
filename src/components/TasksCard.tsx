@@ -5,7 +5,7 @@ import type { FC } from 'react';
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, ListChecks, ExternalLink, ChevronRight, Award } from 'lucide-react';
+import { CheckCircle2, ListChecks, ExternalLink, ChevronRight, Award, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { ParentTask } from '@/types';
 import { Separator } from '@/components/ui/separator';
@@ -58,6 +58,7 @@ const initialParentTasks: ParentTask[] = [
 const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
   const [parentTasks, setParentTasks] = useState<ParentTask[]>(initialParentTasks);
   const [selectedTask, setSelectedTask] = useState<ParentTask | null>(null);
+  const [verifyingTaskId, setVerifyingTaskId] = useState<string | null>(null);
   const { toast } = useToast();
 
   // Load state from localStorage on mount
@@ -105,29 +106,36 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
   }, [parentTasks, onTaskCompleted, toast]);
 
   const handleCompleteTask = (parentTaskId: string, taskId: string) => {
-    const newParentTasks = parentTasks.map(pTask => {
-      if (pTask.id === parentTaskId) {
-        const taskIndex = pTask.tasks.findIndex(t => t.id === taskId);
-        if (taskIndex !== -1 && !pTask.tasks[taskIndex].completed) {
-          const taskToComplete = pTask.tasks[taskIndex];
-          onTaskCompleted(taskToComplete.reward);
+    if (verifyingTaskId) return;
 
-          toast({
-            title: "Task Verified!",
-            description: `You earned ${taskToComplete.reward} coins.`,
-          });
-          
-          const newTasks = [...pTask.tasks];
-          newTasks[taskIndex] = { ...newTasks[taskIndex], completed: true };
-          const updatedParentTask = { ...pTask, tasks: newTasks };
-          
-          setSelectedTask(updatedParentTask);
-          return updatedParentTask;
+    setVerifyingTaskId(taskId);
+
+    setTimeout(() => {
+      const newParentTasks = parentTasks.map(pTask => {
+        if (pTask.id === parentTaskId) {
+          const taskIndex = pTask.tasks.findIndex(t => t.id === taskId);
+          if (taskIndex !== -1 && !pTask.tasks[taskIndex].completed) {
+            const taskToComplete = pTask.tasks[taskIndex];
+            onTaskCompleted(taskToComplete.reward);
+
+            toast({
+              title: "Task Verified!",
+              description: `You earned ${taskToComplete.reward} coins.`,
+            });
+            
+            const newTasks = [...pTask.tasks];
+            newTasks[taskIndex] = { ...newTasks[taskIndex], completed: true };
+            const updatedParentTask = { ...pTask, tasks: newTasks };
+            
+            setSelectedTask(updatedParentTask);
+            return updatedParentTask;
+          }
         }
-      }
-      return pTask;
-    });
-    setParentTasks(newParentTasks);
+        return pTask;
+      });
+      setParentTasks(newParentTasks);
+      setVerifyingTaskId(null);
+    }, 1500);
   };
 
   const getProgress = (task: ParentTask) => {
@@ -190,47 +198,53 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
               </DialogHeader>
               <ScrollArea className="max-h-[60vh] pr-4 -mr-4">
               <ul className="space-y-3 py-4">
-                {selectedTask.tasks.map((task) => (
-                  <li
-                    key={task.id}
-                    className={`flex items-center justify-between p-3 rounded-lg transition-all duration-300 ${
-                      task.completed ? 'bg-black/20 opacity-60' : 'bg-black/20 hover:bg-black/30'
-                    }`}
-                  >
-                    <div className="flex-1 space-y-1">
-                      <p className={`text-sm ${task.completed ? 'line-through text-card-foreground/50' : 'text-card-foreground/90'}`}>
-                        {task.description}
-                      </p>
-                      {task.link && !task.completed && (
-                        <a
-                          href={task.link}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center text-xs text-primary/80 hover:text-primary hover:underline"
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          Go to link <ExternalLink className="ml-1.5 h-3 w-3" />
-                        </a>
-                      )}
-                    </div>
-                    <div className="flex items-center pl-4 space-x-2">
-                      <span className="font-bold text-yellow-400">+{task.reward}</span>
-                      {!task.completed ? (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleCompleteTask(selectedTask.id, task.id)}
-                          className="text-green-400 hover:text-green-300 hover:bg-green-500/10"
-                          aria-label={`Complete task: ${task.description}`}
-                        >
-                          <CheckCircle2 className="h-5 w-5" />
-                        </Button>
-                      ) : (
-                        <CheckCircle2 className="h-5 w-5 text-green-500" />
-                      )}
-                    </div>
-                  </li>
-                ))}
+                {selectedTask.tasks.map((task) => {
+                  const isVerifying = verifyingTaskId === task.id;
+                  return (
+                    <li
+                      key={task.id}
+                      className={`flex items-center justify-between p-3 rounded-lg transition-all duration-300 ${
+                        task.completed ? 'bg-black/20 opacity-60' : 'bg-black/20 hover:bg-black/30'
+                      }`}
+                    >
+                      <div className="flex-1 space-y-1">
+                        <p className={`text-sm ${task.completed ? 'line-through text-card-foreground/50' : 'text-card-foreground/90'}`}>
+                          {task.description}
+                        </p>
+                        {task.link && !task.completed && (
+                          <a
+                            href={task.link}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center text-xs text-primary/80 hover:text-primary hover:underline"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            Go to link <ExternalLink className="ml-1.5 h-3 w-3" />
+                          </a>
+                        )}
+                      </div>
+                      <div className="flex items-center pl-4 space-x-2 min-w-[80px] justify-end">
+                        <span className="font-bold text-yellow-400">+{task.reward}</span>
+                        {task.completed ? (
+                          <CheckCircle2 className="h-5 w-5 text-green-500" />
+                        ) : isVerifying ? (
+                          <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                        ) : (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => handleCompleteTask(selectedTask.id, task.id)}
+                            className="text-green-400 hover:text-green-300 hover:bg-green-500/10"
+                            aria-label={`Complete task: ${task.description}`}
+                            disabled={!!verifyingTaskId}
+                          >
+                            <CheckCircle2 className="h-5 w-5" />
+                          </Button>
+                        )}
+                      </div>
+                    </li>
+                  )
+                })}
               </ul>
               <Separator className="my-4 bg-white/10" />
               <div className={`flex items-center justify-between p-3 rounded-lg transition-all duration-300 ${
