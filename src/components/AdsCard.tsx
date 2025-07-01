@@ -15,7 +15,7 @@ interface AdsCardProps {
 const AD_WATCH_DURATION_MS = 5000;
 // Cooldown now increases with each ad watched
 const BASE_AD_COOLDOWN_MS = 60000; // 1 minute
-const COOLDOWN_INCREMENT_MS = 60000; // 60 seconds per ad watched
+const COOLDOWN_INCREMENT_MS = 300000; // 5 minutes per ad watched
 // Using separate keys for different concerns and versioning them.
 const AD_COOLDOWN_STATE_KEY = 'impulseAppAdCooldown_v1';
 const AD_REWARD_STATE_KEY = 'impulseAppAdReward_v1';
@@ -124,6 +124,12 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched }) => {
   };
 
   const canWatchAd = !isWatchingAd && cooldownTime === 0;
+  const formatCooldown = (ms: number) => {
+    const totalSeconds = Math.ceil(ms / 1000);
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes}m ${seconds}s`;
+  }
 
   return (
     <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300 h-full flex flex-col">
@@ -143,7 +149,7 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched }) => {
         </p>
         {!canWatchAd && cooldownTime > 0 && (
           <p className="text-sm text-card-foreground/60">
-            Next ad available in {Math.ceil(cooldownTime / 1000)}s
+            Next ad available in {formatCooldown(cooldownTime)}
           </p>
         )}
       </CardContent>
