@@ -314,9 +314,9 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
             <p className="text-lg text-card-foreground/80">
                 {isMining ? 'Yield' : 'Potential Yield'}: <Zap className={cn("inline h-5 w-5 text-yellow-400 -mt-1 mr-1", isConnected && 'animate-pulse')} /> <span className={cn(
                   "font-bold tabular-nums",
-                  isMining
-                    ? "bg-gradient-to-r from-yellow-400 via-white/90 to-yellow-400 bg-clip-text text-transparent animate-shimmer-wave bg-[length:200%_auto]"
-                    : "text-yellow-400"
+                  isClaimable
+                    ? "text-yellow-400"
+                    : "bg-gradient-to-r from-yellow-400 via-white/90 to-yellow-400 bg-clip-text text-transparent animate-shimmer-wave bg-[length:200%_auto]"
                 )}>{isMining ? liveCoins.toFixed(5) : coinsPerCycle}</span>
             </p>
         </div>

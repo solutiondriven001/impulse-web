@@ -5,7 +5,7 @@ import type { FC } from 'react';
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, ListChecks, ExternalLink, ChevronRight, Award, Loader2 } from 'lucide-react';
+import { CheckCircle2, ListChecks, ExternalLink, ChevronRight, Award, Loader2, Zap } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { ParentTask } from '@/types';
 import { Separator } from '@/components/ui/separator';
@@ -17,6 +17,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { cn } from '@/lib/utils';
 
 interface TasksCardProps {
   onTaskCompleted: (reward: number) => void;
@@ -25,18 +26,6 @@ interface TasksCardProps {
 const TASKS_STATE_KEY = 'impulseAppParentTasksState_v2';
 
 const initialParentTasks: ParentTask[] = [
-  {
-    id: 'parent-tegasfx-1',
-    title: 'Suggested Task',
-    description: 'Complete all sub-tasks to earn a massive bonus!',
-    bonusReward: 100,
-    completed: false,
-    tasks: [
-        { id: 'subtask-1-register', description: 'Click this link and register your account', reward: 10, completed: false, link: 'https://secure.tegasfx.com/links/go/9924' },
-        { id: 'subtask-2-kyc', description: 'Verify your account after KYC', reward: 15, completed: false },
-        { id: 'subtask-3-copytrade', description: 'Follow my copytrading', reward: 5, completed: false },
-    ],
-  },
   {
     id: 'parent-socials-1',
     title: 'Connect Your Socials',
@@ -50,6 +39,18 @@ const initialParentTasks: ParentTask[] = [
         { id: 'social-4-instagram', description: 'Follow us on Instagram', reward: 2, completed: false, link: 'https://instagram.com' },
         { id: 'social-5-facebook', description: 'Like our Facebook page', reward: 1, completed: false, link: 'https://facebook.com' },
         { id: 'social-6-whatsapp', description: 'Join our WhatsApp community', reward: 1, completed: false, link: 'https://whatsapp.com' },
+    ],
+  },
+  {
+    id: 'parent-tegasfx-1',
+    title: 'Register with TegasFX Broker',
+    description: 'Complete all sub-tasks to earn a massive bonus!',
+    bonusReward: 100,
+    completed: false,
+    tasks: [
+        { id: 'subtask-1-register', description: 'Click this link and register your account', reward: 10, completed: false, link: 'https://secure.tegasfx.com/links/go/9924' },
+        { id: 'subtask-2-kyc', description: 'Verify your account after KYC', reward: 15, completed: false },
+        { id: 'subtask-3-copytrade', description: 'Follow my copytrading', reward: 5, completed: false },
     ],
   }
 ];
@@ -151,7 +152,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
         <CardHeader>
           <CardTitle className="flex items-center text-2xl font-headline">
             <ListChecks className="mr-3 h-7 w-7 text-primary" />
-            Challenges
+            Suggested task
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -176,7 +177,6 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                 ) : (
                   <div className="flex items-center space-x-4">
                     <div className="text-right">
-                        <p className="font-bold text-yellow-400">+{task.bonusReward} Bonus</p>
                         <p className="text-xs text-card-foreground/60">{progress.count}/{progress.total} Done</p>
                     </div>
                     <ChevronRight className="h-6 w-6 text-card-foreground/50"/>
@@ -223,22 +223,24 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                           </a>
                         )}
                       </div>
-                      <div className="flex items-center pl-4 space-x-2 min-w-[80px] justify-end">
-                        <span className="font-bold text-yellow-400">+{task.reward}</span>
+                      <div className="flex items-center pl-4 space-x-2 min-w-[120px] justify-end">
+                        <span className={cn("font-bold", "bg-gradient-to-r from-yellow-400 via-white/90 to-yellow-400 bg-clip-text text-transparent animate-shimmer-wave bg-[length:200%_auto]")}>+{task.reward}</span>
                         {task.completed ? (
                           <CheckCircle2 className="h-5 w-5 text-green-500" />
                         ) : isVerifying ? (
-                          <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                           <Button variant="ghost" size="sm" disabled className="w-[80px]">
+                                <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                            </Button>
                         ) : (
                           <Button
-                            variant="ghost"
+                            variant="outline"
                             size="sm"
                             onClick={() => handleCompleteTask(selectedTask.id, task.id)}
-                            className="text-card-foreground/70 hover:text-card-foreground hover:bg-white/10"
-                            aria-label={`Complete task: ${task.description}`}
+                            className="border-primary/50 hover:bg-primary/20 text-primary-foreground/80 hover:text-primary-foreground w-[80px] h-auto py-1 px-2 text-xs"
+                            aria-label={`Verify task: ${task.description}`}
                             disabled={!!verifyingTaskId}
                           >
-                            <CheckCircle2 className="h-5 w-5" />
+                            Verify
                           </Button>
                         )}
                       </div>
@@ -252,12 +254,13 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
               }`}>
                   <p className="font-bold text-base text-card-foreground flex items-center">
                       <Award className="mr-2 h-5 w-5" />
-                      Bonus for completing all tasks
+                      Bonus
                   </p>
                   <div className="flex items-center space-x-2">
-                      <span className={`font-bold text-lg ${selectedTask.completed ? 'text-green-400' : 'text-yellow-400'}`}>
-                          +{selectedTask.bonusReward} Impulse
+                      <span className={cn('font-bold text-lg', selectedTask.completed ? 'text-green-400' : 'bg-gradient-to-r from-yellow-400 via-white/90 to-yellow-400 bg-clip-text text-transparent animate-shimmer-wave bg-[length:200%_auto]')}>
+                          +{selectedTask.bonusReward}
                       </span>
+                      <Zap className={cn("h-5 w-5", selectedTask.completed ? 'text-green-400' : 'text-yellow-400')} />
                       {selectedTask.completed && <CheckCircle2 className="h-6 w-6 text-green-400" />}
                   </div>
               </div>

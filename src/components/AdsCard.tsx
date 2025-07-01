@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
 import { Button } from '@/components/ui/button';
 import { PlaySquare, Gift, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 interface AdsCardProps {
   onAdWatched: (reward: number) => void;
@@ -142,7 +143,7 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched }) => {
       <CardContent className="space-y-4 text-center flex-grow flex flex-col justify-center items-center">
         <Gift className="h-16 w-16 text-yellow-400 animate-bobble" />
         <p className="text-lg text-card-foreground/80">
-          Watch a short ad to earn <span className="font-bold text-yellow-400">{nextReward}</span> Impulse!
+          Watch a short ad to earn <span className={cn("font-bold", "bg-gradient-to-r from-yellow-400 via-white/90 to-yellow-400 bg-clip-text text-transparent animate-shimmer-wave bg-[length:200%_auto]")}>{nextReward}</span> Impulse!
         </p>
          <p className="text-sm text-card-foreground/70">
           Reward increases with each ad you watch.

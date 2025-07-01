@@ -7,6 +7,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Trophy, Star, Zap } from 'lucide-react';
 import type { LeaderboardEntry } from '@/types';
+import { cn } from '@/lib/utils';
 
 interface LeaderboardCardProps {
   leaderboardData: LeaderboardEntry[];
@@ -59,7 +60,9 @@ const LeaderboardCard: FC<LeaderboardCardProps> = ({ leaderboardData, currentUse
                   </div>
                   <div className="flex items-center font-semibold text-lg text-yellow-400">
                     <Zap className="inline-block h-4 w-4 mr-1" />
-                    {user.score.toLocaleString()}
+                     <span className="bg-gradient-to-r from-yellow-400 via-white/90 to-yellow-400 bg-clip-text text-transparent animate-shimmer-wave bg-[length:200%_auto]">
+                        {user.score.toLocaleString()}
+                    </span>
                     {index === 0 && <Star className="inline ml-1.5 h-4 w-4" fill="currentColor"/>}
                   </div>
                 </li>
