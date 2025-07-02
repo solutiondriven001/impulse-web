@@ -277,11 +277,8 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
     <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300 h-full flex flex-col">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-baseline text-2xl font-headline">
-            <span>Coin Generation</span>
-            <span className="ml-3 text-base font-normal text-primary tracking-wide">
-              {getLevelName(level)} - Lvl {level}
-            </span>
+          <CardTitle className="flex items-center text-2xl font-headline">
+            Coin Generation
           </CardTitle>
           <AlertDialog>
             <AlertDialogTrigger asChild>
@@ -334,6 +331,9 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
         )}
          {!isMining && !isClaimable && <p className="mt-2 text-sm text-card-foreground/60">Click "Generate" to start a new cycle.</p>}
          {isMining && <p className="mt-2 text-sm text-card-foreground/60">Mining in progress...</p>}
+        <p className="text-base font-normal text-primary tracking-wide pt-2">
+          {getLevelName(level)} - Lvl {level}
+        </p>
       </CardContent>
       <CardFooter>
         <Button
