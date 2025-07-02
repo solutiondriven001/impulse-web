@@ -24,7 +24,7 @@ interface TasksCardProps {
   onTaskCompleted: (reward: number) => void;
 }
 
-const TASKS_STATE_KEY = 'impulseAppParentTasks_v9';
+const TASKS_STATE_KEY = 'impulseAppParentTasks_v10';
 
 const initialParentTasks: ParentTask[] = [
   {
@@ -74,7 +74,6 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
         if (savedState) {
             try {
                 const parsedState = JSON.parse(savedState);
-                // Simple validation to ensure the loaded state has the expected structure
                 if (Array.isArray(parsedState) && parsedState.every(p => p.hasOwnProperty('tasks'))) {
                     setParentTasks(parsedState);
                 } else {
@@ -189,7 +188,6 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
   const handleDialogChange = (isOpen: boolean) => {
     if (!isOpen) {
       setSelectedTask(null);
-      // Reset states when dialog closes
       setClickedLinks(new Set()); 
       setSelectedFiles({});
       setTextInputValues({});
@@ -262,10 +260,8 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                   } else if (task.link) {
                       canVerify = clickedLinks.has(task.id);
                   } else {
-                      canVerify = true; // For tasks with no pre-requisite
+                      canVerify = true; 
                   }
-                  
-                   const showActionContainer = task.completed || isVerifying || canVerify;
 
                   return (
                     <li
@@ -329,28 +325,30 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                         )}
                       </div>
                       <div className="flex items-center space-x-2">
-                        <span className="font-bold text-yellow-400">
-                          +{task.reward}
-                        </span>
-                        <div className="flex items-center justify-center w-20 h-9">
-                            {task.completed ? (
-                              <CheckCircle2 className="h-5 w-5 text-green-500" />
-                            ) : isVerifying ? (
-                              <Button variant="ghost" size="sm" disabled className="w-full">
-                                <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                              </Button>
-                            ) : canVerify ? (
-                              <Button
-                                size="sm"
-                                onClick={() => handleCompleteTask(selectedTask.id, task.id)}
-                                className="bg-primary hover:bg-primary/90 text-primary-foreground w-full"
-                                aria-label={`Verify task: ${task.description}`}
-                                disabled={!!verifyingTaskId}
-                              >
-                                Verify
-                              </Button>
-                            ) : null}
-                          </div>
+                          <span className="font-bold text-yellow-400">
+                              +{task.reward}
+                          </span>
+                          {(task.completed || isVerifying || canVerify) && (
+                              <div className="flex items-center justify-center w-20 h-9">
+                                  {task.completed ? (
+                                      <CheckCircle2 className="h-5 w-5 text-green-500" />
+                                  ) : isVerifying ? (
+                                      <Button variant="ghost" size="sm" disabled className="w-full">
+                                          <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                                      </Button>
+                                  ) : (
+                                      <Button
+                                          size="sm"
+                                          onClick={() => handleCompleteTask(selectedTask.id, task.id)}
+                                          className="bg-primary hover:bg-primary/90 text-primary-foreground w-full"
+                                          aria-label={`Verify task: ${task.description}`}
+                                          disabled={!!verifyingTaskId}
+                                      >
+                                          Verify
+                                      </Button>
+                                  )}
+                              </div>
+                          )}
                       </div>
                     </li>
                   )
@@ -389,3 +387,5 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
 };
 
 export default TasksCard;
+    
+    
