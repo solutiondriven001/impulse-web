@@ -62,7 +62,7 @@ export default function HomePage() {
         <section className="p-6 bg-white border rounded-xl shadow-sm">
           <h2 className="text-2xl font-headline font-semibold mb-4 flex items-center text-foreground">
             <Brain className="w-7 h-7 mr-2 text-primary" />
-            How to Play Impulse
+            How to mine IMPULSE
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
             <div className="p-4 bg-background rounded-lg border">
