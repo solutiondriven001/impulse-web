@@ -71,7 +71,7 @@ export default function HomePage() {
             </div>
             <div className="p-4 bg-background rounded-lg border">
               <h3 className="font-semibold flex items-center mb-1 text-foreground"><Award className="w-5 h-5 mr-1.5 text-accent"/>Complete Tasks</h3>
-              <p className="text-foreground/80">Power up your earnings by completing special tasks. Each one gives you a coin reward, with a big bonus for finishing a set!</p>
+              <p className="text-foreground/80">Take on special challenges, from social media follows to broker registrations. Each completed task boosts your earnings!</p>
             </div>
             <div className="p-4 bg-background rounded-lg border">
               <h3 className="font-semibold flex items-center mb-1 text-foreground"><Gift className="w-5 h-5 mr-1.5 text-accent"/>Watch Ads</h3>
