@@ -20,6 +20,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import { getLevelName } from '@/lib/levels';
 
 interface MiningCardProps {
   onCoinsClaimed: (amount: number) => void;
@@ -276,8 +277,11 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
     <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300 h-full flex flex-col">
       <CardHeader>
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center text-2xl font-headline">
-            Coin Generation
+          <CardTitle className="flex items-baseline text-2xl font-headline">
+            <span>Coin Generation</span>
+            <span className="ml-3 text-base font-normal text-primary tracking-wide">
+              {getLevelName(level)} - Lvl {level}
+            </span>
           </CardTitle>
           <AlertDialog>
             <AlertDialogTrigger asChild>

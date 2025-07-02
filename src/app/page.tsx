@@ -47,7 +47,7 @@ export default function HomePage() {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <MiningCard onCoinsClaimed={handleCoinsUpdate} level={level} />
-            <AdsCard onAdWatched={handleCoinsUpdate} onLevelUpgrade={levelUp} />
+            <AdsCard onAdWatched={handleCoinsUpdate} onLevelUpgrade={levelUp} level={level} />
           </div>
           
           <div className="w-full">

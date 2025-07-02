@@ -9,10 +9,12 @@ import { PlaySquare, Gift, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { addDailyEarning } from '@/lib/earnings';
+import { getLevelName } from '@/lib/levels';
 
 interface AdsCardProps {
   onAdWatched: (reward: number) => void;
   onLevelUpgrade: () => void;
+  level: number;
 }
 
 const AD_WATCH_DURATION_MS = 5000;
@@ -22,7 +24,7 @@ const AD_COOLDOWN_STATE_KEY = 'impulseAppAdCooldown_v1';
 const AD_REWARD_STATE_KEY = 'impulseAppAdReward_v1';
 const LEVEL_UP_ADS_GOAL = 20;
 
-const AdsCard: FC<AdsCardProps> = ({ onAdWatched, onLevelUpgrade }) => {
+const AdsCard: FC<AdsCardProps> = ({ onAdWatched, onLevelUpgrade, level }) => {
   const [isWatchingAd, setIsWatchingAd] = useState(false);
   const [cooldownTime, setCooldownTime] = useState(0); // Time in ms remaining for cooldown
   const [adsWatchedToday, setAdsWatchedToday] = useState(0);
@@ -116,10 +118,11 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched, onLevelUpgrade }) => {
         localStorage.setItem(AD_REWARD_STATE_KEY, JSON.stringify({ adsWatched: newAdsWatchedCount, date: today }));
 
         if (newAdsWatchedCount === LEVEL_UP_ADS_GOAL) {
+          const newLevel = level + 1;
           onLevelUpgrade();
           toast({
-            title: "Level Up!",
-            description: "You've watched 20 ads today and increased your mining power!",
+            title: `Level Up to ${getLevelName(newLevel)}!`,
+            description: `You've watched 20 ads and are now Level ${newLevel}. Your mining power has increased!`,
           });
         } else {
             toast({

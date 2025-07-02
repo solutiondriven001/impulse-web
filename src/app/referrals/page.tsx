@@ -10,13 +10,14 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
 import { Button } from '@/components/ui/button';
 import { Users, Copy, Gift, UserPlus, Loader2 } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
+import { getLevelName } from '@/lib/levels';
 
 const REFERRAL_COUNT_KEY = 'impulseAppReferralCount_v1';
 const REFERRAL_CODE_KEY = 'impulseAppReferralCode_v1';
 const GOAL = 5;
 
 export default function ReferralsPage() {
-  const { currentCoins, levelUp, isInitialized } = useUserStats();
+  const { currentCoins, level, levelUp, isInitialized } = useUserStats();
   const [referralCount, setReferralCount] = useState(0);
   const [referralCode, setReferralCode] = useState('');
   const { toast } = useToast();
@@ -48,10 +49,11 @@ export default function ReferralsPage() {
     });
 
     if (newCount > 0 && newCount % GOAL === 0) {
+      const newLevel = level + 1;
       levelUp();
       toast({
-        title: "Level Up!",
-        description: `You've invited ${GOAL} friends and increased your mining power!`,
+        title: `Level Up to ${getLevelName(newLevel)}!`,
+        description: `You've invited ${GOAL} friends and are now Level ${newLevel}. Your mining power has increased!`,
         variant: 'default',
       });
     }
