@@ -64,7 +64,7 @@ const CustomXAxisTick = ({ x, y, payload }: any) => {
 const renderLegend = () => {
     const legendItems = [
         { value: 'Earnings', color: 'hsl(var(--primary))' },
-        { value: 'Today', color: 'hsl(var(--accent))' },
+        { value: 'Today', color: 'hsl(0, 0%, 80%)' },
       ];
   return (
     <div className="flex justify-center items-center space-x-6 mt-4 text-sm text-card-foreground/80">
@@ -101,8 +101,8 @@ export const EarningsChart = ({ data }: EarningsChartProps) => {
               <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity={0.2} />
             </linearGradient>
             <linearGradient id="todayBarGradient" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="hsl(var(--accent))" stopOpacity={0.8} />
-              <stop offset="100%" stopColor="hsl(var(--accent))" stopOpacity={0.4} />
+              <stop offset="0%" stopColor="hsl(0, 0%, 90%)" stopOpacity={0.8} />
+              <stop offset="100%" stopColor="hsl(0, 0%, 70%)" stopOpacity={0.4} />
             </linearGradient>
           </defs>
           <XAxis
