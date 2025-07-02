@@ -62,7 +62,7 @@ export default function HomePage() {
         <section className="p-6 bg-white border rounded-xl shadow-sm">
           <h2 className="text-2xl font-headline font-semibold mb-4 flex items-center text-foreground">
             <Brain className="w-7 h-7 mr-2 text-primary" />
-            How to mine IMPULSE
+            How to mine Impulse
           </h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
             <div className="p-4 bg-background rounded-lg border">
@@ -71,7 +71,7 @@ export default function HomePage() {
             </div>
             <div className="p-4 bg-background rounded-lg border">
               <h3 className="font-semibold flex items-center mb-1 text-foreground"><Award className="w-5 h-5 mr-1.5 text-accent"/>Complete Tasks</h3>
-              <p className="text-foreground/80">Use the AI Task Suggester to find new challenges. Completing tasks earns you bonus coins.</p>
+              <p className="text-foreground/80">Power up your earnings by completing special tasks. Each one gives you a coin reward, with a big bonus for finishing a set!</p>
             </div>
             <div className="p-4 bg-background rounded-lg border">
               <h3 className="font-semibold flex items-center mb-1 text-foreground"><Gift className="w-5 h-5 mr-1.5 text-accent"/>Watch Ads</h3>
