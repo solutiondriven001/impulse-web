@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { FC } from 'react';
@@ -42,10 +43,10 @@ const LeaderboardCard: FC<LeaderboardCardProps> = ({ leaderboardData, currentUse
                   className={`flex items-center p-3 rounded-lg transition-all duration-200
                     ${user.isCurrentUser ? 'bg-black/40 ring-2 ring-primary' : 'bg-black/20 hover:bg-black/30'}`}
                 >
-                  <span className={`flex items-center justify-center mr-4 font-bold w-8 text-lg ${index === 0 ? 'text-yellow-400' : index === 1 ? 'text-slate-400' : 'text-card-foreground/70'}`}>
+                  <span className={`flex items-center justify-center mr-4 font-bold w-8 text-lg ${index === 0 ? 'text-yellow-400' : (index === 1 || index === 2) ? 'text-slate-400' : 'text-card-foreground/70'}`}>
                     {index === 0 && <Star className="inline-block mr-1 h-4 w-4" fill="currentColor"/>}
                     {index === 1 && <Star className="inline-block mr-1 h-4 w-4" fill="currentColor"/>}
-                    {index === 2 && <Star className="inline-block mr-1 h-4 w-4 text-slate-400" />}
+                    {index === 2 && <Star className="inline-block mr-1 h-4 w-4" />}
                     {index + 1}
                   </span>
                   <Avatar className="h-10 w-10 mr-4 border-2 border-primary/50">
