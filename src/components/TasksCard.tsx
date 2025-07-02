@@ -47,7 +47,7 @@ const initialParentTasks: ParentTask[] = [
     id: 'parent-tegasfx-1',
     title: 'Register with TegasFX Broker',
     description: 'Complete all sub-tasks to earn a massive bonus!',
-    bonusReward: 100,
+    bonusReward: 10,
     completed: false,
     tasks: [
         { id: 'subtask-0-name', description: 'Enter your government name', reward: 5, completed: false, requiresTextInput: true },

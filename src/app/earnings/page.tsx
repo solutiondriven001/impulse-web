@@ -10,6 +10,7 @@ import { LineChart, RefreshCw, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { subDays, format } from 'date-fns';
 import { useUserStats } from '@/hooks/use-user-stats';
+import ReferralsCard from '@/components/ReferralsCard';
 
 export default function EarningsPage() {
   const { currentCoins, isInitialized } = useUserStats();
@@ -57,7 +58,7 @@ export default function EarningsPage() {
   return (
     <div className="flex flex-col min-h-screen">
       <Header currentCoins={currentCoins} />
-      <main className="flex-grow container mx-auto p-4 md:p-6 lg:p-8">
+      <main className="flex-grow container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
         <Card className="shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="flex items-center text-2xl font-headline">
@@ -86,6 +87,7 @@ export default function EarningsPage() {
             )}
           </CardContent>
         </Card>
+        <ReferralsCard />
       </main>
       <footer className="text-center p-4 text-sm text-foreground/70">
         © {new Date().getFullYear()} Impulse. All rights reserved.

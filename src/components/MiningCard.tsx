@@ -41,7 +41,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
   const [liveCoins, setLiveCoins] = useState(0);
   const { toast } = useToast();
 
-  const coinsPerCycle = level;
+  const coinsPerCycle = level + 1;
   const levelDetails = getLevelDetails(level);
   const LevelIcon = levelDetails.icon;
 

@@ -18,8 +18,7 @@ interface AdsCardProps {
 }
 
 const AD_WATCH_DURATION_MS = 5000;
-const BASE_AD_COOLDOWN_MS = 60000; // 1 minute
-const COOLDOWN_INCREMENT_MS = 300000; // 5 minutes per ad watched
+const COOLDOWN_PER_AD_MS = 600000; // 10 minutes
 const AD_COOLDOWN_STATE_KEY = 'impulseAppAdCooldown_v1';
 const AD_REWARD_STATE_KEY = 'impulseAppAdReward_v1';
 const LEVEL_UP_ADS_GOAL = 20;
@@ -105,7 +104,8 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched, onLevelUpgrade, level }) => {
       addDailyEarning('ads', rewardForThisAd);
       setIsWatchingAd(false);
       
-      const nextCooldownDuration = BASE_AD_COOLDOWN_MS + (adsWatchedToday * COOLDOWN_INCREMENT_MS);
+      const newAdsWatchedCount = adsWatchedToday + 1;
+      const nextCooldownDuration = newAdsWatchedCount * COOLDOWN_PER_AD_MS;
       const newCooldownEndTime = Date.now() + nextCooldownDuration;
       setCooldownTime(nextCooldownDuration);
       
@@ -113,7 +113,6 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched, onLevelUpgrade, level }) => {
         localStorage.setItem(AD_COOLDOWN_STATE_KEY, JSON.stringify({ cooldownEndTime: newCooldownEndTime }));
         
         const today = new Date().toISOString().split('T')[0];
-        const newAdsWatchedCount = adsWatchedToday + 1;
         setAdsWatchedToday(newAdsWatchedCount);
         localStorage.setItem(AD_REWARD_STATE_KEY, JSON.stringify({ adsWatched: newAdsWatchedCount, date: today }));
 
