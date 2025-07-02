@@ -44,6 +44,10 @@ const CustomTooltip = ({ active, payload }: any) => {
 
 // Custom X-axis ticks to show Day and Month
 const CustomXAxisTick = ({ x, y, payload }: any) => {
+  // Add a guard clause to prevent crash if payload or its nested payload is not what we expect
+  if (!payload || !payload.payload) {
+    return null;
+  }
   return (
     <g transform={`translate(${x},${y})`}>
       <text x={0} y={0} dy={16} textAnchor="middle" fill="hsl(var(--card-foreground))" className="text-sm font-medium">
