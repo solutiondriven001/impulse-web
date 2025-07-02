@@ -1,27 +1,35 @@
 
 'use client';
 
+import type { ElementType } from 'react';
+import { Feather, Award, Pickaxe, Gem, Crown, type LucideProps } from 'lucide-react';
+
+export interface LevelDetails {
+    name: string;
+    icon: ElementType<LucideProps>;
+}
+
 /**
- * Returns the name for a given user level.
+ * Returns the name and icon for a given user level.
  * @param level The user's current level.
- * @returns The name of the level.
+ * @returns The details of the level.
  */
-export function getLevelName(level: number): string {
-  const names: { [key: number]: string } = {
-    1: 'Novice',
-    2: 'Apprentice',
-    3: 'Miner',
-    4: 'Expert',
-    5: 'Master',
+export function getLevelDetails(level: number): LevelDetails {
+  const details: { [key: number]: LevelDetails } = {
+    1: { name: 'Novice', icon: Feather },
+    2: { name: 'Apprentice', icon: Award },
+    3: { name: 'Miner', icon: Pickaxe },
+    4: { name: 'Expert', icon: Gem },
+    5: { name: 'Master', icon: Crown },
   };
 
   if (level >= 5) {
-    return names[5];
+    return details[5];
   }
   
-  if (names[level]) {
-    return names[level];
+  if (details[level]) {
+    return details[level];
   }
 
-  return 'Novice'; // Default for level 0 or less
+  return details[1]; // Default for level 0 or less
 }

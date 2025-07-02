@@ -20,7 +20,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { getLevelName } from '@/lib/levels';
+import { getLevelDetails } from '@/lib/levels';
 
 interface MiningCardProps {
   onCoinsClaimed: (amount: number) => void;
@@ -42,6 +42,9 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
   const { toast } = useToast();
 
   const coinsPerCycle = level;
+  const levelDetails = getLevelDetails(level);
+  const LevelIcon = levelDetails.icon;
+
 
   const handleBurn = () => {
     setIsMining(false);
@@ -331,9 +334,10 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
         )}
          {!isMining && !isClaimable && <p className="mt-2 text-sm text-card-foreground/60">Click "Generate" to start a new cycle.</p>}
          {isMining && <p className="mt-2 text-sm text-card-foreground/60">Mining in progress...</p>}
-        <p className="text-base font-normal text-primary tracking-wide pt-2">
-          {getLevelName(level)} - Lvl {level}
-        </p>
+        <div className="flex items-center justify-center space-x-2 text-base font-normal text-primary tracking-wide pt-2">
+            <LevelIcon className="h-5 w-5" />
+            <p>{levelDetails.name} - Lvl {level}</p>
+        </div>
       </CardContent>
       <CardFooter>
         <Button

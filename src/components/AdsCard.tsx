@@ -9,7 +9,7 @@ import { PlaySquare, Gift, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import { addDailyEarning } from '@/lib/earnings';
-import { getLevelName } from '@/lib/levels';
+import { getLevelDetails } from '@/lib/levels';
 
 interface AdsCardProps {
   onAdWatched: (reward: number) => void;
@@ -119,9 +119,10 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched, onLevelUpgrade, level }) => {
 
         if (newAdsWatchedCount === LEVEL_UP_ADS_GOAL) {
           const newLevel = level + 1;
+          const newLevelDetails = getLevelDetails(newLevel);
           onLevelUpgrade();
           toast({
-            title: `Level Up to ${getLevelName(newLevel)}!`,
+            title: `Level Up to ${newLevelDetails.name}!`,
             description: `You've watched 20 ads and are now Level ${newLevel}. Your mining power has increased!`,
           });
         } else {
