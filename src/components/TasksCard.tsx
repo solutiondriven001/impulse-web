@@ -49,10 +49,10 @@ const initialParentTasks: ParentTask[] = [
     bonusReward: 100,
     completed: false,
     tasks: [
-        { id: 'subtask-0-name', description: 'Enter your government name', reward: 0, completed: false, requiresTextInput: true },
+        { id: 'subtask-0-name', description: 'Enter your government name', reward: 5, completed: false, requiresTextInput: true },
         { id: 'subtask-1-register', description: 'Click this link and register your account', reward: 10, completed: false, link: 'https://secure.tegasfx.com/links/go/9924' },
         { id: 'subtask-2-kyc', description: 'Verify your account after KYC', reward: 15, completed: false, requiresUpload: true },
-        { id: 'subtask-3-copytrade', description: 'Follow my copytrading', reward: 5, completed: false, requiresUpload: true },
+        { id: 'subtask-3-copytrade', description: 'Follow my copytrading', reward: 0, completed: false, requiresUpload: true },
     ],
   }
 ];
@@ -265,6 +265,8 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                       canVerify = true; // For tasks with no pre-requisite
                   }
 
+                  const showActionContainer = task.completed || isVerifying || canVerify;
+
                   return (
                     <li
                       key={task.id}
@@ -272,7 +274,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                         task.completed ? 'bg-black/20 opacity-60' : 'bg-black/20'
                       }`}
                     >
-                      <div className="flex-1 space-y-1">
+                      <div className="flex-1 space-y-1 pr-4">
                         <p className={`text-sm ${task.completed ? 'line-through text-card-foreground/50' : 'text-card-foreground/90'}`}>
                           {task.description}
                         </p>
@@ -326,24 +328,23 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                           </div>
                         )}
                       </div>
-                      <div className="flex items-center justify-end pl-4 space-x-2 min-w-[130px]">
+                      <div className="flex items-center justify-end space-x-2 min-w-[130px]">
                         <span className="font-bold text-yellow-400">
                           +{task.reward}
                         </span>
-                        {(task.completed || isVerifying || canVerify) && (
-                          <div className="flex items-center justify-center w-[80px] h-9">
+                         {showActionContainer && (
+                          <div className="flex items-center justify-center w-20 h-9">
                             {task.completed ? (
                               <CheckCircle2 className="h-5 w-5 text-green-500" />
                             ) : isVerifying ? (
-                              <Button variant="ghost" size="sm" disabled className="w-[80px]">
+                              <Button variant="ghost" size="sm" disabled className="w-full">
                                 <Loader2 className="h-5 w-5 animate-spin text-primary" />
                               </Button>
                             ) : canVerify ? (
                               <Button
-                                variant="ghost"
                                 size="sm"
                                 onClick={() => handleCompleteTask(selectedTask.id, task.id)}
-                                className="border border-primary/50 hover:bg-primary/20 text-white w-[80px] h-auto py-1 px-2 text-xs"
+                                className="bg-primary/20 text-primary-foreground hover:bg-primary/40 border border-primary/50 w-full"
                                 aria-label={`Verify task: ${task.description}`}
                                 disabled={!!verifyingTaskId}
                               >
