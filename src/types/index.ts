@@ -25,3 +25,11 @@ export interface ParentTask {
     tasks: Task[];
     completed: boolean;
 }
+
+export interface DailyEarning {
+  date: string; // YYYY-MM-DD
+  mining: number;
+  ads: number;
+  tasks: number;
+  total: number;
+}

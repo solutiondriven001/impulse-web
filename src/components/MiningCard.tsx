@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { FC } from 'react';
@@ -7,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Power, Zap, AlertTriangle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { addDailyEarning } from '@/lib/earnings';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -206,6 +208,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
   const handleGenerateOrClaim = () => {
     if (isClaimable) {
       onCoinsClaimed(coinsPerCycle);
+      addDailyEarning('mining', coinsPerCycle);
       toast({
         title: "Impulse Claimed!",
         description: `You've successfully claimed ${coinsPerCycle} Impulse.`,

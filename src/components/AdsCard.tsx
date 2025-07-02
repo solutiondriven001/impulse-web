@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { FC } from 'react';
@@ -7,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { PlaySquare, Gift, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { addDailyEarning } from '@/lib/earnings';
 
 interface AdsCardProps {
   onAdWatched: (reward: number) => void;
@@ -98,6 +100,7 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched }) => {
 
     setTimeout(() => {
       onAdWatched(rewardForThisAd);
+      addDailyEarning('ads', rewardForThisAd);
       setIsWatchingAd(false);
       
       // Calculate the cooldown for the next ad based on ads watched today

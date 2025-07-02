@@ -19,6 +19,7 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
+import { addDailyEarning } from '@/lib/earnings';
 
 interface TasksCardProps {
   onTaskCompleted: (reward: number) => void;
@@ -101,6 +102,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
         const allSubTasksCompleted = pTask.tasks.every(t => t.completed);
         if (allSubTasksCompleted) {
           onTaskCompleted(pTask.bonusReward);
+          addDailyEarning('tasks', pTask.bonusReward);
           toast({
             title: "Challenge Complete!",
             description: `You earned a bonus of ${pTask.bonusReward} coins for completing ${pTask.title}!`,
@@ -142,6 +144,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
           if (taskIndex !== -1 && !pTask.tasks[taskIndex].completed) {
             const taskToComplete = pTask.tasks[taskIndex];
             onTaskCompleted(taskToComplete.reward);
+            addDailyEarning('tasks', taskToComplete.reward);
 
             toast({
               title: "Task Verified!",
@@ -387,5 +390,3 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
 };
 
 export default TasksCard;
-    
-    

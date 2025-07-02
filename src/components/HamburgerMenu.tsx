@@ -10,7 +10,8 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Menu, Store, Users, Mail, LogOut } from "lucide-react";
+import { Menu, Store, Users, Mail, LogOut, LineChart } from "lucide-react";
+import Link from 'next/link';
 
 export function HamburgerMenu() {
   return (
@@ -27,6 +28,12 @@ export function HamburgerMenu() {
         </SheetHeader>
         <nav className="flex flex-col h-full py-4">
             <div className="px-4 space-y-1">
+                <Link href="/earnings">
+                    <Button variant="ghost" className="w-full justify-start text-lg h-14 text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/10">
+                        <LineChart className="mr-4 h-5 w-5" />
+                        EARNINGS
+                    </Button>
+                </Link>
                 <Button variant="ghost" className="w-full justify-start text-lg h-14 text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/10">
                     <Store className="mr-4 h-5 w-5" />
                     STORE
