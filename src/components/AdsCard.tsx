@@ -12,17 +12,17 @@ import { addDailyEarning } from '@/lib/earnings';
 
 interface AdsCardProps {
   onAdWatched: (reward: number) => void;
+  onLevelUpgrade: () => void;
 }
 
 const AD_WATCH_DURATION_MS = 5000;
-// Cooldown now increases with each ad watched
 const BASE_AD_COOLDOWN_MS = 60000; // 1 minute
 const COOLDOWN_INCREMENT_MS = 300000; // 5 minutes per ad watched
-// Using separate keys for different concerns and versioning them.
 const AD_COOLDOWN_STATE_KEY = 'impulseAppAdCooldown_v1';
 const AD_REWARD_STATE_KEY = 'impulseAppAdReward_v1';
+const LEVEL_UP_ADS_GOAL = 20;
 
-const AdsCard: FC<AdsCardProps> = ({ onAdWatched }) => {
+const AdsCard: FC<AdsCardProps> = ({ onAdWatched, onLevelUpgrade }) => {
   const [isWatchingAd, setIsWatchingAd] = useState(false);
   const [cooldownTime, setCooldownTime] = useState(0); // Time in ms remaining for cooldown
   const [adsWatchedToday, setAdsWatchedToday] = useState(0);
@@ -103,26 +103,31 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched }) => {
       addDailyEarning('ads', rewardForThisAd);
       setIsWatchingAd(false);
       
-      // Calculate the cooldown for the next ad based on ads watched today
       const nextCooldownDuration = BASE_AD_COOLDOWN_MS + (adsWatchedToday * COOLDOWN_INCREMENT_MS);
       const newCooldownEndTime = Date.now() + nextCooldownDuration;
       setCooldownTime(nextCooldownDuration);
       
       if (typeof window !== 'undefined') {
-        // Save cooldown state
         localStorage.setItem(AD_COOLDOWN_STATE_KEY, JSON.stringify({ cooldownEndTime: newCooldownEndTime }));
         
-        // Update and save reward state
         const today = new Date().toISOString().split('T')[0];
         const newAdsWatchedCount = adsWatchedToday + 1;
         setAdsWatchedToday(newAdsWatchedCount);
         localStorage.setItem(AD_REWARD_STATE_KEY, JSON.stringify({ adsWatched: newAdsWatchedCount, date: today }));
-      }
 
-      toast({
-        title: "Ad Watched!",
-        description: `You earned ${rewardForThisAd} coins!`,
-      });
+        if (newAdsWatchedCount === LEVEL_UP_ADS_GOAL) {
+          onLevelUpgrade();
+          toast({
+            title: "Level Up!",
+            description: "You've watched 20 ads today and increased your mining power!",
+          });
+        } else {
+            toast({
+                title: "Ad Watched!",
+                description: `You earned ${rewardForThisAd} coins!`,
+            });
+        }
+      }
     }, AD_WATCH_DURATION_MS);
   };
 

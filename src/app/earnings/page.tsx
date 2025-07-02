@@ -6,14 +6,13 @@ import Header from '@/components/Header';
 import { EarningsChart, type ChartData } from '@/components/EarningsChart';
 import { getDailyEarnings } from '@/lib/earnings';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
-import { LineChart, RefreshCw } from 'lucide-react';
+import { LineChart, RefreshCw, Loader2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { subDays, format } from 'date-fns';
-
-const USER_COINS_KEY = 'impulseAppUserCoins_v1';
+import { useUserStats } from '@/hooks/use-user-stats';
 
 export default function EarningsPage() {
-  const [currentCoins, setCurrentCoins] = useState(0);
+  const { currentCoins, isInitialized } = useUserStats();
   const [chartData, setChartData] = useState<ChartData[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -46,14 +45,10 @@ export default function EarningsPage() {
   
   // Load data on mount
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedCoins = localStorage.getItem(USER_COINS_KEY);
-      if (savedCoins !== null) {
-        setCurrentCoins(parseInt(savedCoins, 10));
-      }
+    if (isInitialized) {
       generateChartData();
     }
-  }, []);
+  }, [isInitialized]);
 
   const handleRefresh = () => {
     generateChartData();
@@ -75,8 +70,9 @@ export default function EarningsPage() {
             </Button>
           </CardHeader>
           <CardContent>
-            {isLoading ? (
-              <div className="h-[350px] w-full flex items-center justify-center text-card-foreground/80">
+            {isLoading || !isInitialized ? (
+              <div className="h-[350px] w-full flex items-center justify-center text-card-foreground/80 space-x-2">
+                <Loader2 className="h-5 w-5 animate-spin" />
                 <p>Loading chart data...</p>
               </div>
             ) : chartData.every(d => d.total === 0) ? (

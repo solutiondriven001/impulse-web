@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import MiningCard from '@/components/MiningCard';
 import TasksCard from '@/components/TasksCard';
@@ -9,9 +9,9 @@ import AdsCard from '@/components/AdsCard';
 import LeaderboardCard from '@/components/LeaderboardCard';
 import type { LeaderboardEntry } from '@/types';
 import { Award, Brain, Gift, Trophy, Zap } from 'lucide-react';
+import { useUserStats } from '@/hooks/use-user-stats';
 
 const CURRENT_USER_NAME = "Player1"; 
-const USER_COINS_KEY = 'impulseAppUserCoins_v1';
 
 // Mock initial leaderboard data
 const initialLeaderboardData: LeaderboardEntry[] = [
@@ -24,25 +24,11 @@ const initialLeaderboardData: LeaderboardEntry[] = [
 
 
 export default function HomePage() {
-  const [currentCoins, setCurrentCoins] = useState(0);
+  const { currentCoins, level, updateCoins, levelUp } = useUserStats();
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>(initialLeaderboardData);
 
-  // Load coins from localStorage on initial mount
+  // Update current user's score in leaderboard when coins change
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedCoins = localStorage.getItem(USER_COINS_KEY);
-      if (savedCoins !== null) {
-        setCurrentCoins(parseInt(savedCoins, 10));
-      }
-    }
-  }, []);
-
-  // Save coins to localStorage whenever they change
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(USER_COINS_KEY, currentCoins.toString());
-    }
-    // Update current user's score in leaderboard when coins change
     setLeaderboard(prevLeaderboard =>
       prevLeaderboard.map(user =>
         user.name === CURRENT_USER_NAME ? { ...user, score: currentCoins, isCurrentUser: true } : { ...user, isCurrentUser: false }
@@ -50,10 +36,8 @@ export default function HomePage() {
     );
   }, [currentCoins]);
 
-  const level = useMemo(() => Math.floor(currentCoins / 100) + 1, [currentCoins]);
-
   const handleCoinsUpdate = (amount: number) => {
-    setCurrentCoins(prevCoins => prevCoins + amount);
+    updateCoins(prevCoins => prevCoins + amount);
   };
 
   return (
@@ -63,7 +47,7 @@ export default function HomePage() {
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <MiningCard onCoinsClaimed={handleCoinsUpdate} level={level} />
-            <AdsCard onAdWatched={handleCoinsUpdate} />
+            <AdsCard onAdWatched={handleCoinsUpdate} onLevelUpgrade={levelUp} />
           </div>
           
           <div className="w-full">
