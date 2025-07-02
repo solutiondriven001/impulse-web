@@ -76,8 +76,14 @@ export default function EarningsPage() {
           </CardHeader>
           <CardContent>
             {isLoading ? (
-              <div className="h-[350px] w-full flex items-center justify-center">
+              <div className="h-[350px] w-full flex items-center justify-center text-card-foreground/80">
                 <p>Loading chart data...</p>
+              </div>
+            ) : chartData.every(d => d.total === 0) ? (
+              <div className="h-[350px] w-full flex flex-col items-center justify-center text-center text-card-foreground/80 space-y-2">
+                 <LineChart className="h-12 w-12 text-primary/50" />
+                <h3 className="text-lg font-semibold text-card-foreground">No Earnings Yet</h3>
+                <p>Start earning coins on the main page to see your statistics here.</p>
               </div>
             ) : (
               <EarningsChart data={chartData} />
