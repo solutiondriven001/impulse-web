@@ -337,6 +337,7 @@ const MiningCard: FC<MiningCardProps> = ({ onCoinsClaimed, level }) => {
         <div className="flex items-center justify-center space-x-2 text-base font-normal text-primary tracking-wide pt-2">
             <LevelIcon className="h-5 w-5" />
             <p>{levelDetails.name} - Lvl {level}</p>
+            <LevelIcon className="h-5 w-5" />
         </div>
       </CardContent>
       <CardFooter>
