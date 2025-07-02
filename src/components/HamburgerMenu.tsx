@@ -16,8 +16,8 @@ export function HamburgerMenu() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant="ghost" size="icon" className="mr-2 hover:bg-primary/10">
-          <Menu className="h-6 w-6 text-foreground/80" />
+        <Button variant="ghost" size="icon" className="mr-2 text-foreground/80 hover:bg-primary/10 hover:text-primary">
+          <Menu className="h-6 w-6" />
           <span className="sr-only">Open menu</span>
         </Button>
       </SheetTrigger>
