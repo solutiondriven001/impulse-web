@@ -264,7 +264,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                   } else {
                       canVerify = true; // For tasks with no pre-requisite
                   }
-
+                  
                   const showActionContainer = task.completed || isVerifying || canVerify;
 
                   return (
@@ -328,12 +328,11 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                           </div>
                         )}
                       </div>
-                      <div className="flex items-center justify-end space-x-2 min-w-[130px]">
+                      <div className="flex items-center justify-end space-x-2">
                         <span className="font-bold text-yellow-400">
                           +{task.reward}
                         </span>
-                         {showActionContainer && (
-                          <div className="flex items-center justify-center w-20 h-9">
+                        <div className="flex items-center justify-center w-20 h-9">
                             {task.completed ? (
                               <CheckCircle2 className="h-5 w-5 text-green-500" />
                             ) : isVerifying ? (
@@ -344,7 +343,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                               <Button
                                 size="sm"
                                 onClick={() => handleCompleteTask(selectedTask.id, task.id)}
-                                className="bg-primary/20 text-primary-foreground hover:bg-primary/40 border border-primary/50 w-full"
+                                className="bg-primary hover:bg-primary/80 text-primary-foreground w-full"
                                 aria-label={`Verify task: ${task.description}`}
                                 disabled={!!verifyingTaskId}
                               >
@@ -352,7 +351,6 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                               </Button>
                             ) : null}
                           </div>
-                        )}
                       </div>
                     </li>
                   )
