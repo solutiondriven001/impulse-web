@@ -23,7 +23,9 @@ export function HamburgerMenu() {
       </SheetTrigger>
       <SheetContent side="left" className="w-[300px] sm:w-[350px] bg-card text-card-foreground flex flex-col p-0">
         <SheetHeader className="p-6 pb-2">
-          <SheetTitle className="text-2xl text-left text-primary-foreground">Dashboard</SheetTitle>
+          <SheetTitle className="text-2xl text-left text-primary-foreground">
+            <Link href="/">Dashboard</Link>
+          </SheetTitle>
         </SheetHeader>
         <nav className="flex flex-col h-full py-4">
             <div className="px-4 space-y-1">
