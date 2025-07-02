@@ -44,8 +44,8 @@ const LeaderboardCard: FC<LeaderboardCardProps> = ({ leaderboardData, currentUse
                     ${user.isCurrentUser ? 'bg-black/40 ring-2 ring-primary' : 'bg-black/20 hover:bg-black/30'}`}
                 >
                   <span className={`flex items-center justify-center mr-4 font-bold w-8 text-lg ${index === 0 ? 'text-yellow-400' : index === 1 ? 'text-slate-400' : 'text-card-foreground/70'}`}>
+                    {index < 2 && <Star className="inline-block mr-1 h-4 w-4" fill="currentColor"/>}
                     {index + 1}
-                    {index < 2 && <Star className="inline-block ml-1 h-4 w-4" fill="currentColor"/>}
                   </span>
                   <Avatar className="h-10 w-10 mr-4 border-2 border-primary/50">
                     <AvatarImage src={`https://placehold.co/40x40/800080/FFFFFF/png?text=${getInitials(user.name)}&font=Inter`} alt={user.name} data-ai-hint="abstract avatar" />
