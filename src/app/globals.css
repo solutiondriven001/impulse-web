@@ -53,16 +53,6 @@ body {
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
     --radius: 0.75rem; /* Slightly larger radius */
-
-    /* Sidebar variables for a consistent dark theme if used */
-    --sidebar-background: 260 8% 10%;
-    --sidebar-foreground: 0 0% 95%;
-    --sidebar-primary: 315 65% 55%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 330 70% 60%;
-    --sidebar-accent-foreground: 0 0% 100%;
-    --sidebar-border: 280 15% 20%;
-    --sidebar-ring: 315 65% 60%;
   }
 }
 
