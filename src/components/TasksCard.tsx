@@ -24,7 +24,7 @@ interface TasksCardProps {
   onTaskCompleted: (reward: number) => void;
 }
 
-const TASKS_STATE_KEY = 'impulseAppParentTasks_v8';
+const TASKS_STATE_KEY = 'impulseAppParentTasks_v9';
 
 const initialParentTasks: ParentTask[] = [
   {
@@ -328,11 +328,8 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                           </div>
                         )}
                       </div>
-                      <div className="flex items-center justify-end space-x-2 min-h-[2.25rem]">
-                        <span className={cn(
-                          "font-bold text-yellow-400 transition-all duration-200",
-                          showActionContainer && 'pr-2'
-                        )}>
+                      <div className="flex items-center space-x-2">
+                        <span className="font-bold text-yellow-400">
                           +{task.reward}
                         </span>
                         <div className="flex items-center justify-center w-20 h-9">
