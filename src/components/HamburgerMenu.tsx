@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Menu, Store, Users, Mail, LogOut, LineChart } from "lucide-react";
+import { Menu, Store, Mail, LogOut, LineChart } from "lucide-react";
 import Link from 'next/link';
 
 export function HamburgerMenu() {
@@ -38,10 +38,6 @@ export function HamburgerMenu() {
                 <Button variant="ghost" className="w-full justify-start text-lg h-14 text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/10">
                     <Store className="mr-4 h-5 w-5" />
                     STORE
-                </Button>
-                <Button variant="ghost" className="w-full justify-start text-lg h-14 text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/10">
-                    <Users className="mr-4 h-5 w-5" />
-                    REFERRALS
                 </Button>
                 <Button variant="ghost" className="w-full justify-start text-lg h-14 text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/10">
                     <Mail className="mr-4 h-5 w-5" />
