@@ -42,8 +42,9 @@ const LeaderboardCard: FC<LeaderboardCardProps> = ({ leaderboardData, currentUse
                   className={`flex items-center p-3 rounded-lg transition-all duration-200
                     ${user.isCurrentUser ? 'bg-black/40 ring-2 ring-primary' : 'bg-black/20 hover:bg-black/30'}`}
                 >
-                  <span className={`mr-4 font-bold w-6 text-center text-lg ${index === 0 ? 'text-yellow-400' : 'text-card-foreground/70'}`}>
+                  <span className={`flex items-center justify-center mr-4 font-bold w-8 text-lg ${index === 0 ? 'text-yellow-400' : 'text-card-foreground/70'}`}>
                     {index + 1}
+                    {index === 0 && <Star className="inline-block ml-1 h-4 w-4" fill="currentColor"/>}
                   </span>
                   <Avatar className="h-10 w-10 mr-4 border-2 border-primary/50">
                     <AvatarImage src={`https://placehold.co/40x40/800080/FFFFFF/png?text=${getInitials(user.name)}&font=Inter`} alt={user.name} data-ai-hint="abstract avatar" />
@@ -62,7 +63,6 @@ const LeaderboardCard: FC<LeaderboardCardProps> = ({ leaderboardData, currentUse
                      <span>
                         {user.score.toLocaleString()}
                     </span>
-                    {index === 0 && <Star className="inline ml-1.5 h-4 w-4" fill="currentColor"/>}
                   </div>
                 </li>
               ))}
