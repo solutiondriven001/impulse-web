@@ -270,7 +270,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                   return (
                     <li
                       key={task.id}
-                      className={`flex items-center justify-between p-3 rounded-lg transition-all duration-300 ${
+                      className={`flex items-start justify-between p-3 rounded-lg transition-all duration-300 ${
                         task.completed ? 'bg-black/20 opacity-60' : 'bg-black/20'
                       }`}
                     >
@@ -328,8 +328,11 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                           </div>
                         )}
                       </div>
-                      <div className="flex items-center justify-end space-x-2">
-                        <span className="font-bold text-yellow-400">
+                      <div className="flex items-center justify-end space-x-2 min-h-[2.25rem]">
+                        <span className={cn(
+                          "font-bold text-yellow-400 transition-all duration-200",
+                           showActionContainer && 'pr-2'
+                        )}>
                           +{task.reward}
                         </span>
                         <div className="flex items-center justify-center w-20 h-9">
@@ -343,7 +346,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                               <Button
                                 size="sm"
                                 onClick={() => handleCompleteTask(selectedTask.id, task.id)}
-                                className="bg-primary hover:bg-primary/80 text-primary-foreground w-full"
+                                className="bg-primary hover:bg-primary/90 text-primary-foreground w-full"
                                 aria-label={`Verify task: ${task.description}`}
                                 disabled={!!verifyingTaskId}
                               >
