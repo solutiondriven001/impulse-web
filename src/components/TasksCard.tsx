@@ -24,7 +24,7 @@ interface TasksCardProps {
   onTaskCompleted: (reward: number) => void;
 }
 
-const TASKS_STATE_KEY = 'impulseAppParentTasks_v7';
+const TASKS_STATE_KEY = 'impulseAppParentTasks_v8';
 
 const initialParentTasks: ParentTask[] = [
   {
@@ -265,7 +265,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                       canVerify = true; // For tasks with no pre-requisite
                   }
                   
-                  const showActionContainer = task.completed || isVerifying || canVerify;
+                   const showActionContainer = task.completed || isVerifying || canVerify;
 
                   return (
                     <li
@@ -331,7 +331,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                       <div className="flex items-center justify-end space-x-2 min-h-[2.25rem]">
                         <span className={cn(
                           "font-bold text-yellow-400 transition-all duration-200",
-                           showActionContainer && 'pr-2'
+                          showActionContainer && 'pr-2'
                         )}>
                           +{task.reward}
                         </span>
