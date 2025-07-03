@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { subDays, format } from 'date-fns';
 import { useUserStats } from '@/hooks/use-user-stats';
 import ReferralsCard from '@/components/ReferralsCard';
+import LevelsCard from '@/components/LevelsCard';
 
 export default function EarningsPage() {
   const { currentCoins, isInitialized } = useUserStats();
@@ -87,6 +88,7 @@ export default function EarningsPage() {
             )}
           </CardContent>
         </Card>
+        <LevelsCard />
         <ReferralsCard />
       </main>
       <footer className="text-center p-4 text-sm text-foreground/70">
