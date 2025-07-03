@@ -65,9 +65,13 @@ This is the story so far:
     This is the very beginning of the story. Start with an exciting introduction to set the scene.
 {{/if}}
 
-Your task is to generate the VERY NEXT part of the story based on the history. Keep it concise (2-4 sentences).
+Your task is to generate the VERY NEXT part of the story based on the history. Keep it concise (2-4 sentences). The story part must end on a cliffhanger or point of decision.
 
-Most importantly, you MUST end the story part by presenting the user with EXACTLY TWO distinct, actionable choices. Frame them as a question or a decision they must make.
+You must provide EXACTLY TWO distinct, actionable choices for the user to continue the story.
+
+Your response MUST be a valid JSON object with two keys:
+1. "storyPart": A string containing the next part of the story.
+2. "choices": An array of EXACTLY two strings, representing the choices for the user.
 `,
 });
 
