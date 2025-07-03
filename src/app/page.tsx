@@ -48,11 +48,11 @@ export default function HomePage() {
           </div>
 
           <div className="w-full">
-            <StoryCard level={level} currentCoins={currentCoins} onSpendCoins={updateCoins} />
-          </div>
-          
-          <div className="w-full">
             <TasksCard onTaskCompleted={updateCoins} />
+          </div>
+
+          <div className="w-full">
+            <StoryCard level={level} currentCoins={currentCoins} onSpendCoins={updateCoins} />
           </div>
           
           <div className="w-full">
