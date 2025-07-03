@@ -2,7 +2,7 @@
 'use client';
 
 import type { ElementType } from 'react';
-import { Leaf, Sparkles, Mountain, Crown, Trophy, type LucideProps } from 'lucide-react';
+import { Leaf, Sparkles, Pickaxe, Crown, Trophy, type LucideProps } from 'lucide-react';
 
 export interface LevelDetails {
     name: string;
@@ -18,7 +18,7 @@ export function getLevelDetails(level: number): LevelDetails {
   const details: { [key: number]: LevelDetails } = {
     1: { name: 'Novice', icon: Leaf },
     2: { name: 'Apprentice', icon: Sparkles },
-    3: { name: 'Miner', icon: Mountain },
+    3: { name: 'Miner', icon: Pickaxe },
     4: { name: 'Expert', icon: Crown },
     5: { name: 'Master', icon: Trophy },
   };
