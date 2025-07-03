@@ -104,7 +104,7 @@ export default function ReferralsCard() {
             <p className="text-sm text-card-foreground/70">
                 Progress: {referralCount % GOAL} / {GOAL}
             </p>
-            <Progress value={progress} className="w-full" indicatorClassName="!bg-white/10 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer-wave bg-no-repeat bg-[length:200%_auto]" />
+            <Progress value={progress} className="w-full" indicatorClassName="!bg-slate-300 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-shimmer-wave bg-no-repeat bg-[length:200%_auto]" />
         </div>
 
         </CardContent>
