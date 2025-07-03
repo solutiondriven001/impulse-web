@@ -99,6 +99,10 @@ export default {
         'bobble': {
           '0%, 100%': { transform: 'translateY(0)' },
           '50%': { transform: 'translateY(-10%)' },
+        },
+        'fade-in-text': {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
         }
       },
       animation: {
@@ -109,6 +113,7 @@ export default {
         'shimmer-wave': 'shimmer-wave 8s linear infinite',
         'shimmer-wave-ping-pong': 'shimmer-wave-ping-pong 3s linear infinite',
         'bobble': 'bobble 2s ease-in-out infinite',
+        'fade-in-slow': 'fade-in-text 1s ease-in-out',
       },
     },
   },

@@ -6,6 +6,7 @@ import Header from '@/components/Header';
 import MiningCard from '@/components/MiningCard';
 import TasksCard from '@/components/TasksCard';
 import AdsCard from '@/components/AdsCard';
+import StoryCard from '@/components/StoryCard';
 import LeaderboardCard from '@/components/LeaderboardCard';
 import type { LeaderboardEntry } from '@/types';
 import { Award, Brain, Gift, Trophy, Zap } from 'lucide-react';
@@ -36,22 +37,22 @@ export default function HomePage() {
     );
   }, [currentCoins]);
 
-  const handleCoinsUpdate = (amount: number) => {
-    updateCoins(prevCoins => prevCoins + amount);
-  };
-
   return (
     <div className="flex flex-col min-h-screen">
       <Header currentCoins={currentCoins} />
       <main className="flex-grow container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <MiningCard onCoinsClaimed={handleCoinsUpdate} level={level} />
-            <AdsCard onAdWatched={handleCoinsUpdate} onLevelUpgrade={levelUp} level={level} />
+            <MiningCard onCoinsClaimed={updateCoins} level={level} />
+            <AdsCard onAdWatched={updateCoins} onLevelUpgrade={levelUp} level={level} />
+          </div>
+
+          <div className="w-full">
+            <StoryCard level={level} currentCoins={currentCoins} onSpendCoins={updateCoins} />
           </div>
           
           <div className="w-full">
-            <TasksCard onTaskCompleted={handleCoinsUpdate} />
+            <TasksCard onTaskCompleted={updateCoins} />
           </div>
           
           <div className="w-full">

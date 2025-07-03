@@ -18,7 +18,7 @@ export interface Task {
 }
 
 export interface ParentTask {
-    id: string;
+    id:string;
     title: string;
     description: string;
     bonusReward: number;
@@ -32,4 +32,9 @@ export interface DailyEarning {
   ads: number;
   tasks: number;
   total: number;
+}
+
+export interface StoryHistory {
+    part: string;
+    choice: string;
 }
