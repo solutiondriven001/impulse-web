@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -60,6 +59,7 @@ export default function EarningsPage() {
     <div className="flex flex-col min-h-screen">
       <Header currentCoins={currentCoins} />
       <main className="flex-grow container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
+        <LevelsCard />
         <Card className="shadow-xl">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle className="flex items-center text-2xl font-headline">
@@ -88,7 +88,6 @@ export default function EarningsPage() {
             )}
           </CardContent>
         </Card>
-        <LevelsCard />
         <ReferralsCard />
       </main>
       <footer className="text-center p-4 text-sm text-foreground/70">
