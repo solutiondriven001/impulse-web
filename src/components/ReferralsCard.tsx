@@ -1,5 +1,5 @@
 
-'use client';
+"use client";
 
 import { useState, useEffect } from 'react';
 import { useUserStats } from '@/hooks/use-user-stats';
@@ -114,7 +114,7 @@ export default function ReferralsCard() {
             className="w-full bg-white text-black hover:bg-gray-200 text-lg py-6 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95"
         >
             <UserPlus className="mr-2 h-5 w-5" />
-            Use total referrals
+            Total Referrals
         </Button>
         </CardFooter>
     </Card>
