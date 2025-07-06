@@ -44,11 +44,9 @@ export async function continueStory(input: StoryInput): Promise<StoryOutput> {
 
 const prompt = ai.definePrompt({
   name: 'storyPrompt',
+  model: 'googleai/gemini-1.5-pro-preview-0514',
   input: {schema: StoryInputSchema},
   output: {schema: StoryOutputSchema},
-  config: {
-    model: 'googleai/gemini-1.5-pro-preview-0514'
-  },
   prompt: `You are a master storyteller for an interactive adventure game called Impulse Saga. Your task is to craft a captivating, ongoing story for the user.
 
 The user is currently at Level {{level}}. You can subtly weave this into the narrative (e.g., "As a Level {{level}} Miner, your skills were sharp...").
