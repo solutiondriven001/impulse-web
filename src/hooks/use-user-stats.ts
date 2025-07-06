@@ -19,7 +19,7 @@ export const useUserStats = () => {
 
     if (userDocSnap.exists()) {
       const userData = userDocSnap.data();
-      setCurrentCoins(userData.coins || 0);
+      setCurrentCoins(userData.coinBalance || 0);
       setLevel(userData.level || 1);
     } else {
       // Create a new profile for the new user
@@ -27,7 +27,7 @@ export const useUserStats = () => {
         uid: firebaseUser.uid,
         email: firebaseUser.email, // Will be null for anonymous users
         createdAt: serverTimestamp(),
-        coins: 0,
+        coinBalance: 0,
         level: 1,
       });
       setCurrentCoins(0);
@@ -69,10 +69,10 @@ export const useUserStats = () => {
     const userDocRef = doc(db, 'users', user.uid);
     try {
       await updateDoc(userDocRef, {
-        coins: increment(amount),
+        coinBalance: increment(amount),
       });
     } catch (error) {
-      console.error("Error updating coins in Firestore:", error);
+      console.error("Error updating coinBalance in Firestore:", error);
       // Optional: Rollback local state if Firestore update fails
       setCurrentCoins(currentCoins);
     }
