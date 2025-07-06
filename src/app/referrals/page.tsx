@@ -18,11 +18,11 @@ export default function ReferralsMovedPage() {
           </CardHeader>
           <CardContent>
             <p className="text-card-foreground/80">
-              The referrals section has been moved to the Earnings page.
+              The referrals section has been moved to the Progress page.
             </p>
-            <Link href="/earnings" passHref>
+            <Link href="/progress" passHref>
               <Button className="mt-4 bg-primary text-primary-foreground hover:bg-primary/90">
-                <ArrowLeft className="mr-2 h-4 w-4" /> Go to Earnings
+                <ArrowLeft className="mr-2 h-4 w-4" /> Go to Progress
               </Button>
             </Link>
           </CardContent>
