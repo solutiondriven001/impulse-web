@@ -88,7 +88,7 @@ export default function ReferralsCard() {
         </CardContent>
         <CardFooter className="flex-col items-start pt-4 border-t border-white/10 mt-4">
             <h3 className="text-sm font-medium text-card-foreground/70 mb-1">
-                Total Organic Referrals
+                Total Referrals
             </h3>
             <p className="text-2xl font-bold text-primary-foreground">{referralCount.toLocaleString()}</p>
         </CardFooter>
