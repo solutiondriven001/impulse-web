@@ -4,14 +4,9 @@
 import type { FC } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Trophy, ArrowRight } from 'lucide-react';
-import { getLevelDetails, type LevelDetails } from '@/lib/levels';
+import { getLevelDetails, getLevelUpRequirements, type LevelDetails } from '@/lib/levels';
 import { cn } from '@/lib/utils';
 import { useUserStats } from '@/hooks/use-user-stats';
-
-const LEVEL_REQUIREMENTS = {
-  referrals: 5,
-  ads: 20,
-};
 
 const LevelNode: FC<{ details: LevelDetails, level: number, isUnlocked: boolean, isCurrent: boolean }> = ({ details, level, isUnlocked, isCurrent }) => {
   const Icon = details.icon;
@@ -34,14 +29,17 @@ const LevelNode: FC<{ details: LevelDetails, level: number, isUnlocked: boolean,
   );
 };
 
-const RequirementNode: FC = () => (
-  <div className="flex flex-col items-center text-center text-sm text-card-foreground/80 px-4 flex-shrink-0 w-40">
-    <ArrowRight className="h-8 w-8 text-primary mb-2" />
-    <p><span className="font-bold">{LEVEL_REQUIREMENTS.referrals}</span> Referrals</p>
-    <p className="text-card-foreground/60">or</p>
-    <p><span className="font-bold">{LEVEL_REQUIREMENTS.ads}</span> Ads</p>
-  </div>
-);
+const RequirementNode: FC<{ level: number }> = ({ level }) => {
+    const requirements = getLevelUpRequirements(level);
+    return (
+      <div className="flex flex-col items-center text-center text-sm text-card-foreground/80 px-4 flex-shrink-0 w-40">
+        <ArrowRight className="h-8 w-8 text-primary mb-2" />
+        <p><span className="font-bold">{requirements.referrals}</span> Referrals</p>
+        <p className="text-card-foreground/60">or</p>
+        <p><span className="font-bold">{requirements.ads}</span> Ads</p>
+      </div>
+    );
+};
 
 const LevelsCard: FC = () => {
   const { level: currentUserLevel } = useUserStats();
@@ -66,7 +64,7 @@ const LevelsCard: FC = () => {
                         isUnlocked={level <= currentUserLevel}
                         isCurrent={level === currentUserLevel}
                     />
-                    {index < levels.length - 1 && <RequirementNode />}
+                    {index < levels.length - 1 && <RequirementNode level={level} />}
                  </div>
              ))}
           </div>

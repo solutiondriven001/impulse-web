@@ -7,9 +7,8 @@ import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/componen
 import { Button } from '@/components/ui/button';
 import { PlaySquare, Gift, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { cn } from '@/lib/utils';
 import { addDailyEarning } from '@/lib/earnings';
-import { getLevelDetails } from '@/lib/levels';
+import { getLevelDetails, getTotalRequirementsForLevel } from '@/lib/levels';
 
 interface AdsCardProps {
   onAdWatched: (reward: number) => void;
@@ -20,46 +19,42 @@ interface AdsCardProps {
 const AD_WATCH_DURATION_MS = 5000;
 const COOLDOWN_PER_AD_MS = 600000; // 10 minutes
 const AD_COOLDOWN_STATE_KEY = 'impulseAppAdCooldown_v1';
-const AD_REWARD_STATE_KEY = 'impulseAppAdReward_v1';
-const LEVEL_UP_ADS_GOAL = 20;
+const AD_REWARD_STATE_KEY = 'impulseAppAdReward_v1'; // For daily reward scaling
+const TOTAL_ADS_WATCHED_KEY = 'impulseAppTotalAdsWatched_v2'; // For level up
 
 const AdsCard: FC<AdsCardProps> = ({ onAdWatched, onLevelUpgrade, level }) => {
   const [isWatchingAd, setIsWatchingAd] = useState(false);
-  const [cooldownTime, setCooldownTime] = useState(0); // Time in ms remaining for cooldown
+  const [cooldownTime, setCooldownTime] = useState(0);
   const [adsWatchedToday, setAdsWatchedToday] = useState(0);
+  const [totalAdsWatched, setTotalAdsWatched] = useState(0);
   const { toast } = useToast();
 
-  const nextReward = adsWatchedToday + 2; // Reward starts at 2 and increments
+  const nextReward = adsWatchedToday + 2;
 
-  // Effect to load and manage the daily-resetting reward state
+  // Load state from localStorage on mount
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
+    // Load daily reward state
     const savedRewardStateJSON = localStorage.getItem(AD_REWARD_STATE_KEY);
-    const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
-
+    const today = new Date().toISOString().split('T')[0];
     if (savedRewardStateJSON) {
       try {
         const savedState = JSON.parse(savedRewardStateJSON);
-        // If the last watch was today, use the saved count.
         if (savedState.date === today) {
           setAdsWatchedToday(savedState.adsWatched || 0);
         } else {
-          // It's a new day, so we reset.
            localStorage.setItem(AD_REWARD_STATE_KEY, JSON.stringify({ adsWatched: 0, date: today }));
            setAdsWatchedToday(0);
         }
-      } catch (error) {
-        console.error("Failed to parse ad reward state from localStorage", error);
-        localStorage.removeItem(AD_REWARD_STATE_KEY);
-      }
+      } catch (error) { console.error("Failed to parse ad reward state", error); }
     }
-  }, []);
 
-  // Effect to manage the ad cooldown timer
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-
+    // Load total ads watched for level up
+    const savedTotalAds = localStorage.getItem(TOTAL_ADS_WATCHED_KEY);
+    setTotalAdsWatched(savedTotalAds ? parseInt(savedTotalAds, 10) : 0);
+    
+    // Load cooldown state
     const savedCooldownStateJSON = localStorage.getItem(AD_COOLDOWN_STATE_KEY);
     if (savedCooldownStateJSON) {
       try {
@@ -69,12 +64,25 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched, onLevelUpgrade, level }) => {
           const remainingCooldown = Math.max(0, savedState.cooldownEndTime - now);
           setCooldownTime(remainingCooldown);
         }
-      } catch (error) {
-        console.error("Failed to parse ad cooldown state from localStorage", error);
-        localStorage.removeItem(AD_COOLDOWN_STATE_KEY);
-      }
+      } catch (error) { console.error("Failed to parse ad cooldown state", error); }
     }
   }, []);
+
+  // Effect for leveling up based on total ads watched
+  useEffect(() => {
+    if (totalAdsWatched > 0 && level < 5) { // Max level check
+      const requirementsForNextLevel = getTotalRequirementsForLevel(level + 1);
+      if (totalAdsWatched >= requirementsForNextLevel.ads) {
+        onLevelUpgrade();
+        const newLevelDetails = getLevelDetails(level + 1);
+        toast({
+          title: `Level Up to ${newLevelDetails.name}!`,
+          description: `You've watched enough ads and are now Level ${level + 1}.`,
+          duration: 5000,
+        });
+      }
+    }
+  }, [totalAdsWatched, level, onLevelUpgrade, toast]);
 
   // Countdown logic for the cooldown timer
   useEffect(() => {
@@ -104,8 +112,13 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched, onLevelUpgrade, level }) => {
       addDailyEarning('ads', rewardForThisAd);
       setIsWatchingAd(false);
       
-      const newAdsWatchedCount = adsWatchedToday + 1;
-      const nextCooldownDuration = newAdsWatchedCount * COOLDOWN_PER_AD_MS;
+      // Update daily and total counts
+      const newAdsWatchedToday = adsWatchedToday + 1;
+      const newTotalAdsWatched = totalAdsWatched + 1;
+      setAdsWatchedToday(newAdsWatchedToday);
+      setTotalAdsWatched(newTotalAdsWatched);
+      
+      const nextCooldownDuration = newAdsWatchedToday * COOLDOWN_PER_AD_MS;
       const newCooldownEndTime = Date.now() + nextCooldownDuration;
       setCooldownTime(nextCooldownDuration);
       
@@ -113,23 +126,13 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched, onLevelUpgrade, level }) => {
         localStorage.setItem(AD_COOLDOWN_STATE_KEY, JSON.stringify({ cooldownEndTime: newCooldownEndTime }));
         
         const today = new Date().toISOString().split('T')[0];
-        setAdsWatchedToday(newAdsWatchedCount);
-        localStorage.setItem(AD_REWARD_STATE_KEY, JSON.stringify({ adsWatched: newAdsWatchedCount, date: today }));
+        localStorage.setItem(AD_REWARD_STATE_KEY, JSON.stringify({ adsWatched: newAdsWatchedToday, date: today }));
+        localStorage.setItem(TOTAL_ADS_WATCHED_KEY, newTotalAdsWatched.toString());
 
-        if (newAdsWatchedCount === LEVEL_UP_ADS_GOAL) {
-          const newLevel = level + 1;
-          const newLevelDetails = getLevelDetails(newLevel);
-          onLevelUpgrade();
-          toast({
-            title: `Level Up to ${newLevelDetails.name}!`,
-            description: `You've watched 20 ads and are now Level ${newLevel}. Your mining power has increased!`,
-          });
-        } else {
-            toast({
-                title: "Ad Watched!",
-                description: `You earned ${rewardForThisAd} coins!`,
-            });
-        }
+        toast({
+            title: "Ad Watched!",
+            description: `You earned ${rewardForThisAd} coins!`,
+        });
       }
     }, AD_WATCH_DURATION_MS);
   };
@@ -156,7 +159,7 @@ const AdsCard: FC<AdsCardProps> = ({ onAdWatched, onLevelUpgrade, level }) => {
           Watch a short ad to earn <span className="font-bold text-yellow-400">{nextReward}</span> Impulse!
         </p>
          <p className="text-sm text-card-foreground/70">
-          Reward increases with each ad you watch.
+          Reward increases with each ad you watch today.
         </p>
         {!canWatchAd && cooldownTime > 0 && (
           <p className="text-sm text-card-foreground/60">
