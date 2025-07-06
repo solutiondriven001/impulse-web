@@ -12,8 +12,25 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Menu, Store, Mail, LogOut, LineChart } from "lucide-react";
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { signOut } from 'firebase/auth';
+import { auth } from '@/lib/firebase';
+import { useToast } from '@/hooks/use-toast';
 
 export function HamburgerMenu() {
+    const router = useRouter();
+    const { toast } = useToast();
+
+    const handleLogout = async () => {
+        try {
+            await signOut(auth);
+            toast({ title: "Logged Out", description: "You have been successfully logged out." });
+            router.push('/login');
+        } catch (error) {
+            toast({ variant: 'destructive', title: "Logout Failed", description: "Could not log you out. Please try again." });
+        }
+    };
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -47,7 +64,7 @@ export function HamburgerMenu() {
             </div>
             <div className="mt-auto px-4">
                 <Separator className="my-4 bg-card-foreground/20" />
-                <Button variant="ghost" className="w-full justify-start text-lg h-14 text-card-foreground/50 hover:text-card-foreground hover:bg-white/10">
+                <Button variant="ghost" className="w-full justify-start text-lg h-14 text-card-foreground/50 hover:text-card-foreground hover:bg-white/10" onClick={handleLogout}>
                     <LogOut className="mr-4 h-5 w-5" />
                     Log out
                 </Button>

@@ -3,7 +3,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { auth, db } from '@/lib/firebase';
-import { onAuthStateChanged, signInAnonymously, type User } from 'firebase/auth';
+import { onAuthStateChanged, type User } from 'firebase/auth';
 import { doc, getDoc, setDoc, updateDoc, increment, serverTimestamp } from 'firebase/firestore';
 
 export const useUserStats = () => {
@@ -25,7 +25,8 @@ export const useUserStats = () => {
       // Create a new profile for the new user
       await setDoc(userDocRef, {
         uid: firebaseUser.uid,
-        email: firebaseUser.email, // Will be null for anonymous users
+        email: firebaseUser.email,
+        displayName: firebaseUser.displayName,
         createdAt: serverTimestamp(),
         coinBalance: 0,
         level: 1,
@@ -43,15 +44,11 @@ export const useUserStats = () => {
         setUser(firebaseUser);
         await getUserProfile(firebaseUser);
       } else {
-        // If no user, sign in anonymously
-        try {
-          const userCredential = await signInAnonymously(auth);
-          // The onAuthStateChanged listener will re-run with the new user,
-          // so we don't need to call getUserProfile here.
-        } catch (error) {
-          console.error("Error signing in anonymously:", error);
-          setIsInitialized(true); // Still initialize to not block UI
-        }
+        // User is signed out
+        setUser(null);
+        setCurrentCoins(0);
+        setLevel(1);
+        setIsInitialized(true);
       }
     });
 

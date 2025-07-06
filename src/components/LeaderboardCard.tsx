@@ -11,10 +11,10 @@ import { cn } from '@/lib/utils';
 
 interface LeaderboardCardProps {
   leaderboardData: LeaderboardEntry[];
-  currentUserName?: string;
 }
 
 const getInitials = (name: string) => {
+  if (!name) return '??';
   const names = name.split(' ');
   let initials = names[0].substring(0, 1).toUpperCase();
   if (names.length > 1) {
@@ -23,7 +23,7 @@ const getInitials = (name: string) => {
   return initials;
 };
 
-const LeaderboardCard: FC<LeaderboardCardProps> = ({ leaderboardData, currentUserName }) => {
+const LeaderboardCard: FC<LeaderboardCardProps> = ({ leaderboardData }) => {
   const sortedLeaderboard = [...leaderboardData].sort((a, b) => b.score - a.score);
 
   return (
@@ -61,7 +61,6 @@ const LeaderboardCard: FC<LeaderboardCardProps> = ({ leaderboardData, currentUse
                   <div className="flex-grow">
                     <p className={`font-medium text-base ${user.isCurrentUser ? 'text-primary-foreground' : 'text-card-foreground'}`}>
                       {user.name}
-                      {user.isCurrentUser && " (You)"}
                     </p>
                   </div>
                   <div className="flex items-center font-semibold text-lg text-yellow-400">

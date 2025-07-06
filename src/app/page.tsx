@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Header from '@/components/Header';
 import MiningCard from '@/components/MiningCard';
 import TasksCard from '@/components/TasksCard';
@@ -9,33 +10,54 @@ import AdsCard from '@/components/AdsCard';
 import StoryCard from '@/components/StoryCard';
 import LeaderboardCard from '@/components/LeaderboardCard';
 import type { LeaderboardEntry } from '@/types';
-import { Award, Brain, Gift, Trophy, Zap } from 'lucide-react';
+import { Award, Brain, Gift, Trophy, Zap, Loader2 } from 'lucide-react';
 import { useUserStats } from '@/hooks/use-user-stats';
-
-const CURRENT_USER_NAME = "Player1"; 
 
 // Mock initial leaderboard data
 const initialLeaderboardData: LeaderboardEntry[] = [
-  { id: '1', name: 'Player1', score: 0, avatarSeed: 'P1' , isCurrentUser: true},
   { id: '2', name: 'FocusMaster', score: 1520, avatarSeed: 'FM' },
   { id: '3', name: 'CoinCollector', score: 980, avatarSeed: 'CC' },
   { id: '4', name: 'TaskNinja', score: 750, avatarSeed: 'TN' },
   { id: '5', name: 'AdWatcherPro', score: 500, avatarSeed: 'AW' },
 ];
 
-
 export default function HomePage() {
-  const { currentCoins, level, addCoins, levelUp } = useUserStats();
+  const { user, isInitialized, currentCoins, level, addCoins, levelUp } = useUserStats();
+  const router = useRouter();
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>(initialLeaderboardData);
 
-  // Update current user's score in leaderboard when coins change
+  // Route protection
   useEffect(() => {
-    setLeaderboard(prevLeaderboard =>
-      prevLeaderboard.map(user =>
-        user.name === CURRENT_USER_NAME ? { ...user, score: currentCoins, isCurrentUser: true } : { ...user, isCurrentUser: false }
-      )
+    if (isInitialized && !user) {
+      router.push('/login');
+    }
+  }, [isInitialized, user, router]);
+  
+  // Update leaderboard with current user's data
+  useEffect(() => {
+    if (user) {
+        const currentUserEntry: LeaderboardEntry = {
+            id: user.uid,
+            name: user.displayName || "You",
+            score: currentCoins,
+            avatarSeed: user.uid.substring(0,2),
+            isCurrentUser: true,
+        };
+        
+        // Remove existing current user entry if present and add the updated one
+        const otherPlayers = initialLeaderboardData.filter(p => !p.isCurrentUser);
+        setLeaderboard([currentUserEntry, ...otherPlayers]);
+    }
+  }, [currentCoins, user]);
+
+  if (!isInitialized || !user) {
+    return (
+      <div className="flex flex-col min-h-screen items-center justify-center bg-background text-foreground">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        <p className="mt-4 text-lg">Loading your Impulse...</p>
+      </div>
     );
-  }, [currentCoins]);
+  }
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -56,10 +78,10 @@ export default function HomePage() {
           </div>
 
           <div className="w-full">
-            <LeaderboardCard leaderboardData={leaderboard} currentUserName={CURRENT_USER_NAME} />
+            <LeaderboardCard leaderboardData={leaderboard} />
           </div>
 
-        {/* Info Section - This was not in the original screenshot but we'll style it to match */}
+        {/* Info Section */}
         <section className="p-6 bg-white border rounded-xl shadow-sm">
           <h2 className="text-2xl font-headline font-semibold mb-4 flex items-center text-foreground">
             <Brain className="w-7 h-7 mr-2 text-primary" />
