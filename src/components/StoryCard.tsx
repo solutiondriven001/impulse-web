@@ -14,7 +14,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 interface StoryCardProps {
   level: number;
   currentCoins: number;
-  onSpendCoins: (updater: (prevCoins: number) => number) => void;
+  onSpendCoins: (amount: number) => void;
 }
 
 const STORY_START_COST = 5;
@@ -42,7 +42,7 @@ const StoryCard: FC<StoryCardProps> = ({ level, currentCoins, onSpendCoins }) =>
     }
     
     setIsLoading(true);
-    onSpendCoins(prev => prev - STORY_START_COST);
+    onSpendCoins(-STORY_START_COST);
     
     try {
       const result = await continueStory({ level, theme: selectedTheme, history: [] });
@@ -54,7 +54,7 @@ const StoryCard: FC<StoryCardProps> = ({ level, currentCoins, onSpendCoins }) =>
     } catch (error) {
       console.error("Failed to start story:", error);
       toast({ title: "AI Error", description: "The storyteller is resting. Please try again later.", variant: "destructive" });
-      onSpendCoins(prev => prev + STORY_START_COST); // Refund
+      onSpendCoins(STORY_START_COST); // Refund
     } finally {
       setIsLoading(false);
     }
@@ -67,7 +67,7 @@ const StoryCard: FC<StoryCardProps> = ({ level, currentCoins, onSpendCoins }) =>
     }
 
     setIsLoading(true);
-    onSpendCoins(prev => prev - STORY_CONTINUE_COST);
+    onSpendCoins(-STORY_CONTINUE_COST);
     
     const newHistory: StoryHistory[] = [...history, { part: currentPart!, choice }];
     setHistory(newHistory);
@@ -79,7 +79,7 @@ const StoryCard: FC<StoryCardProps> = ({ level, currentCoins, onSpendCoins }) =>
     } catch (error) {
         console.error("Failed to continue story:", error);
         toast({ title: "AI Error", description: "The storyteller got lost. Please try again.", variant: "destructive" });
-        onSpendCoins(prev => prev + STORY_CONTINUE_COST); // Refund
+        onSpendCoins(STORY_CONTINUE_COST); // Refund
     } finally {
         setIsLoading(false);
     }

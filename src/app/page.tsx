@@ -25,7 +25,7 @@ const initialLeaderboardData: LeaderboardEntry[] = [
 
 
 export default function HomePage() {
-  const { currentCoins, level, updateCoins, levelUp } = useUserStats();
+  const { currentCoins, level, addCoins, levelUp } = useUserStats();
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>(initialLeaderboardData);
 
   // Update current user's score in leaderboard when coins change
@@ -43,18 +43,18 @@ export default function HomePage() {
       <main className="flex-grow container mx-auto p-4 md:p-6 lg:p-8 space-y-6">
           
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <MiningCard onCoinsClaimed={updateCoins} level={level} />
-            <AdsCard onAdWatched={updateCoins} onLevelUpgrade={levelUp} level={level} />
+            <MiningCard onCoinsClaimed={addCoins} level={level} />
+            <AdsCard onAdWatched={addCoins} onLevelUpgrade={levelUp} level={level} />
           </div>
 
           <div className="w-full">
-            <TasksCard onTaskCompleted={updateCoins} />
-          </div>
-
-          <div className="w-full">
-            <StoryCard level={level} currentCoins={currentCoins} onSpendCoins={updateCoins} />
+            <TasksCard onTaskCompleted={addCoins} />
           </div>
           
+          <div className="w-full">
+            <StoryCard level={level} currentCoins={currentCoins} onSpendCoins={addCoins} />
+          </div>
+
           <div className="w-full">
             <LeaderboardCard leaderboardData={leaderboard} currentUserName={CURRENT_USER_NAME} />
           </div>
