@@ -7,7 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { nanoid } from 'nanoid';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Users, Copy, Gift, UserPlus } from 'lucide-react';
+import { Users, Copy, Gift } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { getLevelDetails } from '@/lib/levels';
 
@@ -37,28 +37,6 @@ export default function ReferralsCard() {
     }
   }, []);
 
-  const handleInvite = () => {
-    const newCount = referralCount + 1;
-    setReferralCount(newCount);
-    localStorage.setItem(REFERRAL_COUNT_KEY, newCount.toString());
-
-    toast({
-      title: "Friend Invited!",
-      description: `You have successfully invited a friend. Progress: ${newCount % GOAL}/${GOAL}.`,
-    });
-
-    if (newCount > 0 && newCount % GOAL === 0) {
-      const newLevel = level + 1;
-      const newLevelDetails = getLevelDetails(newLevel);
-      levelUp();
-      toast({
-        title: `Level Up to ${newLevelDetails.name}!`,
-        description: `You've invited ${GOAL} friends and are now Level ${newLevel}. Your mining power has increased!`,
-        variant: 'default',
-      });
-    }
-  };
-  
   const handleCopyCode = () => {
     if(navigator.clipboard) {
         navigator.clipboard.writeText(referralCode);
@@ -108,14 +86,11 @@ export default function ReferralsCard() {
         </div>
 
         </CardContent>
-        <CardFooter>
-        <Button
-            onClick={handleInvite}
-            className="w-full bg-white text-black hover:bg-gray-200 text-lg py-6 transition-transform duration-150 ease-in-out hover:scale-105 active:scale-95"
-        >
-            <UserPlus className="mr-2 h-5 w-5" />
-            Total Referrals
-        </Button>
+        <CardFooter className="flex-col items-start pt-4 border-t border-white/10 mt-4">
+            <h3 className="text-sm font-medium text-card-foreground/70 mb-1">
+                Total Organic Referrals
+            </h3>
+            <p className="text-2xl font-bold text-primary-foreground">{referralCount.toLocaleString()}</p>
         </CardFooter>
     </Card>
   );
