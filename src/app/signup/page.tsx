@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState } from 'react';
@@ -7,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, updateProfile } from 'firebase/auth';
+import { createUserWithEmailAndPassword, GoogleAuthProvider, signInWithRedirect, updateProfile } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -63,16 +62,14 @@ export default function SignupPage() {
     setIsGoogleLoading(true);
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
-      toast({ title: 'Success', description: 'Signed up with Google successfully.' });
-      router.push('/');
+      await signInWithRedirect(auth, provider);
+      // The user will be redirected away. The loading state will be handled by page navigation.
     } catch (error: any) {
       toast({
         variant: 'destructive',
         title: 'Google Sign-In Failed',
-        description: error.message || 'Could not sign in with Google.',
+        description: error.message || 'Could not initiate Google Sign-In.',
       });
-    } finally {
       setIsGoogleLoading(false);
     }
   };

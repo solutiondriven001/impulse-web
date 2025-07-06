@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -7,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { signInWithEmailAndPassword, GoogleAuthProvider, signInWithRedirect } from 'firebase/auth';
 import { auth } from '@/lib/firebase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -28,15 +27,6 @@ export default function LoginPage() {
   const { toast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
-
-  useEffect(() => {
-    if (process.env.NODE_ENV === 'development') {
-      console.log(
-        'Firebase Auth Hint: Add this domain to your Firebase authorized domains list ->',
-        window.location.hostname
-      );
-    }
-  }, []);
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -67,16 +57,14 @@ export default function LoginPage() {
     setIsGoogleLoading(true);
     const provider = new GoogleAuthProvider();
     try {
-      await signInWithPopup(auth, provider);
-      toast({ title: 'Success', description: 'Logged in with Google successfully.' });
-      router.push('/');
+      await signInWithRedirect(auth, provider);
+      // The user will be redirected away. The loading state will be handled by page navigation.
     } catch (error: any) {
       toast({
         variant: 'destructive',
         title: 'Google Sign-In Failed',
-        description: error.message || 'Could not sign in with Google.',
+        description: error.message || 'Could not initiate Google Sign-In.',
       });
-    } finally {
       setIsGoogleLoading(false);
     }
   };
