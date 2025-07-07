@@ -53,10 +53,12 @@ export function HamburgerMenu() {
                         PROGRESS
                     </Button>
                 </Link>
-                <Button variant="ghost" className="w-full justify-start text-lg h-14 text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/10">
-                    <Store className="mr-4 h-5 w-5" />
-                    STORE
-                </Button>
+                <Link href="/store">
+                    <Button variant="ghost" className="w-full justify-start text-lg h-14 text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/10">
+                        <Store className="mr-4 h-5 w-5" />
+                        STORE
+                    </Button>
+                </Link>
                 <Button variant="ghost" className="w-full justify-start text-lg h-14 text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/10">
                     <Mail className="mr-4 h-5 w-5" />
                     CONTACT
