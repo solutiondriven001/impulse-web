@@ -35,7 +35,7 @@ const initialParentTasks: ParentTask[] = [
     bonusReward: 10,
     completed: false,
     tasks: [
-        { id: 'social-1-youtube', description: 'Subscribe on YouTube', reward: 2, completed: false, link: 'https://youtube.com' },
+        { id: 'social-1-youtube', description: 'Subscribe on YouTube', reward: 2, completed: false, link: 'https://www.youtube.com/@ImpulseApp' },
         { id: 'social-2-x', description: 'Follow us on X', reward: 2, completed: false, link: 'https://x.com' },
         { id: 'social-3-telegram', description: 'Join our Telegram', reward: 2, completed: false, link: 'https://telegram.org' },
         { id: 'social-4-instagram', description: 'Follow us on Instagram', reward: 2, completed: false, link: 'https://instagram.com' },
