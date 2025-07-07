@@ -10,6 +10,7 @@ export const useUserStats = () => {
   const [user, setUser] = useState<User | null>(null);
   const [currentCoins, setCurrentCoins] = useState(0);
   const [level, setLevel] = useState(1);
+  const [referralCount, setReferralCount] = useState(0);
   const [isInitialized, setIsInitialized] = useState(false);
 
   // This function fetches user data from Firestore or creates it if it doesn't exist
@@ -21,6 +22,7 @@ export const useUserStats = () => {
       const userData = userDocSnap.data();
       setCurrentCoins(userData.coinBalance || 0);
       setLevel(userData.level || 1);
+      setReferralCount(userData.referralCount || 0);
     } else {
       // Create a new profile for the new user
       await setDoc(userDocRef, {
@@ -30,9 +32,11 @@ export const useUserStats = () => {
         createdAt: serverTimestamp(),
         coinBalance: 0,
         level: 1,
+        referralCount: 0,
       });
       setCurrentCoins(0);
       setLevel(1);
+      setReferralCount(0);
     }
     setIsInitialized(true);
   }, []);
@@ -48,6 +52,7 @@ export const useUserStats = () => {
         setUser(null);
         setCurrentCoins(0);
         setLevel(1);
+        setReferralCount(0);
         setIsInitialized(true);
       }
     });
@@ -97,6 +102,7 @@ export const useUserStats = () => {
     user, // Expose user object
     currentCoins,
     level,
+    referralCount,
     addCoins,
     levelUp,
     isInitialized,

@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from 'react';
@@ -7,26 +6,19 @@ import { useToast } from '@/hooks/use-toast';
 import { nanoid } from 'nanoid';
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Users, Copy, Gift, PlusCircle } from 'lucide-react';
+import { Users, Copy, Gift } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import { getLevelDetails, getTotalRequirementsForLevel, getLevelUpRequirements } from '@/lib/levels';
 
-const REFERRAL_COUNT_KEY = 'impulseAppReferralCount_v1';
 const REFERRAL_CODE_KEY = 'impulseAppReferralCode_v1';
 
 export default function ReferralsCard() {
-  const { level, levelUp } = useUserStats();
-  const [referralCount, setReferralCount] = useState(0);
+  const { level, levelUp, referralCount } = useUserStats();
   const [referralCode, setReferralCode] = useState('');
   const { toast } = useToast();
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const savedCount = localStorage.getItem(REFERRAL_COUNT_KEY);
-      if (savedCount) {
-        setReferralCount(parseInt(savedCount, 10));
-      }
-
       let savedCode = localStorage.getItem(REFERRAL_CODE_KEY);
       if (!savedCode) {
         savedCode = nanoid(8).toUpperCase();
@@ -60,12 +52,6 @@ export default function ReferralsCard() {
           description: "Referral code copied to clipboard.",
         });
     }
-  };
-  
-  const handleAddReferral = () => {
-    const newCount = referralCount + 1;
-    setReferralCount(newCount);
-    localStorage.setItem(REFERRAL_COUNT_KEY, newCount.toString());
   };
 
   const reqsToGetCurrentLevel = getTotalRequirementsForLevel(level);
@@ -120,10 +106,6 @@ export default function ReferralsCard() {
                 </h3>
                 <p className="text-2xl font-bold text-primary-foreground">{referralCount.toLocaleString()}</p>
             </div>
-             <Button onClick={handleAddReferral} size="sm" variant="secondary" className="mt-2 sm:mt-0">
-                <PlusCircle className="mr-2 h-4 w-4" />
-                Simulate Invite
-            </Button>
         </CardFooter>
     </Card>
   );
