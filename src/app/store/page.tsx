@@ -1,4 +1,3 @@
-
 'use client';
 
 import Header from '@/components/Header';
@@ -7,6 +6,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { ArrowLeft, Download, Apple } from 'lucide-react';
 import Image from 'next/image';
+import { Card, CardContent } from '@/components/ui/card';
 
 const AndroidIcon = () => (
     <svg role="img" viewBox="0 0 24 24" className="mr-3 h-7 w-7 fill-current">
@@ -31,15 +31,15 @@ export default function StorePage() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 max-w-5xl mx-auto">
 
                     {/* App Store Card */}
-                    <div className="bg-card border border-border rounded-xl p-1.5 flex flex-col transition-all duration-300 hover:border-primary/50 hover:shadow-2xl">
-                        <div className="relative h-48 w-full rounded-lg bg-gradient-to-br from-background to-black/20 flex items-center justify-center p-4 overflow-hidden">
+                    <Card className="flex flex-col transition-all duration-300 hover:border-primary/50 hover:shadow-2xl overflow-hidden p-0">
+                        <div className="relative h-48 w-full bg-gradient-to-br from-background to-black/20 flex items-center justify-center p-4">
                            <div className="absolute top-3 left-3 bg-primary/20 text-primary font-bold text-xs py-1 px-3 rounded-full">
                                 Official App
                            </div>
                            <Image src="https://placehold.co/300x200.png" alt="Impulse on iOS" width={300} height={200} className="z-10 object-contain drop-shadow-lg" data-ai-hint="iphone screen" />
                         </div>
-                        <div className="p-5 flex-grow flex flex-col">
-                            <h2 className="text-2xl font-bold text-primary-foreground flex items-center"><Apple className="mr-3 h-7 w-7" /> Impulse iOS App</h2>
+                        <CardContent className="p-5 flex-grow flex flex-col">
+                            <h2 className="text-2xl font-bold text-card-foreground flex items-center"><Apple className="mr-3 h-7 w-7" /> Impulse iOS App</h2>
                             <p className="text-sm text-card-foreground/70 mt-2 flex-grow">Get the official Impulse app for your iPhone and iPad. Track your progress and manage your earnings seamlessly.</p>
                             <a href="https://www.apple.com/app-store/" target="_blank" rel="noopener noreferrer" className="mt-6 w-full">
                                 <Button className="w-full text-lg py-6 bg-accent text-accent-foreground hover:bg-accent/90">
@@ -47,19 +47,19 @@ export default function StorePage() {
                                     Download
                                 </Button>
                             </a>
-                        </div>
-                    </div>
+                        </CardContent>
+                    </Card>
 
                     {/* Play Store Card */}
-                     <div className="bg-card border border-border rounded-xl p-1.5 flex flex-col transition-all duration-300 hover:border-primary/50 hover:shadow-2xl">
-                        <div className="relative h-48 w-full rounded-lg bg-gradient-to-br from-background to-black/20 flex items-center justify-center p-4 overflow-hidden">
+                     <Card className="flex flex-col transition-all duration-300 hover:border-primary/50 hover:shadow-2xl overflow-hidden p-0">
+                        <div className="relative h-48 w-full bg-gradient-to-br from-background to-black/20 flex items-center justify-center p-4">
                             <div className="absolute top-3 left-3 bg-primary/20 text-primary font-bold text-xs py-1 px-3 rounded-full">
                                 Highest Uptime
                            </div>
                            <Image src="https://placehold.co/300x200.png" alt="Impulse on Android" width={300} height={200} className="z-10 object-contain drop-shadow-lg" data-ai-hint="android screen"/>
                         </div>
-                        <div className="p-5 flex-grow flex flex-col">
-                            <h2 className="text-2xl font-bold text-primary-foreground flex items-center"><AndroidIcon /> Impulse Android App</h2>
+                        <CardContent className="p-5 flex-grow flex flex-col">
+                            <h2 className="text-2xl font-bold text-card-foreground flex items-center"><AndroidIcon /> Impulse Android App</h2>
                              <p className="text-sm text-card-foreground/70 mt-2 flex-grow">The complete Impulse experience, optimized for your Android device. Never miss a beat.</p>
                             <a href="https://play.google.com/store" target="_blank" rel="noopener noreferrer" className="mt-6 w-full">
                                 <Button className="w-full text-lg py-6 bg-accent text-accent-foreground hover:bg-accent/90">
@@ -67,8 +67,8 @@ export default function StorePage() {
                                     Download
                                 </Button>
                             </a>
-                        </div>
-                    </div>
+                        </CardContent>
+                    </Card>
 
                 </div>
 
