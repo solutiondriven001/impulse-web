@@ -4,16 +4,9 @@ import Header from '@/components/Header';
 import { useUserStats } from '@/hooks/use-user-stats';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { ArrowLeft, Download, Apple } from 'lucide-react';
+import { ArrowLeft, Download } from 'lucide-react';
 import Image from 'next/image';
 import { Card, CardContent } from '@/components/ui/card';
-
-const AndroidIcon = () => (
-    <svg role="img" viewBox="0 0 24 24" className="mr-3 h-7 w-7 fill-current">
-        <path d="M17.522 14.135c.99-1.396.697-3.32-.697-4.31a3.15 3.15 0 00-4.31-.698l-2.457 1.488-1.543-1.543a.537.537 0 00-.76 0l-.82.82a.537.537 0 000 .76l2.362 2.363-2.362 2.362a.537.537 0 000 .76l.82.82a.537.537 0 00.76 0l1.543-1.543 2.457 1.488a3.15 3.15 0 004.31-.697c1.393-1.02 1.686-2.915.694-4.31zm-3.15-2.09l.432-.26a1.18 1.18 0 011.625.263c.36.52.26 1.22-.262 1.625l-.432.26zm-7.06-6.265l-1.09-1.09a.537.537 0 00-.76 0l-.82.82a.537.537 0 000 .76l1.09 1.09a.537.537 0 00.76 0l.82-.82a.537.537 0 000-.76zM7.31 18.22l-1.09 1.09a.537.537 0 01-.76 0l-.82-.82a.537.537 0 010-.76l1.09-1.09a.537.537 0 01.76 0l.82.82a.537.537 0 010 .76zM3.48 9.043c-.25-.21-.58-.28-.88-.22a2.65 2.65 0 00-2.37 2.65 2.65 2.65 0 002.65 2.65h.06c.3 0 .6-.1.83-.28l5.22-3.16-5.4-3.26c-.04-.03-.09-.05-.11-.08zm17.04 0c.25-.21.58-.28.88-.22a2.65 2.65 0 012.37 2.65 2.65 2.65 0 01-2.65 2.65h-.06c-.3 0-.6-.1-.83-.28l-5.22-3.16 5.4-3.26c.04-.03.09-.05.11-.08z"/>
-    </svg>
-);
-
 
 export default function StorePage() {
     const { currentCoins } = useUserStats();
@@ -39,7 +32,7 @@ export default function StorePage() {
                            <Image src="https://placehold.co/300x200.png" alt="Impulse on iOS" width={300} height={200} className="z-10 object-contain drop-shadow-lg" data-ai-hint="iphone screen" />
                         </div>
                         <CardContent className="p-5 flex-grow flex flex-col">
-                            <h2 className="text-2xl font-bold text-card-foreground flex items-center"><Apple className="mr-3 h-7 w-7" /> Impulse iOS App</h2>
+                            <h2 className="text-2xl font-bold text-card-foreground">Impulse iOS App</h2>
                             <p className="text-sm text-card-foreground/70 mt-2 flex-grow">Get the official Impulse app for your iPhone and iPad. Track your progress and manage your earnings seamlessly.</p>
                             <a href="https://www.apple.com/app-store/" target="_blank" rel="noopener noreferrer" className="mt-6 w-full">
                                 <Button className="w-full text-lg py-6 bg-accent text-accent-foreground hover:bg-accent/90">
@@ -59,7 +52,7 @@ export default function StorePage() {
                            <Image src="https://placehold.co/300x200.png" alt="Impulse on Android" width={300} height={200} className="z-10 object-contain drop-shadow-lg" data-ai-hint="android screen"/>
                         </div>
                         <CardContent className="p-5 flex-grow flex flex-col">
-                            <h2 className="text-2xl font-bold text-card-foreground flex items-center"><AndroidIcon /> Impulse Android App</h2>
+                            <h2 className="text-2xl font-bold text-card-foreground">Impulse Android App</h2>
                              <p className="text-sm text-card-foreground/70 mt-2 flex-grow">The complete Impulse experience, optimized for your Android device. Never miss a beat.</p>
                             <a href="https://play.google.com/store" target="_blank" rel="noopener noreferrer" className="mt-6 w-full">
                                 <Button className="w-full text-lg py-6 bg-accent text-accent-foreground hover:bg-accent/90">
