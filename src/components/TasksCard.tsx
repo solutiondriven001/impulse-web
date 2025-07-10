@@ -5,7 +5,7 @@ import type { FC } from 'react';
 import { useState, useEffect } from 'react';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, ListChecks, ExternalLink, ChevronRight, Award, Loader2, Zap, Upload } from 'lucide-react';
+import { CheckCircle2, ListChecks, ExternalLink, ChevronRight, Award, Loader2, Zap, Upload, Lock } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import type { ParentTask } from '@/types';
 import { Separator } from '@/components/ui/separator';
@@ -16,6 +16,12 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
@@ -23,9 +29,12 @@ import { addDailyEarning } from '@/lib/earnings';
 
 interface TasksCardProps {
   onTaskCompleted: (reward: number) => void;
+  currentCoins: number;
 }
 
 const TASKS_STATE_KEY = 'impulseAppParentTasks_v10';
+const TEGASFX_TASK_ID = 'parent-tegasfx-1';
+const TEGASFX_UNLOCK_COST = 100;
 
 const initialParentTasks: ParentTask[] = [
   {
@@ -59,7 +68,7 @@ const initialParentTasks: ParentTask[] = [
 ];
 
 
-const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
+const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted, currentCoins }) => {
   const [parentTasks, setParentTasks] = useState<ParentTask[]>(initialParentTasks);
   const [selectedTask, setSelectedTask] = useState<ParentTask | null>(null);
   const [verifyingTaskId, setVerifyingTaskId] = useState<string | null>(null);
@@ -199,7 +208,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
 
 
   return (
-    <>
+    <TooltipProvider>
       <Card className="shadow-xl hover:shadow-2xl transition-shadow duration-300">
         <CardHeader>
           <CardTitle className="flex items-center text-2xl font-headline">
@@ -210,18 +219,25 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
         <CardContent className="space-y-3">
           {parentTasks.map((task) => {
             const progress = getProgress(task);
-            return (
-              <button
+            const isLocked = task.id === TEGASFX_TASK_ID && currentCoins < TEGASFX_UNLOCK_COST;
+            
+            const taskButton = (
+                <button
                 key={task.id}
                 onClick={() => setSelectedTask(task)}
                 className="w-full text-left p-4 rounded-lg transition-all duration-300 bg-black/20 hover:bg-black/30 flex items-center space-x-4 disabled:opacity-50 disabled:cursor-not-allowed"
-                disabled={task.completed}
+                disabled={task.completed || isLocked}
               >
                 <div className="flex-1 space-y-1">
                   <p className="font-semibold">{task.title}</p>
                   <p className="text-sm text-card-foreground/70">{task.description}</p>
                 </div>
-                {task.completed ? (
+                {isLocked ? (
+                  <div className="flex items-center space-x-2 text-card-foreground/60">
+                    <Lock className="h-5 w-5" />
+                    <span className="text-sm font-medium">Locked</span>
+                  </div>
+                ) : task.completed ? (
                   <div className="flex items-center space-x-2 text-green-400">
                      <span className="text-sm font-medium">Completed</span>
                      <CheckCircle2 className="h-6 w-6" />
@@ -235,7 +251,20 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
                   </div>
                 )}
               </button>
-            )
+            );
+
+            if (isLocked) {
+              return (
+                 <Tooltip key={task.id}>
+                    <TooltipTrigger asChild>{taskButton}</TooltipTrigger>
+                    <TooltipContent>
+                      <p>You need {TEGASFX_UNLOCK_COST} coins to unlock this task.</p>
+                    </TooltipContent>
+                  </Tooltip>
+              )
+            }
+
+            return taskButton;
           })}
         </CardContent>
       </Card>
@@ -385,7 +414,7 @@ const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted }) => {
           )}
         </DialogContent>
       </Dialog>
-    </>
+    </TooltipProvider>
   );
 };
 

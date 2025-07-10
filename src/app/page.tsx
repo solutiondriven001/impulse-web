@@ -70,7 +70,7 @@ export default function HomePage() {
           </div>
 
           <div className="w-full">
-            <TasksCard onTaskCompleted={addCoins} />
+            <TasksCard onTaskCompleted={addCoins} currentCoins={currentCoins} />
           </div>
           
           <div className="w-full">
