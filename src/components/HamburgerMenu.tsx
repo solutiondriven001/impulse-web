@@ -59,10 +59,12 @@ export function HamburgerMenu() {
                         STORE
                     </Button>
                 </Link>
-                <Button variant="ghost" className="w-full justify-start text-lg h-14 text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/10">
-                    <Mail className="mr-4 h-5 w-5" />
-                    CONTACT
-                </Button>
+                <Link href="/contact">
+                    <Button variant="ghost" className="w-full justify-start text-lg h-14 text-primary-foreground/80 hover:text-primary-foreground hover:bg-white/10">
+                        <Mail className="mr-4 h-5 w-5" />
+                        CONTACT
+                    </Button>
+                </Link>
             </div>
             <div className="mt-auto px-4">
                 <Separator className="my-4 bg-card-foreground/20" />
