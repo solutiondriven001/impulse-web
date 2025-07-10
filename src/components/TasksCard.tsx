@@ -67,35 +67,33 @@ const initialParentTasks: ParentTask[] = [
   }
 ];
 
+const getInitialState = (): ParentTask[] => {
+    if (typeof window === 'undefined') {
+        return initialParentTasks;
+    }
+    const savedState = localStorage.getItem(TASKS_STATE_KEY);
+    if (savedState) {
+        try {
+            const parsedState = JSON.parse(savedState);
+            if (Array.isArray(parsedState) && parsedState.every(p => p.hasOwnProperty('tasks'))) {
+                return parsedState;
+            }
+        } catch (e) {
+            console.error("Failed to parse tasks state from localStorage", e);
+        }
+    }
+    return initialParentTasks;
+};
+
 
 const TasksCard: FC<TasksCardProps> = ({ onTaskCompleted, currentCoins }) => {
-  const [parentTasks, setParentTasks] = useState<ParentTask[]>(initialParentTasks);
+  const [parentTasks, setParentTasks] = useState<ParentTask[]>(getInitialState);
   const [selectedTask, setSelectedTask] = useState<ParentTask | null>(null);
   const [verifyingTaskId, setVerifyingTaskId] = useState<string | null>(null);
   const [clickedLinks, setClickedLinks] = useState<Set<string>>(new Set());
   const [selectedFiles, setSelectedFiles] = useState<Record<string, File | null>>({});
   const [textInputValues, setTextInputValues] = useState<Record<string, string>>({});
   const { toast } = useToast();
-
-  // Load state from localStorage on mount
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-        const savedState = localStorage.getItem(TASKS_STATE_KEY);
-        if (savedState) {
-            try {
-                const parsedState = JSON.parse(savedState);
-                if (Array.isArray(parsedState) && parsedState.every(p => p.hasOwnProperty('tasks'))) {
-                    setParentTasks(parsedState);
-                } else {
-                    localStorage.setItem(TASKS_STATE_KEY, JSON.stringify(initialParentTasks));
-                }
-            } catch (e) {
-                console.error("Failed to parse tasks state from localStorage", e);
-                localStorage.setItem(TASKS_STATE_KEY, JSON.stringify(initialParentTasks));
-            }
-        }
-    }
-  }, []);
 
   // Save state to localStorage whenever it changes
   useEffect(() => {
