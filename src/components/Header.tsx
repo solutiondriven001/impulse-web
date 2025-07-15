@@ -1,3 +1,4 @@
+
 "use client";
 
 import type { FC } from 'react';
@@ -83,7 +84,7 @@ const Header: FC<HeaderProps> = ({ currentCoins }) => {
         <div className="flex items-center space-x-2">
            <HamburgerMenu />
            <Link href="/">
-            <Image src="https://placehold.co/120x40/fafafa/333333.png?text=Impulse" alt="App Logo" width={120} height={40} data-ai-hint="app logo" className="opacity-50" />
+            <Image src="/logo.png" alt="Impulse Logo" width={120} height={40} className="object-contain" />
            </Link>
         </div>
         <div className="flex items-center space-x-2 bg-white text-foreground border shadow-sm px-4 py-2 rounded-lg">
