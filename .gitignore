@@ -7,6 +7,55 @@
 .yarn/*
 !.yarn/patches
 !.yarn/plugins
+
+# production
+/build
+/.next
+/out
+/dist
+
+# Firebase
+.firebase/
+.firebaserc
+firebase-debug.log
+
+# archives & artifacts
+*.zip
+*.tar.gz
+
+# environment files
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# system files
+.DS_Store
+Thumbs.db
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# IDEs & editors
+.vscode/
+.idea/
+*.swp
+
+# workspace and misc
+workspace/
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
 !.yarn/releases
 !.yarn/versions
 
